@@ -2,7 +2,7 @@ import React from "react";
 import Hero from "./Hero/main";
 function LandingPage() {
   return (
-    <div>
+    <div className="container mx-auto px-8">
       <Hero />
     </div>
   );

@@ -12,10 +12,30 @@ function Navbar() {
       </Link>
 
       <div className="flex flex-row gap-4 font-semibold">
-        <Link href="/">Home</Link>
-        <Link href="/events">Events</Link>
-        <Link href="/jobs">Jobs</Link>
-        <Link href="/about">About</Link>
+        <Link
+          href="/"
+          className="hover:scale-105 transition-transform duration-400"
+        >
+          Home
+        </Link>
+        <Link
+          href="/events"
+          className="hover:scale-105 transition-transform duration-400"
+        >
+          Events
+        </Link>
+        <Link
+          href="/jobs"
+          className="hover:scale-105 transition-transform duration-400"
+        >
+          Jobs
+        </Link>
+        <Link
+          href="/about"
+          className="hover:scale-105 transition-transform duration-400"
+        >
+          About
+        </Link>
       </div>
     </nav>
   );
