@@ -48,13 +48,17 @@ const __1 = require("..");
 const bcrypt_1 = require("bcrypt");
 const jwt = __importStar(require("jsonwebtoken"));
 const secrets_1 = require("../secrets");
-const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const exceptions_1 = require("../exceptions/exceptions");
+const root_1 = require("../exceptions/root");
+const user_1 = require("../schema/user");
+const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    user_1.SignupSchema.parse(req.body); // Perform Zod Validation First
     const { email, password, name } = req.body;
     let user = yield __1.prismaClient.user.findFirst({
         where: { email: email },
     });
     if (user) {
-        throw Error("User already exists");
+        return new exceptions_1.ConflictException("User already exists", root_1.ErrorCode.USER_ALREADY_EXISTS);
     }
     user = yield __1.prismaClient.user.create({
         data: {
@@ -68,16 +72,16 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.json(userWithoutPassword);
 });
 exports.signup = signup;
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     let user = yield __1.prismaClient.user.findFirst({
         where: { email: email },
     });
     if (!user) {
-        throw Error("User does not exist");
+        return new exceptions_1.NotFoundException("User does not exist", root_1.ErrorCode.USER_NOT_FOUND);
     }
     if (!(0, bcrypt_1.compareSync)(password, user.password)) {
-        throw Error("Incorrect password!");
+        return new exceptions_1.UnauthorizedException("Incorrect password!", root_1.ErrorCode.INCORRECT_PASSWORD);
     }
     const token = jwt.sign({ userId: user.id }, secrets_1.JWT_SECRET);
     // Do not send back hashed password back to frontend

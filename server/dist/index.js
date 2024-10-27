@@ -12,6 +12,7 @@ const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
 const client_1 = require("@prisma/client");
 const routes_1 = __importDefault(require("./routes"));
+const errors_1 = require("./middlewares/errors");
 /* Route imports */
 /* Configurations */
 dotenv_1.default.config();
@@ -25,6 +26,8 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
 /* Routes */
 app.use("/api", routes_1.default);
+/* Middlewares */
+app.use(errors_1.errorMiddleWare);
 /* Create Prisma Client Instance*/
 exports.prismaClient = new client_1.PrismaClient({
     log: ["query"],

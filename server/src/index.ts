@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express, { Express, query } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -6,6 +6,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 import { PrismaClient } from "@prisma/client";
 import rootRouter from "./routes";
+import { errorMiddleWare } from "./middlewares/errors";
+import { SignupSchema } from "./schema/user";
 
 /* Route imports */
 
@@ -24,6 +26,9 @@ app.use(cors());
 /* Routes */
 
 app.use("/api", rootRouter);
+
+/* Middlewares */
+app.use(errorMiddleWare);
 
 /* Create Prisma Client Instance*/
 export const prismaClient = new PrismaClient({
