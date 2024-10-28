@@ -1,28 +1,34 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UnauthorizedException = exports.NotFoundException = exports.ConflictException = exports.BadRequestsException = void 0;
+exports.InternalException = exports.UnauthorizedException = exports.NotFoundException = exports.ConflictException = exports.BadRequestsException = void 0;
 const root_1 = require("./root");
 class BadRequestsException extends root_1.HttpException {
-    constructor(message, errorCode) {
-        super(message, errorCode, 400, null);
+    constructor(message, errorCode, errors) {
+        super(message, errorCode, 400, errors);
     }
 }
 exports.BadRequestsException = BadRequestsException;
 class ConflictException extends root_1.HttpException {
-    constructor(message, errorCode) {
-        super(message, errorCode, 409, null);
+    constructor(message, errorCode, errors) {
+        super(message, errorCode, 409, errors);
     }
 }
 exports.ConflictException = ConflictException;
 class NotFoundException extends root_1.HttpException {
-    constructor(message, errorCode) {
-        super(message, errorCode, 404, null);
+    constructor(message, errorCode, errors) {
+        super(message, errorCode, 404, errors);
     }
 }
 exports.NotFoundException = NotFoundException;
 class UnauthorizedException extends root_1.HttpException {
-    constructor(message, errorCode) {
-        super(message, errorCode, 401, null);
+    constructor(message, errorCode, errors) {
+        super(message, errorCode, 401, errors);
     }
 }
 exports.UnauthorizedException = UnauthorizedException;
+class InternalException extends root_1.HttpException {
+    constructor(message, errorCode, errors) {
+        super(message, errorCode, 500, errors);
+    }
+}
+exports.InternalException = InternalException;

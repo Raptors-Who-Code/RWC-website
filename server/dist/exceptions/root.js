@@ -18,4 +18,6 @@ var ErrorCode;
     ErrorCode["INCORRECT_PASSWORD"] = "INCORRECT_PASSWORD";
     ErrorCode["UNPROCESSABLEENTITY"] = "UNPROCESSABLEENTITY";
     ErrorCode["INTERNALEXCEPTION"] = "INTERNALEXCEPTION";
+    ErrorCode["UNAUTHORIZED"] = "UNAUTHORIZED";
+    ErrorCode["INVALIDDOMAIN"] = "INVALIDDOMAIN";
 })(ErrorCode || (exports.ErrorCode = ErrorCode = {}));

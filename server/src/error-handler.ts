@@ -1,6 +1,12 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import { ErrorCode, HttpException } from "./exceptions/root";
-import { InternalException } from "./exceptions/internal-exception";
+import { InternalException } from "./exceptions/exceptions";
+
+// type CustomRequestHandler = (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => Promise<void>;
 
 export const errorHandler = (controller: Function) => {
   return async (req: Request, res: Response, next: NextFunction) => {

@@ -43,7 +43,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.signup = void 0;
+exports.me = exports.login = exports.signup = void 0;
 const __1 = require("..");
 const bcrypt_1 = require("bcrypt");
 const jwt = __importStar(require("jsonwebtoken"));
@@ -54,11 +54,15 @@ const user_1 = require("../schema/user");
 const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     user_1.SignupSchema.parse(req.body); // Perform Zod Validation First
     const { email, password, name } = req.body;
+    const schoolDomain = "@montgomerycollege.edu";
+    if (!email.endsWith(schoolDomain)) {
+        throw new exceptions_1.BadRequestsException("Invalid email domain", root_1.ErrorCode.INVALIDDOMAIN);
+    }
     let user = yield __1.prismaClient.user.findFirst({
         where: { email: email },
     });
     if (user) {
-        return new exceptions_1.ConflictException("User already exists", root_1.ErrorCode.USER_ALREADY_EXISTS);
+        throw new exceptions_1.ConflictException("User already exists", root_1.ErrorCode.USER_ALREADY_EXISTS);
     }
     user = yield __1.prismaClient.user.create({
         data: {
@@ -78,10 +82,10 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         where: { email: email },
     });
     if (!user) {
-        return new exceptions_1.NotFoundException("User does not exist", root_1.ErrorCode.USER_NOT_FOUND);
+        throw new exceptions_1.NotFoundException("User does not exist", root_1.ErrorCode.USER_NOT_FOUND);
     }
     if (!(0, bcrypt_1.compareSync)(password, user.password)) {
-        return new exceptions_1.UnauthorizedException("Incorrect password!", root_1.ErrorCode.INCORRECT_PASSWORD);
+        throw new exceptions_1.UnauthorizedException("Incorrect password!", root_1.ErrorCode.INCORRECT_PASSWORD);
     }
     const token = jwt.sign({ userId: user.id }, secrets_1.JWT_SECRET);
     // Do not send back hashed password back to frontend
@@ -89,3 +93,12 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     res.json({ user: userWithoutPassword, token });
 });
 exports.login = login;
+const me = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.user) {
+        throw new exceptions_1.UnauthorizedException("Unauthorized", root_1.ErrorCode.UNAUTHORIZED);
+    }
+    const _a = req.user, { password: _ } = _a, userWithoutPassword = __rest(_a, ["password"]);
+    // Do not send back hashed password back to frontend
+    res.json(userWithoutPassword);
+});
+exports.me = me;

@@ -11,7 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.errorHandler = void 0;
 const root_1 = require("./exceptions/root");
-const internal_exception_1 = require("./exceptions/internal-exception");
+const exceptions_1 = require("./exceptions/exceptions");
+// type CustomRequestHandler = (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => Promise<void>;
 const errorHandler = (controller) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -23,7 +28,7 @@ const errorHandler = (controller) => {
                 exception = err;
             }
             else {
-                exception = new internal_exception_1.InternalException("Something went wrong!", err, root_1.ErrorCode.INTERNALEXCEPTION);
+                exception = new exceptions_1.InternalException("Something went wrong!", err, root_1.ErrorCode.INTERNALEXCEPTION);
             }
             next(exception);
         }
