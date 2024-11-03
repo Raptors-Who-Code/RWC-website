@@ -12,11 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.errorHandler = void 0;
 const root_1 = require("./exceptions/root");
 const exceptions_1 = require("./exceptions/exceptions");
-// type CustomRequestHandler = (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => Promise<void>;
 const errorHandler = (controller) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
