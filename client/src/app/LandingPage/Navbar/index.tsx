@@ -9,11 +9,11 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="flex items-center justify-between py-6 px-24 border-b border-[rgba(77,72,72,0.16)]">
+    <nav className="flex flex-col md:flex-row items-center md:items-center justify-between py-6 px-6 md:px-24 border-b border-[rgba(77,72,72,0.16)]">
       {/* Left section: Logo */}
       <Link href="/">
-        <div className="flex flex-col justify-center items-start font-semibold">
-          <h1>RWC</h1>
+        <div className="flex flex-col justify-center items-center font-semibold text-4xl mx-auto md:mx-0 lg:text-xl">
+          <h1>Raptors</h1>
         </div>
       </Link>
 
