@@ -5,7 +5,7 @@ import Link from "next/link";
 
 function Hero() {
   return (
-    <div className="flex flex-col justify-evenly lg:flex-row text-center mt-36">
+    <div className="flex flex-col items-center lg:justify-evenly lg:flex-row text-center mt-36">
       <div className="my-auto">
         <h1 className="font-extrabold text-4xl">We&apos;re RWC,</h1>
         <h2>Montgomery College&apos;s</h2>
