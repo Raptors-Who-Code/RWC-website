@@ -6,12 +6,15 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Menu } from "lucide-react";
 import { navLinks } from "@/lib/links";
+import Sidebar from "./sidebar";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="flex flex-col md:flex-row items-center md:items-center justify-between py-6 px-6 md:px-24 border-b border-[rgba(77,72,72,0.16)]">
+      <Sidebar />
+
       {/* Left section: Logo */}
 
       {/* Container for Logo and Mobile Navbar button on small screens*/}

@@ -55,8 +55,12 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     user_1.SignupSchema.parse(req.body); // Perform Zod Validation First
     const { email, password, name } = req.body;
     const schoolDomain = "@montgomerycollege.edu";
+    const guestLogin = !email.endsWith(schoolDomain);
     if (!email.endsWith(schoolDomain)) {
-        throw new exceptions_1.BadRequestsException("Invalid email domain", root_1.ErrorCode.INVALIDDOMAIN);
+        // throw new BadRequestsException(
+        //   "Invalid email domain",
+        //   ErrorCode.INVALIDDOMAIN
+        // );
     }
     let user = yield __1.prismaClient.user.findFirst({
         where: { email: email },
@@ -69,6 +73,7 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             name,
             email,
             password: (0, bcrypt_1.hashSync)(password, 10),
+            verified: false,
         },
     });
     // Do not send back hashed password back to frontend

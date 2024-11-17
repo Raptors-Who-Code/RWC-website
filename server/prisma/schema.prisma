@@ -13,15 +13,37 @@ datasource db {
   url      = env("DIRECT_URL")
 }
 
+enum Role {
+  ADMIN
+  MODERATOR
+  MEMBER
+  GUEST
+  ALUMNI
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
   password  String
+  verified  Boolean  @default(false)
+  role      Role     @default(GUEST)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  otps OTPVerification[]
+
   @@map("users")
+}
+
+model OTPVerification {
+  id        String   @id @default(uuid())
+  userId    String
+  otps      String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // TODO: Create schema for project

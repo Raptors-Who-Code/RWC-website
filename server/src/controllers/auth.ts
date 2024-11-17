@@ -24,11 +24,13 @@ export const signup = async (
 
   const schoolDomain = "@montgomerycollege.edu";
 
+  const guestLogin = !email.endsWith(schoolDomain);
+
   if (!email.endsWith(schoolDomain)) {
-    throw new BadRequestsException(
-      "Invalid email domain",
-      ErrorCode.INVALIDDOMAIN
-    );
+    // throw new BadRequestsException(
+    //   "Invalid email domain",
+    //   ErrorCode.INVALIDDOMAIN
+    // );
   }
 
   let user = await prismaClient.user.findFirst({
@@ -47,6 +49,7 @@ export const signup = async (
       name,
       email,
       password: hashSync(password, 10),
+      verified: false,
     },
   });
 
