@@ -3,18 +3,18 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React, { useState } from "react";
-import Image from "next/image";
 import { Menu } from "lucide-react";
 import { navLinks } from "@/lib/links";
-import Sidebar from "./sidebar";
 
 function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuOpen, setisMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setisMenuOpen(!isMenuOpen);
+  };
 
   return (
     <nav className="flex flex-col md:flex-row items-center md:items-center justify-between py-6 px-6 md:px-24 border-b border-[rgba(77,72,72,0.16)]">
-      <Sidebar />
-
       {/* Left section: Logo */}
 
       {/* Container for Logo and Mobile Navbar button on small screens*/}
@@ -25,7 +25,7 @@ function Navbar() {
           <button
             className="p-0 m-0 bg-transparent border-none cursor-pointer"
             aria-label="Open navagation"
-            onClick={() => {}}
+            onClick={toggleMenu}
           >
             <Menu className="w-6 h-6" />
           </button>
@@ -33,7 +33,9 @@ function Navbar() {
 
         <Link href="/">
           <div className="flex flex-col justify-center items-center font-semibold text-4xl mx-auto md:mx-0 md:text-xl">
-            <h1>Raptors</h1>
+            <h1 className="transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95">
+              Raptors
+            </h1>
           </div>
         </Link>
       </div>
@@ -46,6 +48,17 @@ function Navbar() {
           </Link>
         ))}
       </div>
+
+      {/*Mobile Menu */}
+      {isMenuOpen ? (
+        <ul className="flex-col md:hidden w-full py-4 px-6 space-y-4 shadow-md">
+          {navLinks.map((link) => (
+            <li key={link.name} className="py-2">
+              <a href={link.href}>{link.name}</a>
+            </li>
+          ))}
+        </ul>
+      ) : null}
 
       {/* Right section: Buttons */}
       <div className="hidden md:flex space-x-4">

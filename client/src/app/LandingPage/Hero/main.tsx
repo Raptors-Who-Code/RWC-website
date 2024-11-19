@@ -6,22 +6,39 @@ import Link from "next/link";
 function Hero() {
   return (
     <div className="flex flex-col items-center lg:justify-evenly lg:flex-row text-center mt-36">
-      <div className="my-auto">
-        <h1 className="font-extrabold text-4xl">We&apos;re RWC,</h1>
-        <h2>Montgomery College&apos;s</h2>
-        <h2>Computer Science Club</h2>
-        <Link href="/signup">
-          <Button className="mt-4 text-white hover:bg-purple-500 transition-transform duration-300 ease-in-out transform hover:scale-105">
-            Sign Up
-          </Button>
-        </Link>
+      <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
+        <h1 className="font-bold text-5xl lg:text-[56px]">We&apos;re RWC,</h1>
+        <h2 className="text-3xl lg:text-[32px] leading-[61px] tracking-[4%] mt-4">
+          Montgomery College&apos;s Computer Science Club
+        </h2>
+
+        <div className="flex flex-row gap-4 items-center">
+          <Link href="/signup">
+            <Button className="flex w-[187px] h-[52px] px-[24px] py-[13px] justify-center items-center gap-[10px] rounded-[4px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] mt-[10px] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95">
+              <span className="text-white text-center font-semibold text-[16px] leading-[24px] tracking-[-0.32px]">
+                Sign Up
+              </span>
+            </Button>
+          </Link>
+
+          <Link href="/events">
+            <Button className="flex w-[141px] h-[52px] px-[24px] py-[13px] justify-center items-center gap-[10px] rounded-[4px] bg-[#1A202C] hover:bg-none mt-[10px] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95">
+              <span className="text-white text-center font-semibold text-[16px] leading-[24px] tracking-[-0.32px]">
+                View Events
+              </span>
+            </Button>
+          </Link>
+        </div>
       </div>
-      <Image
-        src="/assets/images/logo.png"
-        alt="Raptors Who Code Logo"
-        width={400}
-        height={400}
-      />
+      <div className="lg:w-[679px] lg:h-[515px] w-[400px] h-[400px]">
+        <Image
+          src="/assets/images/logo.png"
+          alt="Raptors Who Code Logo"
+          className="w-full h-full object-contain"
+          width={10000}
+          height={10000}
+        />
+      </div>
     </div>
   );
 }
