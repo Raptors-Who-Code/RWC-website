@@ -5,7 +5,7 @@ import Link from "next/link";
 
 function Hero() {
   return (
-    <div className="flex flex-col items-center lg:justify-evenly lg:flex-row text-center mt-36">
+    <div className="flex flex-col items-center lg:justify-evenly lg:flex-row text-center mt-36 gap-6 lg:gap-0">
       <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
         <h1 className="font-bold text-5xl lg:text-[56px]">We&apos;re RWC,</h1>
         <h2 className="text-3xl lg:text-[32px] leading-[61px] tracking-[4%] mt-4">
