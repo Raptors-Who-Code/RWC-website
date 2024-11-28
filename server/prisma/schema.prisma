@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -31,19 +25,21 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  otps OTPVerification[]
+  sessions Session[] // Relation to Session model
 
   @@map("users")
 }
 
-model OTPVerification {
+model Session {
   id        String   @id @default(uuid())
   userId    String
-  otps      String
+  userAgent String? // Optional field for storing user agent details
   createdAt DateTime @default(now())
-  expiresAt DateTime
+  expiresAt DateTime @default(dbgenerated("NOW() + INTERVAL '30 days'")) // Postgres-specific interval for expiration
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Relation to User model
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId]) // Create an index for efficient lookups by userId
+  @@map("sessions") // Maps this model to the "sessions" table in the database
 }
-
-// TODO: Create schema for project

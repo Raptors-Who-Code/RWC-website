@@ -12,49 +12,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendOTPVerificationEmail = void 0;
-const nodemailer_1 = __importDefault(require("nodemailer"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-let transporter = nodemailer_1.default.createTransport({
-    host: "smtp-mail.outlook.com",
-    auth: {
-        user: process.env.AUTH_EMAIL,
-        pass: process.env.AUTH_PASS,
-    },
-});
-const sendOTPVerificationEmail = (_a, res_1) => __awaiter(void 0, [_a, res_1], void 0, function* ({ _id, email }, res) {
-    try {
-        const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
-        const mailOptions = {
-            from: process.env.AUTH_EMAIL,
-            to: email,
-            subject: "Welcome to Raptors Who Code! Please Verify Your Email",
-            html: `<p>Enter <b>${otp}</b> in the app to verify your email address and complete registration!</p> 
-      <p>This code <b>expires in 1 hour</b></p>
-      `,
-        };
-        const saltRounds = 10;
-        const hashedOTP = yield bcrypt_1.default.hash(otp, saltRounds);
-        // Save OTP to database
-        yield prismaClient.OTPVerification.create({
-            data: {
-                userId: _id,
-                otp: hashedOTP,
-                createdAt: Date.now(),
-                expiresAt: Date.now() + 360000,
-            },
-        });
-        const transporter = nodemailer_1.default.createTransport({
-            service: "Gmail",
-            auth: {
-                user: process.env.AUTH_EMAIL,
-                pass: process.env.AUTH_PASSWORD,
-            },
-        });
-        yield transporter.sendMail(mailOptions);
+exports.createAccount = void 0;
+const bcrypt_1 = require("bcrypt");
+const __1 = require("..");
+const exceptions_1 = require("../exceptions/exceptions");
+const root_1 = require("../exceptions/root");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const secrets_1 = require("../secrets");
+const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingUser = yield __1.prismaClient.user.findFirst({
+        where: { email: data.email },
+    });
+    if (existingUser) {
+        throw new exceptions_1.ConflictException("User already exists", root_1.ErrorCode.USER_ALREADY_EXISTS);
     }
-    catch (error) {
-        console.error(error);
-    }
+    const { name, email, password, userAgent } = data;
+    const user = yield __1.prismaClient.user.create({
+        data: {
+            name: name,
+            email: email,
+            password: (0, bcrypt_1.hashSync)(password, 10),
+            verified: false,
+        },
+    });
+    //TODO: Send verification email
+    // create session
+    const session = yield __1.prismaClient.session.create({
+        data: {
+            userId: user.id,
+            userAgent: userAgent,
+        },
+    });
+    // sign access token and refresh token
+    const refreshToken = jsonwebtoken_1.default.sign({ sessionId: session.id }, secrets_1.JWT_REFRESH_SECRET, {
+        audience: ["user"],
+        expiresIn: "30d",
+    });
+    const accessToken = jsonwebtoken_1.default.sign({ userId: user.id, sessionId: session.id }, secrets_1.JWT_SECRET, {
+        audience: ["user"],
+        expiresIn: "15m",
+    });
+    // return user and tokens
+    return {
+        user,
+        accessToken,
+        refreshToken,
+    };
 });
-exports.sendOTPVerificationEmail = sendOTPVerificationEmail;
+exports.createAccount = createAccount;

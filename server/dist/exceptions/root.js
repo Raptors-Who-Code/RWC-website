@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ErrorCode = exports.HttpException = void 0;
+exports.CREATED = exports.OK = exports.ErrorCode = exports.HttpException = void 0;
 class HttpException extends Error {
     constructor(message, errorCode, statusCode, errors) {
         super(message);
@@ -21,3 +21,5 @@ var ErrorCode;
     ErrorCode["UNAUTHORIZED"] = "UNAUTHORIZED";
     ErrorCode["INVALIDDOMAIN"] = "INVALIDDOMAIN";
 })(ErrorCode || (exports.ErrorCode = ErrorCode = {}));
+exports.OK = 200;
+exports.CREATED = 201;

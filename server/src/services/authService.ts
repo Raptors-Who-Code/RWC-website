@@ -1,60 +1,72 @@
-import nodemailer from "nodemailer";
-import bcrypt from "bcrypt";
+import { hashSync } from "bcrypt";
+import { prismaClient } from "..";
+import { ConflictException } from "../exceptions/exceptions";
+import { ErrorCode } from "../exceptions/root";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET, JWT_REFRESH_SECRET } from "../secrets";
 
-let transporter = nodemailer.createTransport({
-  host: "smtp-mail.outlook.com",
-  auth: {
-    user: process.env.AUTH_EMAIL,
-    pass: process.env.AUTH_PASS,
-  },
-});
-
-interface OtpVerificationEmail {
-  _id: string;
+export type CreateAccountParams = {
+  name: string;
   email: string;
-}
+  password: string;
+  userAgent?: string;
+};
 
-export const sendOTPVerificationEmail = async (
-  { _id, email }: OtpVerificationEmail,
-  res: Response
-) => {
-  try {
-    const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
+export const createAccount = async (data: CreateAccountParams) => {
+  const existingUser = await prismaClient.user.findFirst({
+    where: { email: data.email },
+  });
 
-    const mailOptions = {
-      from: process.env.AUTH_EMAIL,
-      to: email,
-      subject: "Welcome to Raptors Who Code! Please Verify Your Email",
-      html: `<p>Enter <b>${otp}</b> in the app to verify your email address and complete registration!</p> 
-      <p>This code <b>expires in 1 hour</b></p>
-      `,
-    };
-
-    const saltRounds = 10;
-
-    const hashedOTP = await bcrypt.hash(otp, saltRounds);
-
-    // Save OTP to database
-
-    await prismaClient.OTPVerification.create({
-      data: {
-        userId: _id,
-        otp: hashedOTP,
-        createdAt: Date.now(),
-        expiresAt: Date.now() + 360000,
-      },
-    });
-
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.AUTH_EMAIL,
-        pass: process.env.AUTH_PASSWORD,
-      },
-    });
-
-    await transporter.sendMail(mailOptions);
-  } catch (error) {
-    console.error(error);
+  if (existingUser) {
+    throw new ConflictException(
+      "User already exists",
+      ErrorCode.USER_ALREADY_EXISTS
+    );
   }
+
+  const { name, email, password, userAgent } = data;
+
+  const user = await prismaClient.user.create({
+    data: {
+      name: name,
+      email: email,
+      password: hashSync(password, 10),
+      verified: false,
+    },
+  });
+
+  //TODO: Send verification email
+
+  // create session
+
+  const session = await prismaClient.session.create({
+    data: {
+      userId: user.id,
+      userAgent: userAgent,
+    },
+  });
+
+  // sign access token and refresh token
+
+  const refreshToken = jwt.sign({ sessionId: session.id }, JWT_REFRESH_SECRET, {
+    audience: ["user"],
+    expiresIn: "30d",
+  });
+
+  const accessToken = jwt.sign(
+    { userId: user.id, sessionId: session.id },
+    JWT_SECRET,
+    {
+      audience: ["user"],
+      expiresIn: "15m",
+    }
+  );
+
+  // return user and tokens
+
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
 };

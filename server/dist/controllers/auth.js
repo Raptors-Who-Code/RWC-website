@@ -51,34 +51,16 @@ const secrets_1 = require("../secrets");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
 const user_1 = require("../schema/user");
+const authService_1 = require("../services/authService");
+const cookies_1 = require("../utils/cookies");
 const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    user_1.SignupSchema.parse(req.body); // Perform Zod Validation First
-    const { email, password, name } = req.body;
-    const schoolDomain = "@montgomerycollege.edu";
-    const guestLogin = !email.endsWith(schoolDomain);
-    if (!email.endsWith(schoolDomain)) {
-        // throw new BadRequestsException(
-        //   "Invalid email domain",
-        //   ErrorCode.INVALIDDOMAIN
-        // );
-    }
-    let user = yield __1.prismaClient.user.findFirst({
-        where: { email: email },
-    });
-    if (user) {
-        throw new exceptions_1.ConflictException("User already exists", root_1.ErrorCode.USER_ALREADY_EXISTS);
-    }
-    user = yield __1.prismaClient.user.create({
-        data: {
-            name,
-            email,
-            password: (0, bcrypt_1.hashSync)(password, 10),
-            verified: false,
-        },
-    });
-    // Do not send back hashed password back to frontend
-    const { password: _ } = user, userWithoutPassword = __rest(user, ["password"]);
-    res.json(userWithoutPassword);
+    const request = user_1.SignupSchema.parse(Object.assign(Object.assign({}, req.body), { userAgent: req.headers["user-agent"] })); // Perform Zod Validation First
+    // call service
+    const { user, accessToken, refreshToken } = yield (0, authService_1.createAccount)(request);
+    // return response
+    return (0, cookies_1.setAuthCookies)({ res, accessToken, refreshToken })
+        .status(root_1.CREATED)
+        .json(user);
 });
 exports.signup = signup;
 const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

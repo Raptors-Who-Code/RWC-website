@@ -4,58 +4,34 @@ import { hashSync, compareSync } from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../secrets";
 import {
-  BadRequestsException,
-  ConflictException,
   NotFoundException,
   UnauthorizedException,
 } from "../exceptions/exceptions";
-import { ErrorCode } from "../exceptions/root";
+import { CREATED, ErrorCode } from "../exceptions/root";
 import { SignupSchema } from "../schema/user";
 import { RequestWithUser } from "../types/requestWithUser";
+import { createAccount } from "../services/authService";
+import { setAuthCookies } from "../utils/cookies";
 
 export const signup = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  SignupSchema.parse(req.body); // Perform Zod Validation First
+  const request = SignupSchema.parse({
+    ...req.body,
+    userAgent: req.headers["user-agent"],
+  }); // Perform Zod Validation First
 
-  const { email, password, name } = req.body;
+  // call service
 
-  const schoolDomain = "@montgomerycollege.edu";
+  const { user, accessToken, refreshToken } = await createAccount(request);
 
-  const guestLogin = !email.endsWith(schoolDomain);
+  // return response
 
-  if (!email.endsWith(schoolDomain)) {
-    // throw new BadRequestsException(
-    //   "Invalid email domain",
-    //   ErrorCode.INVALIDDOMAIN
-    // );
-  }
-
-  let user = await prismaClient.user.findFirst({
-    where: { email: email },
-  });
-
-  if (user) {
-    throw new ConflictException(
-      "User already exists",
-      ErrorCode.USER_ALREADY_EXISTS
-    );
-  }
-
-  user = await prismaClient.user.create({
-    data: {
-      name,
-      email,
-      password: hashSync(password, 10),
-      verified: false,
-    },
-  });
-
-  // Do not send back hashed password back to frontend
-  const { password: _, ...userWithoutPassword } = user;
-  res.json(userWithoutPassword);
+  return setAuthCookies({ res, accessToken, refreshToken })
+    .status(CREATED)
+    .json(user);
 };
 
 export const login = async (
