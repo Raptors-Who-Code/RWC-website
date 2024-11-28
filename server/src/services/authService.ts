@@ -4,6 +4,8 @@ import { ConflictException } from "../exceptions/exceptions";
 import { ErrorCode } from "../exceptions/root";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, JWT_REFRESH_SECRET } from "../secrets";
+import { oneYearFromNow } from "../utils/date";
+import { VerificationCodeType } from "@prisma/client";
 
 export type CreateAccountParams = {
   name: string;
@@ -26,12 +28,24 @@ export const createAccount = async (data: CreateAccountParams) => {
 
   const { name, email, password, userAgent } = data;
 
+  // Create User
+
   const user = await prismaClient.user.create({
     data: {
       name: name,
       email: email,
       password: hashSync(password, 10),
       verified: false,
+    },
+  });
+
+  // Create Verification Code
+
+  const verificationCode = await prismaClient.verificationCode.create({
+    data: {
+      userId: user.id,
+      type: VerificationCodeType.EMAIL_VERIFICATION,
+      expiresAt: oneYearFromNow(),
     },
   });
 
@@ -64,8 +78,11 @@ export const createAccount = async (data: CreateAccountParams) => {
 
   // return user and tokens
 
+  // Do not return password with user object
+  const { password: userPassword, ...userWithoutPassword } = user;
+
   return {
-    user,
+    user: userWithoutPassword,
     accessToken,
     refreshToken,
   };

@@ -15,6 +15,12 @@ enum Role {
   ALUMNI
 }
 
+enum VerificationCodeType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+  OTHER
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -25,7 +31,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  sessions Session[] // Relation to Session model
+  sessions          Session[] // Relation to Session model
+  verificationCodes VerificationCode[] // Relation to VerificationCode model
 
   @@map("users")
 }
@@ -42,4 +49,17 @@ model Session {
 
   @@index([userId]) // Create an index for efficient lookups by userId
   @@map("sessions") // Maps this model to the "sessions" table in the database
+}
+
+model VerificationCode {
+  id        String               @id @default(uuid())
+  userId    String
+  type      VerificationCodeType
+  createdAt DateTime             @default(now())
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId]) // Index for efficient lookups by userId
+  @@map("verification_codes") // Map to "verification_codes" table
 }
