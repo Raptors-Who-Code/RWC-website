@@ -62,6 +62,11 @@ export const createAccount = async (data: CreateAccountParams) => {
 
   // sign access token and refresh token
 
+  console.log({
+    userId: user.id,
+    sessionId: session.id,
+  });
+
   const refreshToken = jwt.sign({ sessionId: session.id }, JWT_REFRESH_SECRET, {
     audience: ["user"],
     expiresIn: "30d",

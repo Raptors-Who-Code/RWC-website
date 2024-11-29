@@ -66,6 +66,10 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
         },
     });
     // sign access token and refresh token
+    console.log({
+        userId: user.id,
+        sessionId: session.id,
+    });
     const refreshToken = jsonwebtoken_1.default.sign({ sessionId: session.id }, secrets_1.JWT_REFRESH_SECRET, {
         audience: ["user"],
         expiresIn: "30d",
