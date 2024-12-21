@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createAccount = void 0;
+exports.loginUser = exports.createAccount = void 0;
 const bcrypt_1 = require("bcrypt");
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
@@ -32,6 +32,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const secrets_1 = require("../secrets");
 const date_1 = require("../utils/date");
 const client_1 = require("@prisma/client");
+const jwt_1 = require("../utils/jwt");
 const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const existingUser = yield __1.prismaClient.user.findFirst({
         where: { email: data.email },
@@ -66,10 +67,6 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
         },
     });
     // sign access token and refresh token
-    console.log({
-        userId: user.id,
-        sessionId: session.id,
-    });
     const refreshToken = jsonwebtoken_1.default.sign({ sessionId: session.id }, secrets_1.JWT_REFRESH_SECRET, {
         audience: ["user"],
         expiresIn: "30d",
@@ -88,3 +85,33 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 exports.createAccount = createAccount;
+const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, password, userAgent, }) {
+    // get the user by email
+    const user = yield __1.prismaClient.user.findFirst({
+        where: { email },
+    });
+    if (!user) {
+        throw new exceptions_1.NotFoundException("Invalid email or password", root_1.ErrorCode.USER_NOT_FOUND);
+    }
+    // validate password from the request
+    if (!(0, bcrypt_1.compareSync)(password, user.password)) {
+        throw new exceptions_1.UnauthorizedException("Invalid email or password", root_1.ErrorCode.INCORRECT_PASSWORD);
+    }
+    const userId = user.id;
+    // create a session
+    const session = yield __1.prismaClient.session.create({
+        data: {
+            userId: userId,
+            userAgent: userAgent,
+        },
+    });
+    const sessionInfo = { sessionId: session.id };
+    // sign access token and refresh token
+    const refreshToken = (0, jwt_1.signToken)(sessionInfo, jwt_1.refreshTokenSignOptions);
+    const accessToken = (0, jwt_1.signToken)(Object.assign(Object.assign({}, sessionInfo), { userId: user.id }));
+    // return user and tokens
+    //Do not return password with user object
+    const { password: userPassword } = user, userWithoutPassword = __rest(user, ["password"]);
+    return { user: userWithoutPassword, accessToken, refreshToken };
+});
+exports.loginUser = loginUser;

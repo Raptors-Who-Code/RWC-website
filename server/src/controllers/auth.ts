@@ -7,11 +7,12 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "../exceptions/exceptions";
-import { CREATED, ErrorCode } from "../exceptions/root";
-import { SignupSchema } from "../schema/user";
+import { CREATED, ErrorCode, OK } from "../exceptions/root";
+import { LoginSchema, SignupSchema } from "../schema/user";
 import { RequestWithUser } from "../types/requestWithUser";
-import { createAccount } from "../services/authService";
-import { setAuthCookies } from "../utils/cookies";
+import { createAccount, loginUser } from "../services/authService";
+import { clearAuthCookies, setAuthCookies } from "../utils/cookies";
+import { verifyToken } from "../utils/jwt";
 
 export const signup = async (
   req: Request,
@@ -39,32 +40,42 @@ export const login = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { email, password } = req.body;
-
-  let user = await prismaClient.user.findFirst({
-    where: { email: email },
+  // Perform Zod Validation First
+  const request = LoginSchema.parse({
+    ...req.body,
+    userAgent: req.headers["user-agent"],
   });
 
-  if (!user) {
-    throw new NotFoundException(
-      "User does not exist",
-      ErrorCode.USER_NOT_FOUND
-    );
+  // call service
+
+  const { accessToken, refreshToken } = await loginUser(request);
+
+  // return response
+  return setAuthCookies({ res, accessToken, refreshToken })
+    .status(OK)
+    .json({ message: "Login Sucessful" });
+};
+
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const accessToken = req.cookies.accessToken;
+  const { payload } = verifyToken(accessToken);
+
+  if (!accessToken) {
+    return res.status(401).json({ message: "Access token not provided" });
   }
 
-  if (!compareSync(password, user.password)) {
-    throw new UnauthorizedException(
-      "Incorrect password!",
-      ErrorCode.INCORRECT_PASSWORD
-    );
+  // If there is a valid token delete that user's session
+  if (payload) {
+    await prismaClient.session.delete({ where: { id: payload.sessionId } });
   }
 
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET);
-
-  // Do not send back hashed password back to frontend
-  const { password: _, ...userWithoutPassword } = user;
-
-  res.json({ user: userWithoutPassword, token });
+  return clearAuthCookies(res)
+    .status(OK)
+    .json({ message: "Logout successful" });
 };
 
 export const me = async (
