@@ -2,7 +2,7 @@ import { CookieOptions, Response } from "express";
 import { fifteenMinutesFromNow, thirtyDaysFromNow } from "./date";
 
 export const REFRESH_PATH = "/auth/refresh";
-const secure = process.env.NODE_ENV !== "development";
+const secure = process.env.NODE_ENV === "production";
 
 const defaults: CookieOptions = {
   sameSite: "strict",
@@ -10,12 +10,12 @@ const defaults: CookieOptions = {
   secure: true,
 };
 
-const getAccessTokenCookieOptions = (): CookieOptions => ({
+export const getAccessTokenCookieOptions = (): CookieOptions => ({
   ...defaults,
   expires: fifteenMinutesFromNow(),
 });
 
-const getRefreshTokenCookieOptions = (): CookieOptions => ({
+export const getRefreshTokenCookieOptions = (): CookieOptions => ({
   ...defaults,
   expires: thirtyDaysFromNow(),
   path: REFRESH_PATH,

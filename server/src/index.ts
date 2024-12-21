@@ -1,6 +1,7 @@
 import express, { Express, query } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -8,6 +9,7 @@ import { PrismaClient } from "@prisma/client";
 import rootRouter from "./routes";
 import { errorMiddleWare } from "./middlewares/errors";
 import { SignupSchema } from "./schema/user";
+import { APP_ORIGIN } from "./secrets";
 
 /* Route imports */
 
@@ -21,7 +23,13 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(
+  cors({
+    origin: APP_ORIGIN,
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 
 /* Routes */
 

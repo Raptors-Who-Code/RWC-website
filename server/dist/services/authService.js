@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = exports.createAccount = void 0;
+exports.refreshUserAccessToken = exports.loginUser = exports.createAccount = void 0;
 const bcrypt_1 = require("bcrypt");
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
@@ -115,3 +115,36 @@ const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, pa
     return { user: userWithoutPassword, accessToken, refreshToken };
 });
 exports.loginUser = loginUser;
+const refreshUserAccessToken = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
+    const { payload } = (0, jwt_1.verifyToken)(refreshToken, {
+        secret: jwt_1.refreshTokenSignOptions.secret,
+    });
+    if (!payload) {
+        throw new exceptions_1.UnauthorizedException("Invalid refresh token", root_1.ErrorCode.UNAUTHORIZED);
+    }
+    const session = yield __1.prismaClient.session.findUnique({
+        where: { id: payload.sessionId },
+    });
+    const now = Date.now();
+    if (!session || session.expiresAt.getTime() < now) {
+        throw new exceptions_1.UnauthorizedException("Session Expired", root_1.ErrorCode.UNAUTHORIZED);
+    }
+    // refresh the token if it expires in the next 24 hours
+    const sessionNeedsRefresh = session.expiresAt.getTime() - now <= date_1.ONE_DAY_IN_MS;
+    if (sessionNeedsRefresh) {
+        session.expiresAt = (0, date_1.thirtyDaysFromNow)();
+        yield __1.prismaClient.session.update({
+            where: { id: session.id },
+            data: { expiresAt: session.expiresAt },
+        });
+    }
+    const newRefreshToken = sessionNeedsRefresh
+        ? (0, jwt_1.signToken)({ sessionId: session.id }, jwt_1.refreshTokenSignOptions)
+        : undefined;
+    const accessToken = (0, jwt_1.signToken)({
+        userId: session.userId,
+        sessionId: session.id,
+    });
+    return { accessToken, newRefreshToken };
+});
+exports.refreshUserAccessToken = refreshUserAccessToken;

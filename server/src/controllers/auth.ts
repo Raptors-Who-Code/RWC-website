@@ -10,8 +10,17 @@ import {
 import { CREATED, ErrorCode, OK } from "../exceptions/root";
 import { LoginSchema, SignupSchema } from "../schema/user";
 import { RequestWithUser } from "../types/requestWithUser";
-import { createAccount, loginUser } from "../services/authService";
-import { clearAuthCookies, setAuthCookies } from "../utils/cookies";
+import {
+  createAccount,
+  loginUser,
+  refreshUserAccessToken,
+} from "../services/authService";
+import {
+  clearAuthCookies,
+  getAccessTokenCookieOptions,
+  getRefreshTokenCookieOptions,
+  setAuthCookies,
+} from "../utils/cookies";
 import { verifyToken } from "../utils/jwt";
 
 export const signup = async (
@@ -61,8 +70,8 @@ export const logout = async (
   res: Response,
   next: NextFunction
 ) => {
-  const accessToken = req.cookies.accessToken;
-  const { payload } = verifyToken(accessToken);
+  const accessToken = req.cookies.accessToken as string | undefined;
+  const { payload } = verifyToken(accessToken || "");
 
   if (!accessToken) {
     return res.status(401).json({ message: "Access token not provided" });
@@ -92,4 +101,29 @@ export const me = async (
   // Do not send back hashed password back to frontend
 
   res.json(userWithoutPassword);
+};
+
+export const refreshHanlder = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken as string | undefined;
+
+  if (!refreshToken) {
+    console.log("Inside missing resfresh token check", refreshToken);
+    throw new UnauthorizedException(
+      "Missing refresh Token",
+      ErrorCode.UNAUTHORIZED
+    );
+  }
+
+  const { accessToken, newRefreshToken } = await refreshUserAccessToken(
+    refreshToken
+  );
+
+  if (newRefreshToken) {
+    res.cookie("refreshToken", newRefreshToken, getRefreshTokenCookieOptions());
+  }
+
+  return res
+    .status(OK)
+    .cookie("accessToken", accessToken, getAccessTokenCookieOptions())
+    .json({ message: "Access token refreshed" });
 };

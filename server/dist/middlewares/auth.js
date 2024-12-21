@@ -38,7 +38,7 @@ const jwt = __importStar(require("jsonwebtoken"));
 const secrets_1 = require("../secrets");
 const __1 = require("..");
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.headers.authorization;
+    const token = req.cookies.accessToken;
     if (!token) {
         return next(new exceptions_1.UnauthorizedException("Unauthorized", root_1.ErrorCode.UNAUTHORIZED));
     }

@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.me = exports.logout = exports.login = exports.signup = void 0;
+exports.refreshHanlder = exports.me = exports.logout = exports.login = exports.signup = void 0;
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
@@ -51,7 +51,7 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
 exports.login = login;
 const logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const accessToken = req.cookies.accessToken;
-    const { payload } = (0, jwt_1.verifyToken)(accessToken);
+    const { payload } = (0, jwt_1.verifyToken)(accessToken || "");
     if (!accessToken) {
         return res.status(401).json({ message: "Access token not provided" });
     }
@@ -73,3 +73,19 @@ const me = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     res.json(userWithoutPassword);
 });
 exports.me = me;
+const refreshHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        console.log("Inside missing resfresh token check", refreshToken);
+        throw new exceptions_1.UnauthorizedException("Missing refresh Token", root_1.ErrorCode.UNAUTHORIZED);
+    }
+    const { accessToken, newRefreshToken } = yield (0, authService_1.refreshUserAccessToken)(refreshToken);
+    if (newRefreshToken) {
+        res.cookie("refreshToken", newRefreshToken, (0, cookies_1.getRefreshTokenCookieOptions)());
+    }
+    return res
+        .status(root_1.OK)
+        .cookie("accessToken", accessToken, (0, cookies_1.getAccessTokenCookieOptions)())
+        .json({ message: "Access token refreshed" });
+});
+exports.refreshHanlder = refreshHanlder;

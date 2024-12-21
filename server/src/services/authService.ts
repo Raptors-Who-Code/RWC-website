@@ -8,9 +8,18 @@ import {
 import { ErrorCode } from "../exceptions/root";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, JWT_REFRESH_SECRET } from "../secrets";
-import { oneYearFromNow } from "../utils/date";
+import {
+  ONE_DAY_IN_MS,
+  oneYearFromNow,
+  thirtyDaysFromNow,
+} from "../utils/date";
 import { VerificationCodeType } from "@prisma/client";
-import { refreshTokenSignOptions, signToken } from "../utils/jwt";
+import {
+  RefreshTokenPayload,
+  refreshTokenSignOptions,
+  signToken,
+  verifyToken,
+} from "../utils/jwt";
 
 export type CreateAccountParams = {
   name: string;
@@ -150,4 +159,51 @@ export const loginUser = async ({
   const { password: userPassword, ...userWithoutPassword } = user;
 
   return { user: userWithoutPassword, accessToken, refreshToken };
+};
+
+export const refreshUserAccessToken = async (refreshToken: string) => {
+  const { payload } = verifyToken<RefreshTokenPayload>(refreshToken, {
+    secret: refreshTokenSignOptions.secret,
+  });
+
+  if (!payload) {
+    throw new UnauthorizedException(
+      "Invalid refresh token",
+      ErrorCode.UNAUTHORIZED
+    );
+  }
+
+  const session = await prismaClient.session.findUnique({
+    where: { id: payload.sessionId },
+  });
+
+  const now = Date.now();
+
+  if (!session || session.expiresAt.getTime() < now) {
+    throw new UnauthorizedException("Session Expired", ErrorCode.UNAUTHORIZED);
+  }
+
+  // refresh the token if it expires in the next 24 hours
+
+  const sessionNeedsRefresh =
+    session.expiresAt.getTime() - now <= ONE_DAY_IN_MS;
+
+  if (sessionNeedsRefresh) {
+    session.expiresAt = thirtyDaysFromNow();
+    await prismaClient.session.update({
+      where: { id: session.id },
+      data: { expiresAt: session.expiresAt },
+    });
+  }
+
+  const newRefreshToken = sessionNeedsRefresh
+    ? signToken({ sessionId: session.id }, refreshTokenSignOptions)
+    : undefined;
+
+  const accessToken = signToken({
+    userId: session.userId,
+    sessionId: session.id,
+  });
+
+  return { accessToken, newRefreshToken };
 };

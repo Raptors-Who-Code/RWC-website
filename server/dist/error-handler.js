@@ -12,8 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.errorHandler = void 0;
 const root_1 = require("./exceptions/root");
 const exceptions_1 = require("./exceptions/exceptions");
+const cookies_1 = require("./utils/cookies");
 const errorHandler = (controller) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        if (req.path === cookies_1.REFRESH_PATH) {
+            (0, cookies_1.clearAuthCookies)(res);
+        }
         try {
             yield controller(req, res, next);
         }
