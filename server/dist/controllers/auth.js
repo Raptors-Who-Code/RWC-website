@@ -76,7 +76,6 @@ exports.me = me;
 const refreshHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
-        console.log("Inside missing resfresh token check", refreshToken);
         throw new exceptions_1.UnauthorizedException("Missing refresh Token", root_1.ErrorCode.UNAUTHORIZED);
     }
     const { accessToken, newRefreshToken } = yield (0, authService_1.refreshUserAccessToken)(refreshToken);

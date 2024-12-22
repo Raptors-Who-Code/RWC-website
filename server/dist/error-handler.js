@@ -15,9 +15,6 @@ const exceptions_1 = require("./exceptions/exceptions");
 const cookies_1 = require("./utils/cookies");
 const errorHandler = (controller) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        if (req.path === cookies_1.REFRESH_PATH) {
-            (0, cookies_1.clearAuthCookies)(res);
-        }
         try {
             yield controller(req, res, next);
         }
@@ -28,6 +25,10 @@ const errorHandler = (controller) => {
             }
             else {
                 exception = new exceptions_1.InternalException("Something went wrong!", err, root_1.ErrorCode.INTERNALEXCEPTION);
+            }
+            if (req.originalUrl === cookies_1.REFRESH_PATH) {
+                console.log("Clearing cookies for REFRESH_PATH");
+                (0, cookies_1.clearAuthCookies)(res);
             }
             next(exception);
         }

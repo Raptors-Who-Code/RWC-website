@@ -5,10 +5,6 @@ import { clearAuthCookies, REFRESH_PATH } from "./utils/cookies";
 
 export const errorHandler = (controller: Function) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    if (req.path === REFRESH_PATH) {
-      clearAuthCookies(res);
-    }
-
     try {
       await controller(req, res, next);
     } catch (err: any) {
@@ -22,6 +18,12 @@ export const errorHandler = (controller: Function) => {
           ErrorCode.INTERNALEXCEPTION
         );
       }
+
+      if (req.originalUrl === REFRESH_PATH) {
+        console.log("Clearing cookies for REFRESH_PATH");
+        clearAuthCookies(res);
+      }
+
       next(exception);
     }
   };

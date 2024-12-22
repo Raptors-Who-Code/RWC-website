@@ -107,7 +107,6 @@ export const refreshHanlder = async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken as string | undefined;
 
   if (!refreshToken) {
-    console.log("Inside missing resfresh token check", refreshToken);
     throw new UnauthorizedException(
       "Missing refresh Token",
       ErrorCode.UNAUTHORIZED
