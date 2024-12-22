@@ -30,6 +30,10 @@ app.use(
   })
 );
 app.use(cookieParser());
+app.use((req, res, next) => {
+  console.log("All received cookies:", req.cookies);
+  next();
+});
 
 /* Routes */
 
