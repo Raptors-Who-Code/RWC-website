@@ -1,3 +1,4 @@
+import { CreateEmailResponse } from "resend";
 import resend from "../config/resend";
 import { EMAIL_SENDER, NODE_ENV } from "../secrets";
 
@@ -30,8 +31,13 @@ const getToEmail = (to: string) => {
   return to;
 };
 
-export const sendMail = async ({ to, subject, text, html }: Params) => {
-  await resend.emails.send({
+export const sendMail = async ({
+  to,
+  subject,
+  text,
+  html,
+}: Params): Promise<CreateEmailResponse> => {
+  return await resend.emails.send({
     from: getFromEmail(),
     to: getToEmail(to),
     subject,

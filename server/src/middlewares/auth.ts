@@ -5,13 +5,14 @@ import * as jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../secrets";
 import { prismaClient } from "..";
 import { RequestWithUser } from "../types/requestWithUser";
+import { verifyToken } from "../utils/jwt";
 
 const authMiddleware = async (
-  req: Request,
+  req: RequestWithUser,
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies.accessToken;
+  const token = req.cookies.accessToken as string | undefined;
 
   if (!token) {
     return next(
@@ -20,7 +21,16 @@ const authMiddleware = async (
   }
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as any;
+    const { error, payload } = verifyToken(token);
+
+    if (!payload) {
+      return next(
+        new UnauthorizedException(
+          error === "jwt expired" ? "Token expired" : "Invalid token",
+          ErrorCode.INVALID_ACCESS_TOKEN
+        )
+      );
+    }
 
     const user = await prismaClient.user.findFirst({
       where: { id: payload.userId },
@@ -32,7 +42,8 @@ const authMiddleware = async (
       );
     }
 
-    (req as RequestWithUser).user = user;
+    req.userId = payload.userId;
+    req.sessionId = payload.sessionId;
 
     next();
   } catch (err) {

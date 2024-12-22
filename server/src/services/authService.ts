@@ -4,13 +4,16 @@ import {
   ConflictException,
   InternalException,
   NotFoundException,
+  TooManyRequestsException,
   UnauthorizedException,
 } from "../exceptions/exceptions";
 import { ErrorCode } from "../exceptions/root";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, JWT_REFRESH_SECRET, APP_ORIGIN } from "../secrets";
 import {
+  fiveMinutesAgo,
   ONE_DAY_IN_MS,
+  oneHourFromNow,
   oneYearFromNow,
   thirtyDaysFromNow,
 } from "../utils/date";
@@ -21,8 +24,12 @@ import {
   signToken,
   verifyToken,
 } from "../utils/jwt";
-import { getVerifyEmailTemplate } from "../utils/emailTemplates";
+import {
+  getPasswordResetTemplate,
+  getVerifyEmailTemplate,
+} from "../utils/emailTemplates";
 import { sendMail } from "../utils/sendMail";
+import { resetPasswordSchema } from "../schema/user";
 
 export type CreateAccountParams = {
   name: string;
@@ -256,6 +263,125 @@ export const verifyEmail = async (code: string) => {
   // return user
 
   //Do not return password with user object
+  const { password: userPassword, ...userWithoutPassword } = updatedUser;
+
+  return { user: userWithoutPassword };
+};
+
+export const sendPasswordResetEmail = async (email: string) => {
+  // get the user by email
+  const user = await prismaClient.user.findFirst({
+    where: { email },
+  });
+
+  if (!user) {
+    throw new NotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
+  }
+  // check email rate limit
+
+  const fiveMinAgo = fiveMinutesAgo();
+
+  const count = await prismaClient.verificationCode.count({
+    where: {
+      userId: user.id,
+      type: VerificationCodeType.PASSWORD_RESET,
+      createdAt: { gte: fiveMinAgo },
+    },
+  });
+
+  if (!(count <= 1)) {
+    throw new TooManyRequestsException(
+      "Too many requests, please try again later",
+      ErrorCode.TOO_MANY_REQUESTS
+    );
+  }
+
+  // create verification code
+
+  const expiresAt = oneHourFromNow();
+
+  const verificationCode = await prismaClient.verificationCode.create({
+    data: {
+      userId: user.id,
+      type: VerificationCodeType.PASSWORD_RESET,
+      expiresAt,
+    },
+  });
+
+  // send verification email
+
+  const url = `${APP_ORIGIN}/password/reset?code=${
+    verificationCode.id
+  }&exp=${expiresAt.getTime()}`;
+
+  const { data, error } = await sendMail({
+    to: user.email,
+    ...getPasswordResetTemplate(url),
+  });
+
+  if (!data?.id) {
+    throw new InternalException(
+      `${error?.name} - ${error?.message}`,
+      ErrorCode.INTERNALEXCEPTION
+    );
+  }
+  // return success message
+
+  return { url, emailId: data.id };
+};
+
+type ResetPasswordParams = {
+  password: string;
+  verificationCode: string;
+};
+
+export const resetPassword = async ({
+  password,
+  verificationCode,
+}: ResetPasswordParams) => {
+  // get verification code
+
+  const validCode = await prismaClient.verificationCode.findFirst({
+    where: {
+      id: verificationCode,
+      type: VerificationCodeType.PASSWORD_RESET,
+      expiresAt: { gt: new Date() },
+    },
+  });
+
+  if (!validCode) {
+    throw new UnauthorizedException(
+      "Invalid verification code",
+      ErrorCode.INVALID_VERIFICATION_CODE
+    );
+  }
+
+  // update users password
+
+  const updatedUser = await prismaClient.user.update({
+    where: { id: validCode.userId },
+    data: { password: hashSync(password, 10) },
+  });
+
+  if (!updatedUser) {
+    throw new InternalException(
+      "Failed to reset password",
+      ErrorCode.INTERNALEXCEPTION
+    );
+  }
+  // delete the verification code
+
+  await prismaClient.verificationCode.delete({
+    where: { id: verificationCode },
+  });
+  // delete all sessions
+
+  await prismaClient.session.deleteMany({
+    where: { userId: updatedUser.id },
+  });
+
+  // Do not return user's password
+
   const { password: userPassword, ...userWithoutPassword } = updatedUser;
 
   return { user: userWithoutPassword };

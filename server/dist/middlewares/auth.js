@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,23 +11,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
-const jwt = __importStar(require("jsonwebtoken"));
-const secrets_1 = require("../secrets");
 const __1 = require("..");
+const jwt_1 = require("../utils/jwt");
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.cookies.accessToken;
     if (!token) {
         return next(new exceptions_1.UnauthorizedException("Unauthorized", root_1.ErrorCode.UNAUTHORIZED));
     }
     try {
-        const payload = jwt.verify(token, secrets_1.JWT_SECRET);
+        const { error, payload } = (0, jwt_1.verifyToken)(token);
+        if (!payload) {
+            return next(new exceptions_1.UnauthorizedException(error === "jwt expired" ? "Token expired" : "Invalid token", root_1.ErrorCode.INVALID_ACCESS_TOKEN));
+        }
         const user = yield __1.prismaClient.user.findFirst({
             where: { id: payload.userId },
         });
         if (!user) {
             return next(new exceptions_1.UnauthorizedException("Unauthorized", root_1.ErrorCode.UNAUTHORIZED));
         }
-        req.user = user;
+        req.userId = payload.userId;
+        req.sessionId = payload.sessionId;
         next();
     }
     catch (err) {

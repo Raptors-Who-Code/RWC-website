@@ -13,5 +13,7 @@ authRoutes.post("/login", (0, error_handler_1.errorHandler)(auth_1.login));
 authRoutes.get("/refresh", (0, error_handler_1.errorHandler)(auth_1.refreshHanlder));
 authRoutes.get("/logout", [auth_2.default], (0, error_handler_1.errorHandler)(auth_1.logout));
 authRoutes.get("/email/verify/:code", (0, error_handler_1.errorHandler)(auth_1.verifyEmailHandler));
+authRoutes.post("/password/forgot", (0, error_handler_1.errorHandler)(auth_1.sendPasswordResetHandler));
+authRoutes.post("/password/reset", (0, error_handler_1.errorHandler)(auth_1.resetPasswordHandler));
 authRoutes.get("/me", [auth_2.default], (0, error_handler_1.errorHandler)(auth_1.me));
 exports.default = authRoutes;

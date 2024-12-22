@@ -30,8 +30,8 @@ const getToEmail = (to) => {
     }
     return to;
 };
-const sendMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ to, subject, text, html }) {
-    yield resend_1.default.emails.send({
+const sendMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ to, subject, text, html, }) {
+    return yield resend_1.default.emails.send({
         from: getFromEmail(),
         to: getToEmail(to),
         subject,

@@ -9,7 +9,9 @@ import {
 } from "../exceptions/exceptions";
 import { CREATED, ErrorCode, OK } from "../exceptions/root";
 import {
+  emailSchema,
   LoginSchema,
+  resetPasswordSchema,
   SignupSchema,
   verificationCodeSchema,
 } from "../schema/user";
@@ -18,6 +20,8 @@ import {
   createAccount,
   loginUser,
   refreshUserAccessToken,
+  resetPassword,
+  sendPasswordResetEmail,
   verifyEmail,
 } from "../services/authService";
 import {
@@ -138,4 +142,26 @@ export const verifyEmailHandler = async (req: Request, res: Response) => {
   await verifyEmail(verificationCode);
 
   return res.status(OK).json({ message: "Email was successfully verified" });
+};
+
+export const sendPasswordResetHandler = async (req: Request, res: Response) => {
+  const email = emailSchema.parse(req.body.email);
+
+  await sendPasswordResetEmail(email);
+
+  return res.status(OK).json({ message: "Password reset email sent" });
+};
+
+export const resetPasswordHandler = async (req: Request, res: Response) => {
+  console.log("Body:", req.body);
+  const request = resetPasswordSchema.parse(req.body);
+  console.log("Request", request);
+
+  console.log("Hello");
+
+  await resetPassword(request);
+
+  return clearAuthCookies(res)
+    .status(OK)
+    .json({ message: "Password reset successful" });
 };

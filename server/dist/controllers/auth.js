@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyEmailHandler = exports.refreshHanlder = exports.me = exports.logout = exports.login = exports.signup = void 0;
+exports.resetPasswordHandler = exports.sendPasswordResetHandler = exports.verifyEmailHandler = exports.refreshHanlder = exports.me = exports.logout = exports.login = exports.signup = void 0;
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
@@ -94,3 +94,20 @@ const verifyEmailHandler = (req, res) => __awaiter(void 0, void 0, void 0, funct
     return res.status(root_1.OK).json({ message: "Email was successfully verified" });
 });
 exports.verifyEmailHandler = verifyEmailHandler;
+const sendPasswordResetHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = user_1.emailSchema.parse(req.body.email);
+    yield (0, authService_1.sendPasswordResetEmail)(email);
+    return res.status(root_1.OK).json({ message: "Password reset email sent" });
+});
+exports.sendPasswordResetHandler = sendPasswordResetHandler;
+const resetPasswordHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Body:", req.body);
+    const request = user_1.resetPasswordSchema.parse(req.body);
+    console.log("Request", request);
+    console.log("Hello");
+    yield (0, authService_1.resetPassword)(request);
+    return (0, cookies_1.clearAuthCookies)(res)
+        .status(root_1.OK)
+        .json({ message: "Password reset successful" });
+});
+exports.resetPasswordHandler = resetPasswordHandler;
