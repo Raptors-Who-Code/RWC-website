@@ -1,8 +1,9 @@
 import { CookieOptions, Response } from "express";
 import { fifteenMinutesFromNow, thirtyDaysFromNow } from "./date";
+import { NODE_ENV } from "../secrets";
 
 export const REFRESH_PATH = "/api/auth/refresh";
-const secure = process.env.NODE_ENV !== "development";
+const secure = NODE_ENV !== "development";
 
 const defaults: CookieOptions = {
   sameSite: "strict",

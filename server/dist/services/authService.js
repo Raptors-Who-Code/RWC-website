@@ -33,6 +33,8 @@ const secrets_1 = require("../secrets");
 const date_1 = require("../utils/date");
 const client_1 = require("@prisma/client");
 const jwt_1 = require("../utils/jwt");
+const emailTemplates_1 = require("../utils/emailTemplates");
+const sendMail_1 = require("../utils/sendMail");
 const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const existingUser = yield __1.prismaClient.user.findFirst({
         where: { email: data.email },
@@ -58,7 +60,14 @@ const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
             expiresAt: (0, date_1.oneYearFromNow)(),
         },
     });
-    //TODO: Send verification email
+    const url = `${secrets_1.APP_ORIGIN}/verify-email/${verificationCode.id}`;
+    // Send verification email
+    try {
+        yield (0, sendMail_1.sendMail)(Object.assign({ to: user.email }, (0, emailTemplates_1.getVerifyEmailTemplate)(url)));
+    }
+    catch (error) {
+        console.log(error);
+    }
     // create session
     const session = yield __1.prismaClient.session.create({
         data: {

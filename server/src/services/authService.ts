@@ -8,7 +8,7 @@ import {
 } from "../exceptions/exceptions";
 import { ErrorCode } from "../exceptions/root";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET, JWT_REFRESH_SECRET } from "../secrets";
+import { JWT_SECRET, JWT_REFRESH_SECRET, APP_ORIGIN } from "../secrets";
 import {
   ONE_DAY_IN_MS,
   oneYearFromNow,
@@ -21,6 +21,8 @@ import {
   signToken,
   verifyToken,
 } from "../utils/jwt";
+import { getVerifyEmailTemplate } from "../utils/emailTemplates";
+import { sendMail } from "../utils/sendMail";
 
 export type CreateAccountParams = {
   name: string;
@@ -65,7 +67,17 @@ export const createAccount = async (data: CreateAccountParams) => {
     },
   });
 
-  //TODO: Send verification email
+  const url = `${APP_ORIGIN}/verify-email/${verificationCode.id}`;
+
+  // Send verification email
+  try {
+    await sendMail({
+      to: user.email,
+      ...getVerifyEmailTemplate(url),
+    });
+  } catch (error) {
+    console.log(error);
+  }
 
   // create session
 
