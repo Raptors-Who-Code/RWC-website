@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshUserAccessToken = exports.loginUser = exports.createAccount = void 0;
+exports.verifyEmail = exports.refreshUserAccessToken = exports.loginUser = exports.createAccount = void 0;
 const bcrypt_1 = require("bcrypt");
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
@@ -148,3 +148,31 @@ const refreshUserAccessToken = (refreshToken) => __awaiter(void 0, void 0, void 
     return { accessToken, newRefreshToken };
 });
 exports.refreshUserAccessToken = refreshUserAccessToken;
+const verifyEmail = (code) => __awaiter(void 0, void 0, void 0, function* () {
+    // get the verification code
+    const validCode = yield __1.prismaClient.verificationCode.findFirst({
+        where: {
+            id: code,
+            type: client_1.VerificationCodeType.EMAIL_VERIFICATION,
+            expiresAt: { gt: new Date() },
+        },
+    });
+    if (!validCode) {
+        throw new exceptions_1.UnauthorizedException("Invalid verification code", root_1.ErrorCode.INVALID_VERIFICATION_CODE);
+    }
+    // update user to verified true
+    const updatedUser = yield __1.prismaClient.user.update({
+        where: { id: validCode.userId },
+        data: { verified: true },
+    });
+    if (!updatedUser) {
+        throw new exceptions_1.InternalException("Failed to verify email", root_1.ErrorCode.INTERNALEXCEPTION);
+    }
+    // delete verification code
+    yield __1.prismaClient.verificationCode.delete({ where: { id: code } });
+    // return user
+    //Do not return password with user object
+    const { password: userPassword } = updatedUser, userWithoutPassword = __rest(updatedUser, ["password"]);
+    return { user: userWithoutPassword };
+});
+exports.verifyEmail = verifyEmail;

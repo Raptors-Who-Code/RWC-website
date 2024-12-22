@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SignupSchema = exports.LoginSchema = void 0;
+exports.verificationCodeSchema = exports.SignupSchema = exports.LoginSchema = void 0;
 const zod_1 = require("zod");
 const emailSchema = zod_1.z.string().email().min(1).max(255);
 const passwordSchema = zod_1.z.string().min(6).max(255);
@@ -16,3 +16,4 @@ exports.SignupSchema = exports.LoginSchema.extend({
     message: "Passwords do not match",
     path: ["confirmPassword"],
 });
+exports.verificationCodeSchema = zod_1.z.string().uuid();

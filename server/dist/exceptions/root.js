@@ -20,6 +20,7 @@ var ErrorCode;
     ErrorCode["INTERNALEXCEPTION"] = "INTERNALEXCEPTION";
     ErrorCode["UNAUTHORIZED"] = "UNAUTHORIZED";
     ErrorCode["INVALIDDOMAIN"] = "INVALIDDOMAIN";
+    ErrorCode["INVALID_VERIFICATION_CODE"] = "INVALID_VERIFICATION_CODE";
 })(ErrorCode || (exports.ErrorCode = ErrorCode = {}));
 exports.OK = 200;
 exports.CREATED = 201;

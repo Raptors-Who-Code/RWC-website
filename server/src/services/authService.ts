@@ -2,6 +2,7 @@ import { compareSync, hashSync } from "bcrypt";
 import { prismaClient } from "..";
 import {
   ConflictException,
+  InternalException,
   NotFoundException,
   UnauthorizedException,
 } from "../exceptions/exceptions";
@@ -206,4 +207,44 @@ export const refreshUserAccessToken = async (refreshToken: string) => {
   });
 
   return { accessToken, newRefreshToken };
+};
+
+export const verifyEmail = async (code: string) => {
+  // get the verification code
+  const validCode = await prismaClient.verificationCode.findFirst({
+    where: {
+      id: code,
+      type: VerificationCodeType.EMAIL_VERIFICATION,
+      expiresAt: { gt: new Date() },
+    },
+  });
+
+  if (!validCode) {
+    throw new UnauthorizedException(
+      "Invalid verification code",
+      ErrorCode.INVALID_VERIFICATION_CODE
+    );
+  }
+
+  // update user to verified true
+  const updatedUser = await prismaClient.user.update({
+    where: { id: validCode.userId },
+    data: { verified: true },
+  });
+
+  if (!updatedUser) {
+    throw new InternalException(
+      "Failed to verify email",
+      ErrorCode.INTERNALEXCEPTION
+    );
+  }
+
+  // delete verification code
+  await prismaClient.verificationCode.delete({ where: { id: code } });
+  // return user
+
+  //Do not return password with user object
+  const { password: userPassword, ...userWithoutPassword } = updatedUser;
+
+  return { user: userWithoutPassword };
 };

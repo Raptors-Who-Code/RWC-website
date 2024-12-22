@@ -16,3 +16,5 @@ export const SignupSchema = LoginSchema.extend({
   message: "Passwords do not match",
   path: ["confirmPassword"],
 });
+
+export const verificationCodeSchema = z.string().uuid();

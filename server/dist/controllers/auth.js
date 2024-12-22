@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshHanlder = exports.me = exports.logout = exports.login = exports.signup = void 0;
+exports.verifyEmailHandler = exports.refreshHanlder = exports.me = exports.logout = exports.login = exports.signup = void 0;
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
@@ -88,3 +88,9 @@ const refreshHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function*
         .json({ message: "Access token refreshed" });
 });
 exports.refreshHanlder = refreshHanlder;
+const verifyEmailHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const verificationCode = user_1.verificationCodeSchema.parse(req.params.code);
+    yield (0, authService_1.verifyEmail)(verificationCode);
+    return res.status(root_1.OK).json({ message: "Email was successfully verified" });
+});
+exports.verifyEmailHandler = verifyEmailHandler;

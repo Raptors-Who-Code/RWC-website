@@ -8,12 +8,17 @@ import {
   UnauthorizedException,
 } from "../exceptions/exceptions";
 import { CREATED, ErrorCode, OK } from "../exceptions/root";
-import { LoginSchema, SignupSchema } from "../schema/user";
+import {
+  LoginSchema,
+  SignupSchema,
+  verificationCodeSchema,
+} from "../schema/user";
 import { RequestWithUser } from "../types/requestWithUser";
 import {
   createAccount,
   loginUser,
   refreshUserAccessToken,
+  verifyEmail,
 } from "../services/authService";
 import {
   clearAuthCookies,
@@ -125,4 +130,12 @@ export const refreshHanlder = async (req: Request, res: Response) => {
     .status(OK)
     .cookie("accessToken", accessToken, getAccessTokenCookieOptions())
     .json({ message: "Access token refreshed" });
+};
+
+export const verifyEmailHandler = async (req: Request, res: Response) => {
+  const verificationCode = verificationCodeSchema.parse(req.params.code);
+
+  await verifyEmail(verificationCode);
+
+  return res.status(OK).json({ message: "Email was successfully verified" });
 };
