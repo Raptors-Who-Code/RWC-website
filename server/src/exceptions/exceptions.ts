@@ -35,3 +35,9 @@ export class TooManyRequestsException extends HttpException {
     super(message, errorCode, 429, errors);
   }
 }
+
+export class ForbiddenException extends HttpException {
+  constructor(message: string, errorCode: ErrorCode, errors?: any) {
+    super(message, errorCode, 403, errors);
+  }
+}

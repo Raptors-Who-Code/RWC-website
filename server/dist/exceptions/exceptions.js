@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TooManyRequestsException = exports.InternalException = exports.UnauthorizedException = exports.NotFoundException = exports.ConflictException = exports.BadRequestsException = void 0;
+exports.ForbiddenException = exports.TooManyRequestsException = exports.InternalException = exports.UnauthorizedException = exports.NotFoundException = exports.ConflictException = exports.BadRequestsException = void 0;
 const root_1 = require("./root");
 class BadRequestsException extends root_1.HttpException {
     constructor(message, errorCode, errors) {
@@ -38,3 +38,9 @@ class TooManyRequestsException extends root_1.HttpException {
     }
 }
 exports.TooManyRequestsException = TooManyRequestsException;
+class ForbiddenException extends root_1.HttpException {
+    constructor(message, errorCode, errors) {
+        super(message, errorCode, 403, errors);
+    }
+}
+exports.ForbiddenException = ForbiddenException;

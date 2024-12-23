@@ -23,6 +23,8 @@ var ErrorCode;
     ErrorCode["INVALID_VERIFICATION_CODE"] = "INVALID_VERIFICATION_CODE";
     ErrorCode["TOO_MANY_REQUESTS"] = "TOO_MANY_REQUESTS";
     ErrorCode["INVALID_ACCESS_TOKEN"] = "INVALID_ACCESS_TOKEN";
+    ErrorCode["SESSION_NOT_FOUND"] = "SESSION_NOT_FOUND";
+    ErrorCode["CANNOT_DELETE_CURRENT_SESSION"] = "CANNOT_DELETE_CURRENT_SESSION";
 })(ErrorCode || (exports.ErrorCode = ErrorCode = {}));
 exports.OK = 200;
 exports.CREATED = 201;
