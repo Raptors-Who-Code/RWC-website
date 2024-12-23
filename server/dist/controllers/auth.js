@@ -101,10 +101,7 @@ const sendPasswordResetHandler = (req, res) => __awaiter(void 0, void 0, void 0,
 });
 exports.sendPasswordResetHandler = sendPasswordResetHandler;
 const resetPasswordHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Body:", req.body);
     const request = user_1.resetPasswordSchema.parse(req.body);
-    console.log("Request", request);
-    console.log("Hello");
     yield (0, authService_1.resetPassword)(request);
     return (0, cookies_1.clearAuthCookies)(res)
         .status(root_1.OK)

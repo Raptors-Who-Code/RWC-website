@@ -153,11 +153,7 @@ export const sendPasswordResetHandler = async (req: Request, res: Response) => {
 };
 
 export const resetPasswordHandler = async (req: Request, res: Response) => {
-  console.log("Body:", req.body);
   const request = resetPasswordSchema.parse(req.body);
-  console.log("Request", request);
-
-  console.log("Hello");
 
   await resetPassword(request);
 
