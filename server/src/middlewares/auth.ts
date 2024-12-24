@@ -23,6 +23,8 @@ const authMiddleware = async (
   try {
     const { error, payload } = verifyToken(token);
 
+    console.log("Payload", payload);
+
     if (!payload) {
       return next(
         new UnauthorizedException(

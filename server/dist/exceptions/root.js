@@ -25,6 +25,7 @@ var ErrorCode;
     ErrorCode["INVALID_ACCESS_TOKEN"] = "INVALID_ACCESS_TOKEN";
     ErrorCode["SESSION_NOT_FOUND"] = "SESSION_NOT_FOUND";
     ErrorCode["CANNOT_DELETE_CURRENT_SESSION"] = "CANNOT_DELETE_CURRENT_SESSION";
+    ErrorCode["MISSING_ENV_VARIABLE"] = "MISSING_ENV_VARIABLE";
 })(ErrorCode || (exports.ErrorCode = ErrorCode = {}));
 exports.OK = 200;
 exports.CREATED = 201;
