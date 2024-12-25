@@ -10,19 +10,37 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 
 export function SignUpForm() {
   return (
-    <div className="dark">
-      <Card className="mx-auto max-w-sm border-none">
+    <div className="dark relative flex items-center justify-center min-h-screen">
+      <Image
+        src="/assets/images/logo.png"
+        alt="Raptors Who Code Logo"
+        className="absolute top-4 right-4 w-48 h-[32rem] object-contain"
+        width={10000}
+        height={10000}
+      />
+      <Card className="mx-auto w-[36rem] min-h-[20rem] border-none flex flex-col gap-[3rem] p-6">
         <CardHeader>
-          <CardTitle className="text-2xl">Sign Up</CardTitle>
+          <CardTitle className="text-2xl font-bold">Sign Up</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your details below to create your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="m@example.com"
+                required
+                className="p-6"
+              />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -30,6 +48,7 @@ export function SignUpForm() {
                 type="email"
                 placeholder="m@example.com"
                 required
+                className="p-6"
               />
             </div>
             <div className="grid gap-2">
@@ -42,20 +61,24 @@ export function SignUpForm() {
                   Forgot your password?
                 </Link>
               </div>
-              <Input id="password" type="password" required />
+              <Input id="password" type="password" required className="p-6" />
             </div>
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
-            <Button variant="outline" className="w-full">
-              Login with Google
-            </Button>
-          </div>
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link href="#" className="underline">
-              Sign up
-            </Link>
+
+            <div className="mt-4">
+              <Button
+                type="submit"
+                className="w-full p-6 transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100"
+              >
+                Sign Up
+              </Button>
+
+              <div className="mt-4 text-center text-sm">
+                Have an account?{" "}
+                <Link href="/login" className="underline">
+                  Login
+                </Link>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
