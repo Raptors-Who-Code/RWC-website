@@ -6,6 +6,7 @@ import UpcomingEvents from "./UpcomingEvents";
 import LatestJobs from "./LatestJobs";
 import FAQ from "./Faq";
 import Footer from "./Footer";
+import SiteFooter from "@/components/site-footer";
 function LandingPage() {
   return (
     <div className="container mx-auto px-8">
@@ -16,6 +17,7 @@ function LandingPage() {
       <LatestJobs />
       <FAQ />
       <Footer />
+      <SiteFooter />
     </div>
   );
 }
