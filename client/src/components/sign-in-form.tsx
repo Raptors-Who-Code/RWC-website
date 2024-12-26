@@ -14,20 +14,22 @@ import Image from "next/image";
 
 export function SignInForm() {
   return (
-    <div className="dark relative flex items-center justify-center min-h-screen">
-      <Image
-        src="/assets/images/logo.png"
-        alt="Raptors Who Code Logo"
-        className="absolute top-4 right-4 w-48 h-[36rem] object-contain"
-        width={10000}
-        height={10000}
-      />
+    <div className="dark flex items-center justify-center min-h-screen">
       <Card className="mx-auto w-[36rem] min-h-[20rem] border-none flex flex-col gap-[3rem] p-6">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Login</CardTitle>
-          <CardDescription>
-            Enter email and password to Login to your account
-          </CardDescription>
+        <CardHeader className="flex flex-row">
+          <div className="flex flex-col gap-2 justify-center">
+            <CardTitle className="text-2xl font-bold">Login</CardTitle>
+            <CardDescription>
+              Enter email and password to Login to your account
+            </CardDescription>
+          </div>
+          <Image
+            src="/assets/images/logo.png"
+            alt="Raptors Who Code Logo"
+            className="w-48 h-[10rem] object-contain"
+            width={10000}
+            height={10000}
+          />
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
