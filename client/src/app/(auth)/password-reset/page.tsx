@@ -52,12 +52,14 @@ export default function ForgotPasswordPage() {
                 <hr className="border-gray-500 flex-grow" />
               </div>
 
-              <Button
-                type="submit"
-                className="w-full p-6 transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100"
-              >
-                Go Back To Log In 🔑
-              </Button>
+              <Link href="/login">
+                <Button
+                  type="submit"
+                  className="w-full p-6 transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100"
+                >
+                  Go Back To Log In 🔑
+                </Button>
+              </Link>
 
               <div className="mt-4 text-center text-sm">
                 If you need help, please contact{" "}
