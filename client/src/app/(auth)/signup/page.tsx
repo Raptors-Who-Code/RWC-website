@@ -13,21 +13,32 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { useState } from "react";
+import { SignupSchema } from "@/schema/auth.schema";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-interface SignUpFormFields {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+type SignUpFormFields = z.infer<typeof SignupSchema>;
 
 export default function SignUpPage() {
   const [confirmPasswordOpen, setConfirmPasswordOpen] =
     useState<boolean>(false);
 
-  const { register, handleSubmit } = useForm<SignUpFormFields>();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<SignUpFormFields>({ resolver: zodResolver(SignupSchema) });
 
-  const onSubmit: SubmitHandler<SignUpFormFields> = (data) => {
+  const onSubmit: SubmitHandler<SignUpFormFields> = async (data) => {
+    try {
+    } catch (error: unknown) {
+      setError("root", {
+        message: `${(error as Error).message}`,
+      });
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log(data); // Not getting form event directly because we use handle sumbit from react-hook-form
   };
 
@@ -100,6 +111,8 @@ export default function SignUpPage() {
                     className="p-6"
                     {...register("confirmPassword")}
                   />
+
+                  <div className="text-red-500">{errors.root?.message}</div>
                 </div>
               )}
 
@@ -108,8 +121,9 @@ export default function SignUpPage() {
                   type={confirmPasswordOpen ? "submit" : "button"}
                   className="w-full p-6 transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100"
                   onClick={() => setConfirmPasswordOpen(true)}
+                  disabled={isSubmitting}
                 >
-                  Sign Up
+                  {isSubmitting ? "Loading..." : "Sign Up"}
                 </Button>
 
                 <div className="mt-4 text-center text-sm">

@@ -13,17 +13,44 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Image from "next/image";
+import { useRef, useState, useEffect } from "react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginSchema } from "@/schema/auth.schema";
+import { useDispatch } from "react-redux";
+import { useLoginMutation } from "@/features/auth/authApiSlice";
+import { setCredentials } from "@/features/auth/authSlice";
 
-interface LoginFormFields {
-  email: string;
-  password: string;
-}
+type LoginFormFields = z.infer<typeof LoginSchema>;
 
 export default function LoginPage() {
-  const { register, handleSubmit } = useForm<LoginFormFields>();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormFields>({
+    resolver: zodResolver(LoginSchema),
+  });
 
-  const onSubmit: SubmitHandler<LoginFormFields> = (data) => {
-    console.log(data);
+  const [login, { isLoading }] = useLoginMutation();
+
+  const dispatch = useDispatch();
+
+  const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {
+    const { email, password } = data;
+
+    try {
+      const userData = await login({ email, password }).unwrap();
+      dispatch(setCredentials({ ...userData }));
+    } catch (error: unknown) {
+      setError("root", {
+        message: `${(error as Error).message}`,
+      });
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log(data); // Not getting form event directly because we use handle sumbit from react-hook-form
   };
 
   return (
