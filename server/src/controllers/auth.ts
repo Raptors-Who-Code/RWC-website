@@ -66,12 +66,12 @@ export const login = async (
 
   // call service
 
-  const { accessToken, refreshToken } = await loginUser(request);
+  const { accessToken, refreshToken, user } = await loginUser(request);
 
   // return response
   return setAuthCookies({ res, accessToken, refreshToken })
     .status(OK)
-    .json({ message: "Login Sucessful" });
+    .json(user);
 };
 
 export const logout = async (

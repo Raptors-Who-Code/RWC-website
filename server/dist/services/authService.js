@@ -120,8 +120,8 @@ const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, pa
     const accessToken = (0, jwt_1.signToken)(Object.assign(Object.assign({}, sessionInfo), { userId: user.id }));
     // return user and tokens
     //Do not return password with user object
-    const { password: userPassword } = user, userWithoutPassword = __rest(user, ["password"]);
-    return { user: userWithoutPassword, accessToken, refreshToken };
+    const { createdAt: createdAt, updatedAt: updatedAt, id: id, password: userPassword } = user, userClientReturnData = __rest(user, ["createdAt", "updatedAt", "id", "password"]);
+    return { user: userClientReturnData, accessToken, refreshToken };
 });
 exports.loginUser = loginUser;
 const refreshUserAccessToken = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
@@ -186,42 +186,50 @@ const verifyEmail = (code) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.verifyEmail = verifyEmail;
 const sendPasswordResetEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    // Catch any erros that were thrown and log them ( but always return a success )
+    // Prevents leaking sensitive data back to the client (e.g. user not found, email not sent)
     // get the user by email
-    const user = yield __1.prismaClient.user.findFirst({
-        where: { email },
-    });
-    if (!user) {
-        throw new exceptions_1.NotFoundException("User not found", root_1.ErrorCode.USER_NOT_FOUND);
+    try {
+        const user = yield __1.prismaClient.user.findFirst({
+            where: { email },
+        });
+        if (!user) {
+            throw new exceptions_1.NotFoundException("User not found", root_1.ErrorCode.USER_NOT_FOUND);
+        }
+        // check email rate limit
+        const fiveMinAgo = (0, date_1.fiveMinutesAgo)();
+        const count = yield __1.prismaClient.verificationCode.count({
+            where: {
+                userId: user.id,
+                type: client_1.VerificationCodeType.PASSWORD_RESET,
+                createdAt: { gte: fiveMinAgo },
+            },
+        });
+        if (!(count <= 1)) {
+            throw new exceptions_1.TooManyRequestsException("Too many requests, please try again later", root_1.ErrorCode.TOO_MANY_REQUESTS);
+        }
+        // create verification code
+        const expiresAt = (0, date_1.oneHourFromNow)();
+        const verificationCode = yield __1.prismaClient.verificationCode.create({
+            data: {
+                userId: user.id,
+                type: client_1.VerificationCodeType.PASSWORD_RESET,
+                expiresAt,
+            },
+        });
+        // send verification email
+        const url = `${secrets_1.APP_ORIGIN}/password/reset?code=${verificationCode.id}&exp=${expiresAt.getTime()}`;
+        const { data, error } = yield (0, sendMail_1.sendMail)(Object.assign({ to: user.email }, (0, emailTemplates_1.getPasswordResetTemplate)(url)));
+        if (!(data === null || data === void 0 ? void 0 : data.id)) {
+            throw new exceptions_1.InternalException(`${error === null || error === void 0 ? void 0 : error.name} - ${error === null || error === void 0 ? void 0 : error.message}`, root_1.ErrorCode.INTERNALEXCEPTION);
+        }
+        // return success message
+        return { url, emailId: data.id };
     }
-    // check email rate limit
-    const fiveMinAgo = (0, date_1.fiveMinutesAgo)();
-    const count = yield __1.prismaClient.verificationCode.count({
-        where: {
-            userId: user.id,
-            type: client_1.VerificationCodeType.PASSWORD_RESET,
-            createdAt: { gte: fiveMinAgo },
-        },
-    });
-    if (!(count <= 1)) {
-        throw new exceptions_1.TooManyRequestsException("Too many requests, please try again later", root_1.ErrorCode.TOO_MANY_REQUESTS);
+    catch (error) {
+        console.log("SendPasswordResetError:", error.message);
+        return {};
     }
-    // create verification code
-    const expiresAt = (0, date_1.oneHourFromNow)();
-    const verificationCode = yield __1.prismaClient.verificationCode.create({
-        data: {
-            userId: user.id,
-            type: client_1.VerificationCodeType.PASSWORD_RESET,
-            expiresAt,
-        },
-    });
-    // send verification email
-    const url = `${secrets_1.APP_ORIGIN}/password/reset?code=${verificationCode.id}&exp=${expiresAt.getTime()}`;
-    const { data, error } = yield (0, sendMail_1.sendMail)(Object.assign({ to: user.email }, (0, emailTemplates_1.getPasswordResetTemplate)(url)));
-    if (!(data === null || data === void 0 ? void 0 : data.id)) {
-        throw new exceptions_1.InternalException(`${error === null || error === void 0 ? void 0 : error.name} - ${error === null || error === void 0 ? void 0 : error.message}`, root_1.ErrorCode.INTERNALEXCEPTION);
-    }
-    // return success message
-    return { url, emailId: data.id };
 });
 exports.sendPasswordResetEmail = sendPasswordResetEmail;
 const resetPassword = (_a) => __awaiter(void 0, [_a], void 0, function* ({ password, verificationCode, }) {

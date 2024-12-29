@@ -35,7 +35,11 @@ const baseQueryWithReauth: BaseQueryFn<
     console.log("sending refresh token");
 
     // send refresh token to get new access token
-    const refreshResult = (await baseQuery("/refresh", api, extraOptions)) as {
+    const refreshResult = (await baseQuery(
+      "/api/auth/refresh",
+      api,
+      extraOptions
+    )) as {
       data: RefreshResponse;
     };
 

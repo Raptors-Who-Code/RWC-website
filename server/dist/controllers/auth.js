@@ -42,11 +42,11 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     // Perform Zod Validation First
     const request = user_1.LoginSchema.parse(Object.assign(Object.assign({}, req.body), { userAgent: req.headers["user-agent"] }));
     // call service
-    const { accessToken, refreshToken } = yield (0, authService_1.loginUser)(request);
+    const { accessToken, refreshToken, user } = yield (0, authService_1.loginUser)(request);
     // return response
     return (0, cookies_1.setAuthCookies)({ res, accessToken, refreshToken })
         .status(root_1.OK)
-        .json({ message: "Login Sucessful" });
+        .json(user);
 });
 exports.login = login;
 const logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

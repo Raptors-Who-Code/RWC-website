@@ -20,6 +20,7 @@ import { LoginSchema } from "@/schema/auth.schema";
 import { useDispatch } from "react-redux";
 import { useLoginMutation } from "@/features/auth/authApiSlice";
 import { setCredentials } from "@/features/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 type LoginFormFields = z.infer<typeof LoginSchema>;
 
@@ -33,6 +34,8 @@ export default function LoginPage() {
     resolver: zodResolver(LoginSchema),
   });
 
+  const router = useRouter();
+
   const [login, { isLoading }] = useLoginMutation();
 
   const dispatch = useDispatch();
@@ -42,15 +45,20 @@ export default function LoginPage() {
 
     try {
       const userData = await login({ email, password }).unwrap();
+      console.log("Email", email);
+      console.log("Password", password);
+      console.log("User Data", userData);
       dispatch(setCredentials({ ...userData }));
+
+      router.replace("/");
     } catch (error: unknown) {
       setError("root", {
         message: `${(error as Error).message}`,
       });
+      console.error(`${error}`);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data); // Not getting form event directly because we use handle sumbit from react-hook-form
+    // Not getting form event directly because we use handle sumbit from react-hook-form
   };
 
   return (

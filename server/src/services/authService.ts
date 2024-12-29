@@ -176,9 +176,15 @@ export const loginUser = async ({
 
   // return user and tokens
   //Do not return password with user object
-  const { password: userPassword, ...userWithoutPassword } = user;
+  const {
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    id: id,
+    password: userPassword,
+    ...userClientReturnData
+  } = user;
 
-  return { user: userWithoutPassword, accessToken, refreshToken };
+  return { user: userClientReturnData, accessToken, refreshToken };
 };
 
 export const refreshUserAccessToken = async (refreshToken: string) => {
@@ -269,65 +275,74 @@ export const verifyEmail = async (code: string) => {
 };
 
 export const sendPasswordResetEmail = async (email: string) => {
+  // Catch any erros that were thrown and log them ( but always return a success )
+  // Prevents leaking sensitive data back to the client (e.g. user not found, email not sent)
+
   // get the user by email
-  const user = await prismaClient.user.findFirst({
-    where: { email },
-  });
 
-  if (!user) {
-    throw new NotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
+  try {
+    const user = await prismaClient.user.findFirst({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
+    }
+    // check email rate limit
+
+    const fiveMinAgo = fiveMinutesAgo();
+
+    const count = await prismaClient.verificationCode.count({
+      where: {
+        userId: user.id,
+        type: VerificationCodeType.PASSWORD_RESET,
+        createdAt: { gte: fiveMinAgo },
+      },
+    });
+
+    if (!(count <= 1)) {
+      throw new TooManyRequestsException(
+        "Too many requests, please try again later",
+        ErrorCode.TOO_MANY_REQUESTS
+      );
+    }
+
+    // create verification code
+
+    const expiresAt = oneHourFromNow();
+
+    const verificationCode = await prismaClient.verificationCode.create({
+      data: {
+        userId: user.id,
+        type: VerificationCodeType.PASSWORD_RESET,
+        expiresAt,
+      },
+    });
+
+    // send verification email
+
+    const url = `${APP_ORIGIN}/password/reset?code=${
+      verificationCode.id
+    }&exp=${expiresAt.getTime()}`;
+
+    const { data, error } = await sendMail({
+      to: user.email,
+      ...getPasswordResetTemplate(url),
+    });
+
+    if (!data?.id) {
+      throw new InternalException(
+        `${error?.name} - ${error?.message}`,
+        ErrorCode.INTERNALEXCEPTION
+      );
+    }
+    // return success message
+
+    return { url, emailId: data.id };
+  } catch (error: any) {
+    console.log("SendPasswordResetError:", error.message);
+    return {};
   }
-  // check email rate limit
-
-  const fiveMinAgo = fiveMinutesAgo();
-
-  const count = await prismaClient.verificationCode.count({
-    where: {
-      userId: user.id,
-      type: VerificationCodeType.PASSWORD_RESET,
-      createdAt: { gte: fiveMinAgo },
-    },
-  });
-
-  if (!(count <= 1)) {
-    throw new TooManyRequestsException(
-      "Too many requests, please try again later",
-      ErrorCode.TOO_MANY_REQUESTS
-    );
-  }
-
-  // create verification code
-
-  const expiresAt = oneHourFromNow();
-
-  const verificationCode = await prismaClient.verificationCode.create({
-    data: {
-      userId: user.id,
-      type: VerificationCodeType.PASSWORD_RESET,
-      expiresAt,
-    },
-  });
-
-  // send verification email
-
-  const url = `${APP_ORIGIN}/password/reset?code=${
-    verificationCode.id
-  }&exp=${expiresAt.getTime()}`;
-
-  const { data, error } = await sendMail({
-    to: user.email,
-    ...getPasswordResetTemplate(url),
-  });
-
-  if (!data?.id) {
-    throw new InternalException(
-      `${error?.name} - ${error?.message}`,
-      ErrorCode.INTERNALEXCEPTION
-    );
-  }
-  // return success message
-
-  return { url, emailId: data.id };
 };
 
 type ResetPasswordParams = {
