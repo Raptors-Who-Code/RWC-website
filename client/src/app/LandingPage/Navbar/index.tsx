@@ -7,9 +7,32 @@ import { Menu } from "lucide-react";
 import { navLinks } from "@/lib/links";
 import { RootState, useAppSelector } from "@/app/redux";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useDispatch } from "react-redux";
+import { logout } from "@/features/auth/authSlice";
+import { useLogoutQuery } from "@/features/auth/authApiSlice";
+import { useRouter } from "next/navigation";
 
 function Navbar() {
   const [isMenuOpen, setisMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { refetch: refetchLogout } = useLogoutQuery();
+  const router = useRouter();
 
   const toggleMenu = () => {
     setisMenuOpen(!isMenuOpen);
@@ -20,9 +43,22 @@ function Navbar() {
   );
 
   const user = useAppSelector((state: RootState) => state.auth.user);
+  const avatarFallBack = user?.name.slice(0, 1).toUpperCase();
 
-  console.log("User: ", user);
-  console.log("Is authenticated: ", isAuthenticated);
+  const handleLogoutClick = async () => {
+    try {
+      // logout in api
+      await refetchLogout();
+
+      // logout in redux
+      dispatch(logout());
+
+      router.replace("/");
+      console.log("Logged out");
+    } catch (error: unknown) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   return (
     <nav className="flex flex-col md:flex-row items-center md:items-center justify-between py-6 px-6 md:px-24 border-b border-[rgba(77,72,72,0.16)] ">
@@ -74,10 +110,28 @@ function Navbar() {
       {/* Right section: Buttons */}
 
       {isAuthenticated ? (
-        <Avatar>
-          <AvatarImage></AvatarImage>
-          <AvatarFallback></AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="bg-mainPurple md:flex space-x-4 hover:cursor-pointer absolute top-4 right-4 md:relative md:top-0 md:right-0">
+              <AvatarImage></AvatarImage>
+              <AvatarFallback className="bg-black-500 text-white">
+                {avatarFallBack || "AV"}
+              </AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 text-white bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] border border-neutral-800 shadow-lg">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuItem>Support</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="" onClick={handleLogoutClick}>
+              Log out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ) : (
         <div className="hidden md:flex space-x-4">
           <Link

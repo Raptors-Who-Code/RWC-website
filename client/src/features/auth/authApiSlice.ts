@@ -11,10 +11,23 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     getAuthenticatedUser: builder.query<User, void>({
-      query: () => "/api/user",
+      query: () => ({
+        url: "/api/auth/me",
+        method: "GET",
+      }),
+    }),
+    logout: builder.query<void, void>({
+      query: () => ({
+        url: "/api/auth/logout",
+        method: "GET",
+      }),
     }),
   }),
   overrideExisting: false,
 });
 
-export const { useLoginMutation, useGetAuthenticatedUserQuery } = authApiSlice;
+export const {
+  useLoginMutation,
+  useGetAuthenticatedUserQuery,
+  useLogoutQuery,
+} = authApiSlice;
