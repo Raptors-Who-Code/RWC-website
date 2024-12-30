@@ -120,8 +120,8 @@ const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, pa
     const accessToken = (0, jwt_1.signToken)(Object.assign(Object.assign({}, sessionInfo), { userId: user.id }));
     // return user and tokens
     //Do not return password with user object
-    const { createdAt: createdAt, updatedAt: updatedAt, id: id, password: userPassword } = user, userClientReturnData = __rest(user, ["createdAt", "updatedAt", "id", "password"]);
-    return { user: userClientReturnData, accessToken, refreshToken };
+    const { password: userPassword } = user, userWithoutPassword = __rest(user, ["password"]);
+    return { user: userWithoutPassword, accessToken, refreshToken };
 });
 exports.loginUser = loginUser;
 const refreshUserAccessToken = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {

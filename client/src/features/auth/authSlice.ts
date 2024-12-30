@@ -1,22 +1,30 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export enum Role {
+  ADMIN,
+  MODERATOR,
+  MEMBER,
+  GUEST,
+  ALUMNI,
+}
+
 export interface User {
   id: string;
   name: string;
   email: string;
-
-  //TODO: Add other fields as needed by backend user response
+  verified: boolean;
+  role: Role;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface AuthState {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  token: null,
   isAuthenticated: false,
 };
 
@@ -28,17 +36,14 @@ export const authSlice = createSlice({
       state,
       action: PayloadAction<{
         user: User;
-        accessToken: string;
       }>
     ) => {
-      const { user, accessToken } = action.payload;
+      const { user } = action.payload;
       state.user = user;
-      state.token = accessToken;
       state.isAuthenticated = true;
     },
     logout: (state) => {
       state.user = null;
-      state.token = null;
       state.isAuthenticated = false;
     },
   },

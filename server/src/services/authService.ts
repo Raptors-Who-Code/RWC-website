@@ -176,15 +176,9 @@ export const loginUser = async ({
 
   // return user and tokens
   //Do not return password with user object
-  const {
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-    id: id,
-    password: userPassword,
-    ...userClientReturnData
-  } = user;
+  const { password: userPassword, ...userWithoutPassword } = user;
 
-  return { user: userClientReturnData, accessToken, refreshToken };
+  return { user: userWithoutPassword, accessToken, refreshToken };
 };
 
 export const refreshUserAccessToken = async (refreshToken: string) => {

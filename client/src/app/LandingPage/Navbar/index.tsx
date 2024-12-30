@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { Menu } from "lucide-react";
 import { navLinks } from "@/lib/links";
 import { RootState, useAppSelector } from "@/app/redux";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function Navbar() {
   const [isMenuOpen, setisMenuOpen] = useState(false);
@@ -71,25 +72,33 @@ function Navbar() {
       ) : null}
 
       {/* Right section: Buttons */}
-      <div className="hidden md:flex space-x-4">
-        <Link
-          href="/login"
-          className="bg-transparent flex items-center justify-center gap-2 w-[100px] h-[41.6px] rounded-[30px] transform transition-all duration-200 hover:scale-105 active:scale-95 hover:z-10"
-        >
-          Login
-        </Link>
-        <Link href="/signup">
-          <Button
-            className="flex items-center justify-center gap-2 w-[100px] h-[41.6px] rounded-[30px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] px-[24px] py-[13px] transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 hover:z-10"
-            style={{
-              background:
-                "linear-gradient(99deg, #9632D7 9.07%, #4F1A71 96.43%)",
-            }}
+
+      {isAuthenticated ? (
+        <Avatar>
+          <AvatarImage></AvatarImage>
+          <AvatarFallback></AvatarFallback>
+        </Avatar>
+      ) : (
+        <div className="hidden md:flex space-x-4">
+          <Link
+            href="/login"
+            className="bg-transparent flex items-center justify-center gap-2 w-[100px] h-[41.6px] rounded-[30px] transform transition-all duration-200 hover:scale-105 active:scale-95 hover:z-10"
           >
-            Sign Up
-          </Button>
-        </Link>
-      </div>
+            Login
+          </Link>
+          <Link href="/signup">
+            <Button
+              className="flex items-center justify-center gap-2 w-[100px] h-[41.6px] rounded-[30px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] px-[24px] py-[13px] transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 hover:z-10"
+              style={{
+                background:
+                  "linear-gradient(99deg, #9632D7 9.07%, #4F1A71 96.43%)",
+              }}
+            >
+              Sign Up
+            </Button>
+          </Link>
+        </div>
+      )}
     </nav>
   );
 }

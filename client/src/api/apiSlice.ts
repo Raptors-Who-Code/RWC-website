@@ -46,13 +46,16 @@ const baseQueryWithReauth: BaseQueryFn<
     console.log(refreshResult);
 
     if (refreshResult?.data) {
-      const { accessToken } = refreshResult.data;
-      const user = (api.getState() as { auth: { user: User } }).auth.user;
+      console.log(
+        "Token refreshed successfully, retrying the original request"
+      );
+      // const user = (api.getState() as { auth: { user: User } }).auth.user;
       // store the new token
-      api.dispatch(setCredentials({ user, accessToken }));
+      // api.dispatch(setCredentials({ user }));
       // retry the original query with new access token
       result = await baseQuery(args, api, extraOptions);
     } else {
+      console.error("Refresh token invalid, Logging out..");
       api.dispatch(logout());
     }
   }

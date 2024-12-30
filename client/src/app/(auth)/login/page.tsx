@@ -44,12 +44,8 @@ export default function LoginPage() {
     const { email, password } = data;
 
     try {
-      const userData = await login({ email, password }).unwrap();
-      console.log("Email", email);
-      console.log("Password", password);
-      console.log("User Data", userData);
-      dispatch(setCredentials({ ...userData }));
-
+      const user = await login({ email, password }).unwrap();
+      dispatch(setCredentials({ user }));
       router.replace("/");
     } catch (error: unknown) {
       setError("root", {
@@ -57,7 +53,6 @@ export default function LoginPage() {
       });
       console.error(`${error}`);
     }
-
     // Not getting form event directly because we use handle sumbit from react-hook-form
   };
 
