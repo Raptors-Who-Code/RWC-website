@@ -14,10 +14,11 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { useState } from "react";
 import { SignupSchema } from "@/schema/auth.schema";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-type SignUpFormFields = z.infer<typeof SignupSchema>;
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { signup, SignUpFormFields } from "@/api/api";
+import { useMutation } from "@tanstack/react-query";
 
 export default function SignUpPage() {
   const [confirmPasswordOpen, setConfirmPasswordOpen] =
@@ -27,20 +28,34 @@ export default function SignUpPage() {
     register,
     handleSubmit,
     setError,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<SignUpFormFields>({ resolver: zodResolver(SignupSchema) });
 
-  const onSubmit: SubmitHandler<SignUpFormFields> = async (data) => {
-    try {
-    } catch (error: unknown) {
-      setError("root", {
-        message: `${(error as Error).message}`,
-      });
-    }
+  const {
+    mutate: createAccount,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: signup,
+    onSuccess: () => {
+      router.replace("/");
+    },
+  });
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data); // Not getting form event directly because we use handle sumbit from react-hook-form
+  const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  const onSubmit: SubmitHandler<SignUpFormFields> = (data) => {
+    createAccount(data);
   };
+
+  const name = watch("name");
+  const email = watch("email");
+  const password = watch("password");
+  const confirmPassword = watch("confirmPassword");
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -99,31 +114,41 @@ export default function SignUpPage() {
                 />
               </div>
 
-              {confirmPasswordOpen && (
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Confirm Password</Label>
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    required
-                    className="p-6"
-                    {...register("confirmPassword")}
-                  />
-
-                  <div className="text-red-500">{errors.root?.message}</div>
+              <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Confirm Password</Label>
                 </div>
-              )}
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  className="p-6"
+                  {...register("confirmPassword")}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit(onSubmit)}
+                />
+
+                {isError && (
+                  <p className="text-red-500">
+                    {error?.message || "An error occured"}
+                  </p>
+                )}
+              </div>
 
               <div className="mt-4">
                 <Button
                   type={confirmPasswordOpen ? "submit" : "button"}
                   className="w-full p-6 transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100"
                   onClick={() => setConfirmPasswordOpen(true)}
-                  disabled={isSubmitting}
+                  disabled={
+                    isPending ||
+                    password !== confirmPassword ||
+                    !name ||
+                    !email ||
+                    !password ||
+                    !confirmPassword
+                  }
                 >
-                  {isSubmitting ? "Loading..." : "Sign Up"}
+                  {isPending ? "Loading..." : "Sign Up"}
                 </Button>
 
                 <div className="mt-4 text-center text-sm">

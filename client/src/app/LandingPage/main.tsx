@@ -7,6 +7,7 @@ import LatestJobs from "./LatestJobs";
 import FAQ from "./Faq";
 import Footer from "./Footer";
 import SiteFooter from "@/components/site-footer";
+
 function LandingPage() {
   return (
     <div className="container mx-auto px-8">

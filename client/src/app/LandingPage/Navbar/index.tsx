@@ -24,41 +24,21 @@ import {
   DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDispatch } from "react-redux";
-import { logout } from "@/features/auth/authSlice";
-import { useLogoutQuery } from "@/features/auth/authApiSlice";
+
 import { useRouter } from "next/navigation";
 
 function Navbar() {
   const [isMenuOpen, setisMenuOpen] = useState(false);
   const dispatch = useDispatch();
-  const { refetch: refetchLogout } = useLogoutQuery();
+
   const router = useRouter();
 
   const toggleMenu = () => {
     setisMenuOpen(!isMenuOpen);
   };
 
-  const isAuthenticated = useAppSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
-
-  const user = useAppSelector((state: RootState) => state.auth.user);
-  const avatarFallBack = user?.name.slice(0, 1).toUpperCase();
-
-  const handleLogoutClick = async () => {
-    try {
-      // logout in api
-      await refetchLogout();
-
-      // logout in redux
-      dispatch(logout());
-
-      router.replace("/");
-      console.log("Logged out");
-    } catch (error: unknown) {
-      console.error("Error during logout:", error);
-    }
-  };
+  let avatarFallBack: string | undefined;
+  const isAuthenticated = false;
 
   return (
     <nav className="flex flex-col md:flex-row items-center md:items-center justify-between py-6 px-6 md:px-24 border-b border-[rgba(77,72,72,0.16)] ">
@@ -133,16 +113,16 @@ function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <div className="hidden md:flex space-x-4">
+        <div className="flex absolute top-4 right-4 md:relative md:top-0 md:right-0 md:flex space-x-4">
           <Link
             href="/login"
-            className="bg-transparent flex items-center justify-center gap-2 w-[100px] h-[41.6px] rounded-[30px] transform transition-all duration-200 hover:scale-105 active:scale-95 hover:z-10"
+            className="hidden md:flex bg-transparent items-center justify-center gap-2 w-[100px] h-[41.6px] rounded-[30px] transform transition-all duration-200 hover:scale-105 active:scale-95 hover:z-10"
           >
             Login
           </Link>
           <Link href="/signup">
             <Button
-              className="flex items-center justify-center gap-2 w-[100px] h-[41.6px] rounded-[30px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] px-[24px] py-[13px] transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 hover:z-10"
+              className="flex items-center justify-center gap-2 w-[100px] h-[41.6px] rounded-[30px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] px-[24px] py-[13px] transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 hover:z-10 "
               style={{
                 background:
                   "linear-gradient(99deg, #9632D7 9.07%, #4F1A71 96.43%)",

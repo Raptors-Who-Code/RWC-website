@@ -18,42 +18,32 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schema/auth.schema";
 import { useDispatch } from "react-redux";
-import { useLoginMutation } from "@/features/auth/authApiSlice";
+
 import { setCredentials } from "@/features/auth/authSlice";
 import { useRouter } from "next/navigation";
-
-type LoginFormFields = z.infer<typeof LoginSchema>;
+import { useMutation } from "@tanstack/react-query";
+import { login, LoginFormFields } from "@/api/api";
 
 export default function LoginPage() {
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormFields>({
+  const { register, handleSubmit } = useForm<LoginFormFields>({
     resolver: zodResolver(LoginSchema),
+  });
+
+  const {
+    mutate: signIn,
+    isPending,
+    isError,
+  } = useMutation({
+    mutationFn: login,
+    onSuccess: () => {
+      router.replace("/");
+    },
   });
 
   const router = useRouter();
 
-  const [login, { isLoading }] = useLoginMutation();
-
-  const dispatch = useDispatch();
-
-  const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {
-    const { email, password } = data;
-
-    try {
-      const user = await login({ email, password }).unwrap();
-      dispatch(setCredentials({ user }));
-      router.replace("/");
-    } catch (error: unknown) {
-      setError("root", {
-        message: `${(error as Error).message}`,
-      });
-      console.error(`${error}`);
-    }
-    // Not getting form event directly because we use handle sumbit from react-hook-form
+  const onSubmit: SubmitHandler<LoginFormFields> = (data) => {
+    signIn(data);
   };
 
   return (
@@ -105,15 +95,21 @@ export default function LoginPage() {
                   required
                   className="p-6"
                   {...register("password")}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit(onSubmit)}
                 />
               </div>
+
+              <p className="text-red-500">
+                {isError ?? "Invalid email or password"}
+              </p>
 
               <div className="mt-4">
                 <Button
                   type="submit"
                   className="w-full p-6 transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100"
+                  disabled={isPending}
                 >
-                  Login
+                  {isPending ? "Loading..." : "Login"}
                 </Button>
 
                 <div className="mt-4 text-center text-sm">

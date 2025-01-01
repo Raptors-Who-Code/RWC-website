@@ -7,7 +7,6 @@ import {
   Provider,
 } from "react-redux";
 import authReducer from "@/features/auth/authSlice";
-import { apiSlice } from "@/api/apiSlice";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
 import {
@@ -50,7 +49,6 @@ const persistConfig = {
 };
 const rootReducer = combineReducers({
   auth: authReducer,
-  [apiSlice.reducerPath]: apiSlice.reducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -63,7 +61,7 @@ export const makeStore = () => {
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(apiSlice.middleware),
+      }).concat(),
   });
 };
 

@@ -15,5 +15,5 @@ authRoutes.get("/logout", [auth_2.default], (0, error_handler_1.errorHandler)(au
 authRoutes.get("/email/verify/:code", (0, error_handler_1.errorHandler)(auth_1.verifyEmailHandler));
 authRoutes.post("/password/forgot", (0, error_handler_1.errorHandler)(auth_1.sendPasswordResetHandler));
 authRoutes.post("/password/reset", (0, error_handler_1.errorHandler)(auth_1.resetPasswordHandler));
-authRoutes.get("/me", [auth_2.default], (0, error_handler_1.errorHandler)(auth_1.me));
+// authRoutes.get("/me", [authMiddleware], errorHandler(me));
 exports.default = authRoutes;

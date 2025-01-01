@@ -21,6 +21,6 @@ authRoutes.get("/logout", [authMiddleware], errorHandler(logout));
 authRoutes.get("/email/verify/:code", errorHandler(verifyEmailHandler));
 authRoutes.post("/password/forgot", errorHandler(sendPasswordResetHandler));
 authRoutes.post("/password/reset", errorHandler(resetPasswordHandler));
-authRoutes.get("/me", [authMiddleware], errorHandler(me));
+// authRoutes.get("/me", [authMiddleware], errorHandler(me));
 
 export default authRoutes;
