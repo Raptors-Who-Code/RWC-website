@@ -19,3 +19,18 @@ export type EmailFormFields = z.infer<typeof emailSchema>;
 
 export const sendPasswordResetEmail = async (email: EmailFormFields) =>
   API.post(`/api/auth/password/forgot`, { email });
+
+export type ResetPasswordFields = {
+  verificationCode: string;
+  newPassword: string;
+};
+
+export const resetPassword = async ({
+  verificationCode,
+  newPassword,
+}: ResetPasswordFields) => {
+  API.post("/api/auth/password/reset", {
+    verificationCode,
+    password: newPassword,
+  });
+};

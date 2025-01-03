@@ -18,18 +18,17 @@ import { MdError } from "react-icons/md";
 
 function ResetPasswordPage() {
   const searchParams = useSearchParams();
-  const code = searchParams.get("code ");
+  const code = searchParams.get("code");
   const exp = Number(searchParams.get("exp"));
   const now = Date.now();
-  let linkIsValid = code && exp && now < exp;
-  linkIsValid = true;
+  const linkIsValid = code && exp && now < exp;
 
   return (
     <div className="dark flex items-center justify-center h-screen overflow-hidden">
       <Card className="mx-auto w-full max-w-lg min-h-[20rem] border-none flex flex-col p-6 overflow-hidden justify-center items-center">
         <CardContent>
           {linkIsValid ? (
-            <ResetPasswordForm />
+            <ResetPasswordForm code={code} />
           ) : (
             <div className="flex flex-col gap-10 items-center justify-center">
               <CardHeader>
@@ -61,5 +60,3 @@ function ResetPasswordPage() {
   );
 }
 export default ResetPasswordPage;
-
-// <Card className="dark mx-auto w-[36rem] min-h-[20rem] border-none flex flex-col gap-[3rem] p-6 mt-[4rem] overflow-hidden"></Card>;

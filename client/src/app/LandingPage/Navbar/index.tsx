@@ -122,7 +122,7 @@ function Navbar() {
           </Link>
           <Link href="/signup">
             <Button
-              className="flex items-center justify-center gap-2 w-[100px] h-[41.6px] rounded-[30px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] px-[24px] py-[13px] transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 hover:z-10 "
+              className="flex items-center justify-center gap-2 w-[80px] h-[35px] rounded-[30px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] px-[16px] py-[10px] md:px-[24px] mt-2 md:mt-0 md:py-[13px] transform transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 hover:z-10 md:w-[100px] md:h-[41.6px]"
               style={{
                 background:
                   "linear-gradient(99deg, #9632D7 9.07%, #4F1A71 96.43%)",
@@ -138,3 +138,4 @@ function Navbar() {
 }
 
 export default Navbar;
+// w-[100px] h-[41.6px]
