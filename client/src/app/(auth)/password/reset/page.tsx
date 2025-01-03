@@ -22,7 +22,7 @@ function ResetPasswordPage() {
   const exp = Number(searchParams.get("exp"));
   const now = Date.now();
   let linkIsValid = code && exp && now < exp;
-  linkIsValid = false;
+  linkIsValid = true;
 
   return (
     <div className="dark flex items-center justify-center h-screen overflow-hidden">

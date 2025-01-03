@@ -9,12 +9,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { MdError } from "react-icons/md";
-import Image from "next/image";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { TailSpin } from "react-loader-spinner";
@@ -71,7 +68,7 @@ function VerifyEmail() {
             <div className="flex flex-col gap-10 items-center">
               <h1>
                 The link is either invalid or expired.{" "}
-                <Link href="/password/reset" className="text-blue-500" replace>
+                <Link href="/password/forgot" className="text-blue-500" replace>
                   Get a new link
                 </Link>
               </h1>
