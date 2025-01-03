@@ -20,7 +20,6 @@ import Link from "next/link";
 import { TailSpin } from "react-loader-spinner";
 
 function VerifyEmail() {
-  const router = useRouter();
   const params = useParams();
   const code = Array.isArray(params.code) ? params.code[0] : params.code; // Ensure code is a string
 
@@ -40,7 +39,7 @@ function VerifyEmail() {
             </CardHeader>
             <div className="flex flex-col gap-10 items-center">
               <h1>Email was successfully verified!</h1>
-              <Link href="/">
+              <Link href="/" replace>
                 <Button className="text-lg py-6 px-12 bg-green-500 hover:bg-green-400">
                   Back to home
                 </Button>
@@ -72,11 +71,11 @@ function VerifyEmail() {
             <div className="flex flex-col gap-10 items-center">
               <h1>
                 The link is either invalid or expired.{" "}
-                <a href="/password-reset" className="text-blue-500">
+                <Link href="/password/reset" className="text-blue-500" replace>
                   Get a new link
-                </a>
+                </Link>
               </h1>
-              <Link href="/">
+              <Link href="/" replace>
                 <Button className="text-lg py-6 px-12 bg-mainPurple">
                   Back to home
                 </Button>

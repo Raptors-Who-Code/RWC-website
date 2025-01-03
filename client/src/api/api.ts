@@ -1,5 +1,5 @@
 import API from "@/config/apiClient";
-import { LoginSchema, SignupSchema } from "@/schema/auth.schema";
+import { emailSchema, LoginSchema, SignupSchema } from "@/schema/auth.schema";
 import { z } from "zod";
 
 export type LoginFormFields = z.infer<typeof LoginSchema>;
@@ -14,3 +14,8 @@ export const signup = async (data: SignUpFormFields) =>
 
 export const verifiyEmail = async (verificationCode: string) =>
   API.get(`/api/auth/email/verify/${verificationCode}`);
+
+export type EmailFormFields = z.infer<typeof emailSchema>;
+
+export const sendPasswordResetEmail = async (email: EmailFormFields) =>
+  API.post(`/api/auth/password/forgot`, { email });

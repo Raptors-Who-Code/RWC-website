@@ -10,12 +10,15 @@ import { usePathname } from "next/navigation";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  console.log(pathname);
+
+  const hideNavBar: boolean =
+    pathname.startsWith("/verify-email") ||
+    pathname.startsWith("/password/reset");
 
   return (
     <QueryClientProvider client={queryClient}>
       <StoreProvider>
-        {!pathname.startsWith("/verify-email") && <Navbar />}
+        {hideNavBar || <Navbar />}
         {children}
         <ProgressBar
           height="4px"
