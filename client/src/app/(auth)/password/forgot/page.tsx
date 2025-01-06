@@ -14,31 +14,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { EmailFormFields, sendPasswordResetEmail } from "@/api/api";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { emailSchema, resetPasswordSchema } from "@/schema/auth.schema";
-import { verificationCodeSchema } from "@/schema/auth.schema";
+import { sendPasswordResetEmail } from "@/api/authApi";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 
 export default function ForgotPasswordPage() {
   const [passwordResetEmailSent, setPasswordResetEmailSent] =
     useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
-  const [verificationCode, setVerificationCode] = useState<string>("");
-  const [password, newPassowrd] = useState<string>("");
 
-  const {
-    mutate: sendPasswordReset,
-    isPending: isPendingEmail,
-    isSuccess,
-    isError,
-    error,
-  } = useMutation({
+  const { mutate: sendPasswordReset, isPending: isPendingEmail } = useMutation({
     mutationFn: sendPasswordResetEmail,
-    onSuccess: () => {
-      console.log("Email sent");
-    },
   });
 
   const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {

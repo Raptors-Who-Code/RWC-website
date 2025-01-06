@@ -15,22 +15,20 @@ import Image from "next/image";
 import { useState } from "react";
 import { SignupSchema } from "@/schema/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { signup, SignUpFormFields } from "@/api/api";
+import { signup, SignUpFormFields } from "@/api/authApi";
 import { useMutation } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { setCredentials, User } from "@/features/auth/authSlice";
 
 export default function SignUpPage() {
   const [confirmPasswordOpen, setConfirmPasswordOpen] =
     useState<boolean>(false);
+  const dispatch = useDispatch();
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm<SignUpFormFields>({ resolver: zodResolver(SignupSchema) });
+  const { register, handleSubmit, watch } = useForm<SignUpFormFields>({
+    resolver: zodResolver(SignupSchema),
+  });
 
   const {
     mutate: createAccount,
@@ -39,14 +37,13 @@ export default function SignUpPage() {
     error,
   } = useMutation({
     mutationFn: signup,
-    onSuccess: () => {
+    onSuccess: (data: User) => {
       router.replace("/");
+      dispatch(setCredentials({ user: data }));
     },
   });
 
   const router = useRouter();
-
-  const dispatch = useDispatch();
 
   const onSubmit: SubmitHandler<SignUpFormFields> = (data) => {
     createAccount(data);

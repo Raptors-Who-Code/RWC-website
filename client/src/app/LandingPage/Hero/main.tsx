@@ -1,9 +1,17 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useAppSelector } from "@/app/redux";
 
 function Hero() {
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
+  const authenticatedButtonStyles =
+    "flex w-[187px] h-[52px] px-[24px] py-[13px] justify-center items-center gap-[10px] rounded-[4px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] mt-[10px] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95";
+
   return (
     <div className="flex flex-col items-center lg:justify-evenly lg:flex-row text-center mt-36 gap-6 lg:gap-0">
       <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
@@ -13,16 +21,24 @@ function Hero() {
         </h2>
 
         <div className="flex flex-row gap-4 items-center">
-          <Link href="/signup">
-            <Button className="flex w-[187px] h-[52px] px-[24px] py-[13px] justify-center items-center gap-[10px] rounded-[4px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] mt-[10px] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95">
-              <span className="text-white text-center font-semibold text-[16px] leading-[24px] tracking-[-0.32px]">
-                Sign Up
-              </span>
-            </Button>
-          </Link>
+          {isAuthenticated || (
+            <Link href="/signup">
+              <Button className="flex w-[187px] h-[52px] px-[24px] py-[13px] justify-center items-center gap-[10px] rounded-[4px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] mt-[10px] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95">
+                <span className="text-white text-center font-semibold text-[16px] leading-[24px] tracking-[-0.32px]">
+                  Sign Up
+                </span>
+              </Button>
+            </Link>
+          )}
 
           <Link href="/events">
-            <Button className="flex w-[141px] h-[52px] px-[24px] py-[13px] justify-center items-center gap-[10px] rounded-[4px] bg-[#1A202C] hover:bg-none mt-[10px] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95">
+            <Button
+              className={`${
+                isAuthenticated
+                  ? authenticatedButtonStyles
+                  : "flex w-[141px] h-[52px] px-[24px] py-[13px] justify-center items-center gap-[10px] rounded-[4px] bg-[#1A202C] hover:bg-none mt-[10px] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95"
+              }`}
+            >
               <span className="text-white text-center font-semibold text-[16px] leading-[24px] tracking-[-0.32px]">
                 View Events
               </span>

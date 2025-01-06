@@ -1,13 +1,7 @@
 "use client";
 
-import { verifiyEmail } from "@/api/api";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { verifiyEmail } from "@/api/authApi";
+import { Card, CardHeader } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { IoIosCheckmarkCircle } from "react-icons/io";

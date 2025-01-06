@@ -3,17 +3,17 @@ import Image from "next/image";
 
 function LandingAbout() {
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-col md:flex-row">
       {/* Left Section Start */}
-      <div className="flex flex-col w-[700px] gap-6 p-[200px_80px] pr-[0px] self-stretch lg:flex-col">
+      <div className="flex flex-col md:w-[700px] gap-6 p-[200px_80px] pr-[0px] self-stretch lg:flex-col">
         <h2 className="text-white font-['Plus_Jakarta_Sans'] text-4xl font-bold leading-[78px] tracking-[-1.44px] text-center lg:text-left">
           Who We Are
         </h2>
-        <div className="flex flex-row  gap-9">
+        <div className="flex flex-row gap-9">
           <p className="text-lg">
             At RWC, we foster a collaborative environment where students can
             explore coding, share ideas, and work on projects that spark
-            creativity and innovation. Whether you're just starting out or
+            creativity and innovation. Whether you&apos;re just starting out or
             looking to enhance your skills, our community is here to support
             your journey in technology.
           </p>

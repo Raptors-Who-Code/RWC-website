@@ -5,7 +5,6 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { Menu } from "lucide-react";
 import { navLinks } from "@/lib/links";
-import { RootState, useAppSelector } from "@/app/redux";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -16,29 +15,43 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useDispatch } from "react-redux";
-
+import { logout, User } from "@/features/auth/authSlice";
+import { logUserOut } from "@/api/authApi";
+import { useMutation } from "@tanstack/react-query";
+import queryClient from "@/config/queryClient";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "@/app/redux";
 
 function Navbar() {
   const [isMenuOpen, setisMenuOpen] = useState(false);
-  const dispatch = useDispatch();
-
   const router = useRouter();
+  const dispatch = useDispatch();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const user = useAppSelector((state) => state.auth.user);
+
+  const { mutate: signOut } = useMutation({
+    mutationFn: logUserOut,
+    onSettled: () => {
+      queryClient.clear();
+      dispatch(logout());
+      router.replace("/");
+    },
+  });
 
   const toggleMenu = () => {
     setisMenuOpen(!isMenuOpen);
   };
 
-  let avatarFallBack: string | undefined;
-  const isAuthenticated = false;
+  const handleLogoutClick = () => {
+    signOut();
+  };
+
+  const avatarFallBack: string | undefined = (
+    user as User
+  )?.name[0].toUpperCase();
 
   return (
     <nav className="flex flex-col md:flex-row items-center md:items-center justify-between py-6 px-6 md:px-24 border-b border-[rgba(77,72,72,0.16)] ">

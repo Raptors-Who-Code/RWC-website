@@ -13,21 +13,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Image from "next/image";
-import { useRef, useState, useEffect } from "react";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schema/auth.schema";
-import { useDispatch } from "react-redux";
-
-import { setCredentials } from "@/features/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { login, LoginFormFields } from "@/api/api";
+import { login, LoginFormFields } from "@/api/authApi";
+import { useDispatch } from "react-redux";
+import { setCredentials, User } from "@/features/auth/authSlice";
 
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginFormFields>({
     resolver: zodResolver(LoginSchema),
   });
+
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const {
     mutate: signIn,
@@ -35,12 +35,11 @@ export default function LoginPage() {
     isError,
   } = useMutation({
     mutationFn: login,
-    onSuccess: () => {
+    onSuccess: (data: User) => {
       router.replace("/");
+      dispatch(setCredentials({ user: data }));
     },
   });
-
-  const router = useRouter();
 
   const onSubmit: SubmitHandler<LoginFormFields> = (data) => {
     signIn(data);

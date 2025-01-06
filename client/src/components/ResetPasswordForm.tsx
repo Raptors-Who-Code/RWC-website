@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -12,11 +11,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { useMutation } from "@tanstack/react-query";
-import { resetPassword } from "@/api/api";
+import { resetPassword } from "@/api/authApi";
 
 interface ResetPasswordFormProps {
   code: string | null;
@@ -27,7 +25,6 @@ function ResetPasswordForm({ code }: ResetPasswordFormProps) {
 
   const {
     mutate: resetUserPassword,
-    isPending,
     isSuccess,
     isError,
     error,
