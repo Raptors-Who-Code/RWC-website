@@ -1,5 +1,6 @@
 import axios from "axios";
 import queryClient from "./queryClient";
+import { showToast } from "@/utils/toast";
 
 const options = {
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -18,13 +19,14 @@ API.interceptors.response.use(
     const { config, response } = error;
     const { status, data } = response || {};
 
-    // try to refresh the access token
+    // try to refresh the access token behind scenes
     if (status === 401) {
       try {
         await API.get("/api/auth/refresh");
         return TokenRefreshClient(config);
       } catch (error) {
         queryClient.clear();
+        showToast("Unauthorized access. Please log in again.", "error");
         console.error(error);
       }
     }

@@ -8,6 +8,7 @@ import queryClient from "@/config/queryClient";
 import Navbar from "../app/LandingPage/Navbar";
 import { usePathname } from "next/navigation";
 import AuthProvider from "./AuthProvider";
+import { ToastContainer } from "react-toastify";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -28,6 +29,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             options={{ showSpinner: false }}
             shallowRouting
           />
+          <ToastContainer theme="dark" autoClose={5000} position="top-right" />
         </AuthProvider>
       </StoreProvider>
       <ReactQueryDevtools initialIsOpen={false} position="bottom" />
