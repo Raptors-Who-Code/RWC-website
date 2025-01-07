@@ -24,8 +24,9 @@ function EventCard() {
   }, []);
 
   return (
-    <Card className="flex w-[355px] h-[455px] p-4 flex-col justify-center items-center gap-4 flex-[1_0_0] rounded border border-[rgba(255,255,255,0.26)] bg-[rgba(255,255,255,0.06)]">
+    <Card className="flex w-[355px] h-[455px] p-3 flex-col justify-center items-center gap-4 flex-[1_0_0] rounded border border-[rgba(255,255,255,0.26)] bg-[rgba(255,255,255,0.06)]">
       <CardHeader className="w-full h-[240px] relative">
+
         <Image
           src={randomImage}
           alt="event-image"
@@ -33,8 +34,9 @@ function EventCard() {
           objectFit="cover"
         />
       </CardHeader>
-      <CardContent className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2">
+
+      <CardContent className="flex flex-col gap-8 ">
+        <div className="flex flex-col gap-2 ">
           <h1 className="self-stretch text-white font-['Plus_Jakarta_Sans'] text-[20px] font-bold leading-normal">
             Event Name
           </h1>
@@ -47,7 +49,7 @@ function EventCard() {
         </div>
 
         <div>
-          <Button className="flex p-[13px_24px] justify-center items-center gap-[10px] flex-[1_0_0] self-stretch rounded border border-[#9030CF]">
+        <Button className="flex p-[13px_24px] justify-center items-center gap-[10px] flex-[1_0_0] self-stretch rounded border border-[#9030CF]">
             Join
           </Button>
         </div>
