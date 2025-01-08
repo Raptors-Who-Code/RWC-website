@@ -1,20 +1,70 @@
 import React from "react";
 import EventCard from "@/components/events-card";
+import EventCardList from "@/components/event-card-list";
+import EventPagination from "@/components/event-pagination";
 
-function Events() {
-  return (
-    <div className="flex p-[100px_80px] flex-col justify-center items-center self-stretch gap-12">
-      <div className="flex flex-col gap-6">
-        <h1 className="text-white text-center text-4xl font-bold leading-normal tracking-[-1.2px] self-stretch">
-          Our Upcoming Events
-        </h1>
-        <p>Create an account to share all upcoming events in your area!</p>
-      </div>
-      <div className="">
-        <EventCard />
+type Props = {
+    searchParams: {
+        page?: string;
+        pageSize?: string;
+    };
+};
+
+interface Event {
+    title: string;
+    date: string;
+    description: string;
+  }
+
+  export default async function Events({ searchParams }: Props) {
+
+    const page = parseInt(searchParams.page || "1", 10);
+    const pageSize = parseInt(searchParams.pageSize || "6", 10);
+
+    const [data, count] = await getEventsWithCount(page, pageSize);
+
+    return(
+    <div className="min-h-screen bg-gray-950 text-gray-100 p-20">
+    <div className="max-w-6xl mx-auto space-y-12">
+        {/*  Page Title */}
+        <div className="text-center space-y-8">
+            <h1 className="text-4xl font-bold">Our Upcoming Events</h1>
+            <p className="text-lg text-gray-400">
+                Join our Waitlist and get access to Rumor for discounted early-bird prices.
+            </p>
+        </div>
+        {/* Events */}
+        <EventCardList data={data} />
+
+        <EventPagination
+          page={page}
+          pageSize={pageSize}
+          totalCount={count}
+          pageSizeSelectOptions={{ pageSizeOptions: [6, 12, 24, 48] }}
+        />
       </div>
     </div>
-  );
-}
 
-export default Events;
+
+  );
+  }
+  async function getEventsWithCount(page: number, pageSize: number): Promise<[Event[], number]> {
+    
+    const allEvents = Array(500)
+        .fill({
+            title: "Hackathon",
+            date: "Sun 09/22",
+            description: "MASQUERAID 9:05AM - 12:35PM PDT ALLEGIANT STADIUM LOT B",
+        })
+        .map((event, index) => ({ ...event, id: index + 1, title: `${event.title} #${index + 1}`}));
+
+    // Slice the allEvents array to get the current page's events
+    const start = (page - 1) * pageSize;
+    const data = allEvents.slice(start, start + pageSize);
+
+    return [data, allEvents.length];
+  }
+
+
+
+
