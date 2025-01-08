@@ -6,4 +6,5 @@ const events_1 = require("../controllers/events");
 const verified_1 = require("../middlewares/verified");
 const eventRoutes = (0, express_1.Router)();
 eventRoutes.post("/", [verified_1.verifiedMiddleware], (0, error_handler_1.errorHandler)(events_1.createEventHandler));
+eventRoutes.delete("/:id", [verified_1.verifiedMiddleware], (0, error_handler_1.errorHandler)(events_1.deleteEventHandler));
 exports.default = eventRoutes;

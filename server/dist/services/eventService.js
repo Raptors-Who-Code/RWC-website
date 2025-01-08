@@ -9,8 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteEvent = exports.updatedEvent = exports.createEvent = void 0;
+exports.updatedEvent = exports.deleteEvent = exports.createEvent = void 0;
 const __1 = require("..");
+const exceptions_1 = require("../exceptions/exceptions");
+const root_1 = require("../exceptions/root");
 const createEvent = (eventData) => __awaiter(void 0, void 0, void 0, function* () {
     const event = yield __1.prismaClient.event.create({
         data: Object.assign({}, eventData),
@@ -18,7 +20,30 @@ const createEvent = (eventData) => __awaiter(void 0, void 0, void 0, function* (
     return event;
 });
 exports.createEvent = createEvent;
+const deleteEvent = (eventId, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const event = yield __1.prismaClient.event.findUnique({
+        where: { id: eventId },
+    });
+    if (!event) {
+        throw new exceptions_1.NotFoundException("Event not found", root_1.ErrorCode.EVENT_NOT_FOUND);
+    }
+    const user = yield __1.prismaClient.user.findUnique({ where: { id: userId } });
+    if (!user) {
+        throw new exceptions_1.NotFoundException("User not found", root_1.ErrorCode.USER_NOT_FOUND);
+    }
+    const isUsersEvent = event.userId === userId;
+    const isUserAdmin = user.role === "ADMIN";
+    if (!isUsersEvent && !isUserAdmin) {
+        throw new exceptions_1.ForbiddenException("You are not authorized to delete this event", root_1.ErrorCode.UNAUTHORIZED);
+    }
+    const deletedEvent = yield __1.prismaClient.event.delete({
+        where: { id: eventId },
+    });
+    if (!deletedEvent) {
+        throw new exceptions_1.NotFoundException("Event not found", root_1.ErrorCode.EVENT_NOT_FOUND);
+    }
+    return deletedEvent;
+});
+exports.deleteEvent = deleteEvent;
 const updatedEvent = () => { };
 exports.updatedEvent = updatedEvent;
-const deleteEvent = () => { };
-exports.deleteEvent = deleteEvent;

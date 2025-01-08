@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CREATED = exports.OK = exports.ErrorCode = exports.HttpException = void 0;
+exports.DELETED = exports.CREATED = exports.OK = exports.ErrorCode = exports.HttpException = void 0;
 class HttpException extends Error {
     constructor(message, errorCode, statusCode, errors) {
         super(message);
@@ -26,6 +26,8 @@ var ErrorCode;
     ErrorCode["SESSION_NOT_FOUND"] = "SESSION_NOT_FOUND";
     ErrorCode["CANNOT_DELETE_CURRENT_SESSION"] = "CANNOT_DELETE_CURRENT_SESSION";
     ErrorCode["MISSING_ENV_VARIABLE"] = "MISSING_ENV_VARIABLE";
+    ErrorCode["EVENT_NOT_FOUND"] = "EVENT_NOT_FOUND";
 })(ErrorCode || (exports.ErrorCode = ErrorCode = {}));
 exports.OK = 200;
 exports.CREATED = 201;
+exports.DELETED = 204;

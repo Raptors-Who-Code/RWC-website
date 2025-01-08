@@ -8,13 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createEventHandler = void 0;
+exports.deleteEventHandler = exports.createEventHandler = void 0;
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
 const event_1 = require("../schema/event");
 const eventService_1 = require("../services/eventService");
+const zod_1 = __importDefault(require("zod"));
 const createEventHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield __1.prismaClient.user.findUnique({
         where: { id: req.userId },
@@ -30,3 +34,13 @@ const createEventHandler = (req, res) => __awaiter(void 0, void 0, void 0, funct
     return res.status(root_1.CREATED).json(event);
 });
 exports.createEventHandler = createEventHandler;
+const deleteEventHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const eventId = zod_1.default.string().parse(req.params.id);
+    const userId = req.userId;
+    if (!userId) {
+        throw new exceptions_1.NotFoundException("User not found", root_1.ErrorCode.USER_NOT_FOUND);
+    }
+    const deletedEvent = yield (0, eventService_1.deleteEvent)(eventId, userId);
+    return res.status(root_1.DELETED).json({ message: "Event deleted" });
+});
+exports.deleteEventHandler = deleteEventHandler;

@@ -49,7 +49,7 @@ const deleteSessionHandler = (req, res) => __awaiter(void 0, void 0, void 0, fun
         if (sessionId === req.sessionId) {
             throw new exceptions_1.ForbiddenException("Cannot delete current session", root_1.ErrorCode.CANNOT_DELETE_CURRENT_SESSION);
         }
-        return res.status(root_1.OK).json({ message: "Session removed" });
+        return res.status(root_1.DELETED).json({ message: "Session removed" });
     }
     catch (error) {
         if (error instanceof library_1.PrismaClientKnownRequestError &&

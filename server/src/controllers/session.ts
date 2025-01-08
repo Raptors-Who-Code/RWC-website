@@ -1,7 +1,7 @@
 import { prismaClient } from "..";
 import { RequestWithUser } from "../types/requestWithUser";
 import { Response } from "express";
-import { ErrorCode, OK } from "../exceptions/root";
+import { ErrorCode, DELETED, OK } from "../exceptions/root";
 import z from "zod";
 import {
   ForbiddenException,
@@ -62,7 +62,7 @@ export const deleteSessionHandler = async (
       );
     }
 
-    return res.status(OK).json({ message: "Session removed" });
+    return res.status(DELETED).json({ message: "Session removed" });
   } catch (error) {
     if (
       error instanceof PrismaClientKnownRequestError &&

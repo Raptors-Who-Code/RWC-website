@@ -1,10 +1,14 @@
 import { prismaClient } from "..";
-import { NotFoundException } from "../exceptions/exceptions";
-import { CREATED, ErrorCode } from "../exceptions/root";
+import {
+  NotFoundException,
+  UnauthorizedException,
+} from "../exceptions/exceptions";
+import { CREATED, DELETED, ErrorCode } from "../exceptions/root";
 import { eventSchema } from "../schema/event";
-import { createEvent } from "../services/eventService";
+import { createEvent, deleteEvent } from "../services/eventService";
 import { RequestWithUser } from "../types/requestWithUser";
-import { Response } from "express";
+import { Request, Response } from "express";
+import z from "zod";
 
 export const createEventHandler = async (
   req: RequestWithUser,
@@ -34,4 +38,20 @@ export const createEventHandler = async (
   const event = await createEvent(eventData);
 
   return res.status(CREATED).json(event);
+};
+
+export const deleteEventHandler = async (
+  req: RequestWithUser,
+  res: Response
+) => {
+  const eventId = z.string().parse(req.params.id);
+  const userId = req.userId;
+
+  if (!userId) {
+    throw new NotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
+  }
+
+  const deletedEvent = await deleteEvent(eventId, userId);
+
+  return res.status(DELETED).json({ message: "Event deleted" });
 };
