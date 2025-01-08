@@ -9,10 +9,7 @@ datasource db {
 
 enum Role {
   ADMIN
-  MODERATOR
   MEMBER
-  GUEST
-  ALUMNI
 }
 
 enum VerificationCodeType {
@@ -27,12 +24,16 @@ model User {
   email     String   @unique
   password  String
   verified  Boolean  @default(false)
-  role      Role     @default(GUEST)
+  role      Role     @default(MEMBER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   sessions          Session[] // Relation to Session model
   verificationCodes VerificationCode[] // Relation to VerificationCode model
+  jobs              Job[]
+  events            Event[]
+  jobVotes          JobVote[]
+  eventVotes        EventVote[]
 
   @@map("users")
 }
@@ -62,4 +63,61 @@ model VerificationCode {
 
   @@index([userId]) // Index for efficient lookups by userId
   @@map("verification_codes") // Map to "verification_codes" table
+}
+
+model Job {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+
+  user  User      @relation(fields: [userId], references: [id])
+  votes JobVote[] // Relation to Vote model
+
+  @@index([userId]) // Index for efficient lookups by userId
+  @@map("jobs") // Map to "jobs" table
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+
+  user       User        @relation(fields: [userId], references: [id])
+  eventVotes EventVote[] // Relation to EventVote model
+
+  @@index([userId]) // Index for efficient lookups by userId
+  @@map("events") // Map to "events" table
+}
+
+model JobVote {
+  id     String @id @default(uuid())
+  userId String
+  jobId  String
+  value  Int // 1 for upvote, -1 for downvote
+
+  user User @relation(fields: [userId], references: [id])
+  job  Job  @relation(fields: [jobId], references: [id])
+
+  @@index([userId, jobId]) // Composite index for efficient lookups
+  @@map("votes") // Map to "votes" table
+}
+
+model EventVote {
+  id      String @id @default(uuid())
+  userId  String
+  eventId String
+  value   Int // 1 for upvote, -1 for downvote
+
+  user  User  @relation(fields: [userId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
+
+  @@index([userId, eventId]) // Composite index for efficient lookups
+  @@map("event_votes") // Map to "event_votes" table
 }
