@@ -2,6 +2,19 @@ import React from "react";
 import Link from "next/link";
 import EventCard from "@/components/events-card";
 
+
+interface Event {
+  title: string;
+  date: string;
+  description: string;
+}
+
+const sampleEvent: Event = {
+  title: "Hackathon",
+  date: "Sun 09/22",
+  description: "MASQUERAID 9:05AM - 12:35PM PDT ALLEGIANT STADIUM LOT B",
+};
+
 function UpcomingEvents() {
   return (
     <div className="max-w-6xl mx-auto space-y-12 pb-[100px] ">
@@ -15,13 +28,13 @@ function UpcomingEvents() {
       {/* Event Cards */}
       <div className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
         <div className="">
-          <EventCard/>
+          <EventCard item={sampleEvent}/>
          </div>
          <div className="">
-           <EventCard/>
+           <EventCard item={sampleEvent}/>
           </div>
           <div className="">
-            <EventCard/>
+            <EventCard item={sampleEvent}/>
           </div>
       </div>
     
@@ -35,7 +48,6 @@ function UpcomingEvents() {
       </div>
 
   </div>);
-
 }
 
 export default UpcomingEvents;
