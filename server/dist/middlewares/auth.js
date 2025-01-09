@@ -20,7 +20,6 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
     try {
         const { error, payload } = (0, jwt_1.verifyToken)(token);
-        console.log("Payload", payload);
         if (!payload) {
             return next(new exceptions_1.UnauthorizedException(error === "jwt expired" ? "Token expired" : "Invalid token", root_1.ErrorCode.INVALID_ACCESS_TOKEN));
         }

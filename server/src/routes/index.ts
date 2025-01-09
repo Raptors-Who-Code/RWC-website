@@ -10,6 +10,6 @@ const rootRouter: Router = Router();
 rootRouter.use("/auth", authRoutes);
 rootRouter.use("/user", [authMiddleware], userRoutes);
 rootRouter.use("/sessions", [authMiddleware], sessionRoutes);
-rootRouter.use("/events", [authMiddleware], eventRoutes);
+rootRouter.use("/events", eventRoutes);
 
 export default rootRouter;

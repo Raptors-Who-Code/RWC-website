@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteEventHandler = exports.createEventHandler = void 0;
+exports.getAllEventsHandler = exports.deleteEventHandler = exports.createEventHandler = void 0;
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
@@ -44,3 +44,8 @@ const deleteEventHandler = (req, res) => __awaiter(void 0, void 0, void 0, funct
     return res.status(root_1.DELETED).json({ message: "Event deleted" });
 });
 exports.deleteEventHandler = deleteEventHandler;
+const getAllEventsHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const events = yield __1.prismaClient.event.findMany();
+    return res.status(root_1.OK).json(events);
+});
+exports.getAllEventsHandler = getAllEventsHandler;

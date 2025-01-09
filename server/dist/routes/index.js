@@ -13,5 +13,5 @@ const rootRouter = (0, express_1.Router)();
 rootRouter.use("/auth", auth_1.default);
 rootRouter.use("/user", [auth_2.default], user_1.default);
 rootRouter.use("/sessions", [auth_2.default], session_1.default);
-rootRouter.use("/events", [auth_2.default], event_1.default);
+rootRouter.use("/events", event_1.default);
 exports.default = rootRouter;

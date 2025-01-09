@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "../exceptions/exceptions";
-import { CREATED, DELETED, ErrorCode } from "../exceptions/root";
+import { CREATED, DELETED, ErrorCode, OK } from "../exceptions/root";
 import { eventSchema } from "../schema/event";
 import { createEvent, deleteEvent } from "../services/eventService";
 import { RequestWithUser } from "../types/requestWithUser";
@@ -54,4 +54,10 @@ export const deleteEventHandler = async (
   const deletedEvent = await deleteEvent(eventId, userId);
 
   return res.status(DELETED).json({ message: "Event deleted" });
+};
+
+export const getAllEventsHandler = async (req: Request, res: Response) => {
+  const events = await prismaClient.event.findMany();
+
+  return res.status(OK).json(events);
 };
