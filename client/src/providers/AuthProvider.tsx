@@ -61,6 +61,14 @@ export default function AuthProvider({
       });
       router.replace("/events");
     }
+
+    if (pathname === "/login" && user) {
+      router.replace("/");
+    }
+
+    if (pathname === "/signup" && user) {
+      router.replace("/");
+    }
   }, [user, dispatch, pathname, router]);
 
   return <>{children}</>;

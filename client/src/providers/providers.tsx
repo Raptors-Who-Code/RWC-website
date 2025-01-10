@@ -9,19 +9,24 @@ import Navbar from "../app/LandingPage/Navbar";
 import { usePathname } from "next/navigation";
 import AuthProvider from "./AuthProvider";
 import { ToastContainer } from "react-toastify";
+import SimplifiedNavbar from "@/components/simple-navbar";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const hideNavBar: boolean =
     pathname.startsWith("/verify-email") ||
-    pathname.startsWith("/password/reset");
+    pathname.startsWith("/password/reset") ||
+    pathname.startsWith("/events/create");
+
+  const showSimpleNavbar: boolean = pathname.startsWith("/events/create");
 
   return (
     <QueryClientProvider client={queryClient}>
       <StoreProvider>
         <AuthProvider>
           {hideNavBar || <Navbar />}
+          {/* {showSimpleNavbar && <SimplifiedNavbar />} */}
           {children}
           <ProgressBar
             height="4px"

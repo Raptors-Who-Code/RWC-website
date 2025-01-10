@@ -33,6 +33,7 @@ export default function LoginPage() {
     mutate: signIn,
     isPending,
     isError,
+    error,
   } = useMutation({
     mutationFn: login,
     onSuccess: (data: User) => {
@@ -99,7 +100,7 @@ export default function LoginPage() {
               </div>
 
               <p className="text-red-500">
-                {isError ?? "Invalid email or password"}
+                {isError ? error.message || "An error occured" : ""}
               </p>
 
               <div className="mt-4">
