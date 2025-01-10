@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import EventCard from "@/components/events-card";
-import { Button } from "@/components/ui/button";
 
 interface Event {
   title: string;
@@ -28,15 +27,17 @@ function UpcomingEvents() {
         </p>
       </div>
       {/* Event Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-        <div className="">
-          <EventCard item={sampleEvent} />
-        </div>
-        <div className="">
-          <EventCard item={sampleEvent} />
-        </div>
-        <div className="">
-          <EventCard item={sampleEvent} />
+      <div className="flex justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+          <div className="">
+            <EventCard item={sampleEvent} />
+          </div>
+          <div className="">
+            <EventCard item={sampleEvent} />
+          </div>
+          <div className="">
+            <EventCard item={sampleEvent} />
+          </div>
         </div>
       </div>
 
