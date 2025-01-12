@@ -8,15 +8,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatedEvent = exports.deleteEvent = exports.createEvent = void 0;
+const uuid_1 = require("uuid");
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
-const createEvent = (eventData) => __awaiter(void 0, void 0, void 0, function* () {
-    const event = yield __1.prismaClient.event.create({
-        data: Object.assign({}, eventData),
-    });
+const supabaseStorage_1 = __importDefault(require("../utils/supabaseStorage"));
+const createEvent = (eventData, user) => __awaiter(void 0, void 0, void 0, function* () {
+    let event;
+    if (eventData.image) {
+        // Generate a unique name for the image using UUID
+        const uniqueImageName = `${(0, uuid_1.v4)()}-${eventData.image.name}`;
+        // Upload image to Supabase Storage
+        const { data, error } = yield supabaseStorage_1.default.storage
+            .from("images")
+            .upload(`events/${eventData.userId}/${uniqueImageName}`, eventData.image);
+        if (error) {
+            throw new exceptions_1.InternalException("Failed to upload image to Supabase Storage", root_1.ErrorCode.UPLOAD_FAILED);
+        }
+        const imageUrl = `${supabaseStorage_1.default.storage.from("images").getPublicUrl(data.path).data.publicUrl}`;
+        event = yield __1.prismaClient.event.create({
+            data: Object.assign(Object.assign({}, eventData), { imageUrl }),
+        });
+    }
+    else {
+        event = yield __1.prismaClient.event.create({
+            data: Object.assign({}, eventData),
+        });
+    }
     return event;
 });
 exports.createEvent = createEvent;

@@ -1,24 +1,51 @@
-import e from "express";
+import { v4 as uuidv4 } from "uuid";
 import { prismaClient } from "..";
 import {
   ForbiddenException,
+  InternalException,
   NotFoundException,
 } from "../exceptions/exceptions";
 import { ErrorCode } from "../exceptions/root";
+import supabase from "../utils/supabaseStorage";
+import { Event } from "../types/eventTypes";
+import { UserData } from "../types/userTypes";
 
-export interface Event {
-  title: string;
-  content: string;
-  date: Date;
-  userId: string;
-}
+export const createEvent = async (eventData: Event, user: UserData) => {
+  let event;
 
-export const createEvent = async (eventData: Event) => {
-  const event = await prismaClient.event.create({
-    data: {
-      ...eventData,
-    },
-  });
+  if (eventData.image) {
+    // Generate a unique name for the image using UUID
+    const uniqueImageName = `${uuidv4()}-${eventData.image.name}`;
+
+    // Upload image to Supabase Storage
+    const { data, error } = await supabase.storage
+      .from("images")
+      .upload(`events/${eventData.userId}/${uniqueImageName}`, eventData.image);
+
+    if (error) {
+      throw new InternalException(
+        "Failed to upload image to Supabase Storage",
+        ErrorCode.UPLOAD_FAILED
+      );
+    }
+
+    const imageUrl = `${
+      supabase.storage.from("images").getPublicUrl(data.path).data.publicUrl
+    }`;
+
+    event = await prismaClient.event.create({
+      data: {
+        ...eventData,
+        imageUrl,
+      },
+    });
+  } else {
+    event = await prismaClient.event.create({
+      data: {
+        ...eventData,
+      },
+    });
+  }
 
   return event;
 };

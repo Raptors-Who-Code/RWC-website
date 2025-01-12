@@ -9,6 +9,8 @@ import { createEvent, deleteEvent } from "../services/eventService";
 import { RequestWithUser } from "../types/requestWithUser";
 import { Request, Response } from "express";
 import z from "zod";
+import { Role, UserData } from "../types/userTypes";
+import { mapPrismaRoleToCustomRole } from "../utils/mapRoleToCustomRole";
 
 export const createEventHandler = async (
   req: RequestWithUser,
@@ -34,8 +36,15 @@ export const createEventHandler = async (
   };
 
   // call service
+  const roleWithCorrectType: Role = mapPrismaRoleToCustomRole(user.role);
+  // Need this because Prisma client returns the role as a type of $Enum.Role but we need it of type Role
 
-  const event = await createEvent(eventData);
+  const userData: UserData = {
+    ...user,
+    role: roleWithCorrectType,
+  };
+
+  const event = await createEvent(eventData, userData);
 
   return res.status(CREATED).json(event);
 };

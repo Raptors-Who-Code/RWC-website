@@ -24,3 +24,5 @@ export const EMAIL_SENDER = getEnvVariable("EMAIL_SENDER");
 export const JWT_SECRET = getEnvVariable("JWT_SECRET");
 export const JWT_REFRESH_SECRET = getEnvVariable("JWT_REFRESH_SECRET");
 export const RESEND_API_KEY = getEnvVariable("RESEND_API_KEY");
+export const SUPABASE_URL = getEnvVariable("SUPABASE_URL");
+export const SUPABASE_KEY = getEnvVariable("SUPABASE_KEY");

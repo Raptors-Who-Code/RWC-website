@@ -19,8 +19,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/password/reset") ||
     pathname.startsWith("/events/create");
 
-  const showSimpleNavbar: boolean = pathname.startsWith("/events/create");
-
   return (
     <QueryClientProvider client={queryClient}>
       <StoreProvider>
@@ -34,7 +32,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             options={{ showSpinner: false }}
             shallowRouting
           />
-          <ToastContainer theme="dark" autoClose={5000} position="top-right" />
+          <ToastContainer />
         </AuthProvider>
       </StoreProvider>
       <ReactQueryDevtools initialIsOpen={false} position="bottom" />
