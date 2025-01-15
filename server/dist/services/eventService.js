@@ -18,21 +18,28 @@ const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
 const supabaseStorage_1 = __importDefault(require("../utils/supabaseStorage"));
-const createEvent = (eventData, user) => __awaiter(void 0, void 0, void 0, function* () {
+const createEvent = (eventData, user, file, fileBase64) => __awaiter(void 0, void 0, void 0, function* () {
     let event;
-    if (eventData.image) {
+    if (file && fileBase64) {
         // Generate a unique name for the image using UUID
-        const uniqueImageName = `${(0, uuid_1.v4)()}-${eventData.image.name}`;
+        const uniqueImageName = `${(0, uuid_1.v4)()}-${file.originalname}`;
+        const filePath = `users/${user.id}/events/${uniqueImageName}`;
         // Upload image to Supabase Storage
         const { data, error } = yield supabaseStorage_1.default.storage
             .from("images")
-            .upload(`events/${eventData.userId}/${uniqueImageName}`, eventData.image);
+            .upload(filePath, fileBase64, {
+            contentType: file.mimetype,
+        });
         if (error) {
+            console.log("Error uploading image", error);
             throw new exceptions_1.InternalException("Failed to upload image to Supabase Storage", root_1.ErrorCode.UPLOAD_FAILED);
         }
-        const imageUrl = `${supabaseStorage_1.default.storage.from("images").getPublicUrl(data.path).data.publicUrl}`;
+        //get public url of the uploaded file
+        const { data: image } = supabaseStorage_1.default.storage
+            .from("images")
+            .getPublicUrl(data.path);
         event = yield __1.prismaClient.event.create({
-            data: Object.assign(Object.assign({}, eventData), { imageUrl }),
+            data: Object.assign(Object.assign({}, eventData), { imageUrl: image.publicUrl }),
         });
     }
     else {

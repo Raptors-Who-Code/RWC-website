@@ -3,5 +3,4 @@ export interface Event {
   content: string;
   date: Date;
   userId: string;
-  image?: File | undefined;
 }

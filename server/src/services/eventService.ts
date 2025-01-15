@@ -10,33 +10,44 @@ import supabase from "../utils/supabaseStorage";
 import { Event } from "../types/eventTypes";
 import { UserData } from "../types/userTypes";
 
-export const createEvent = async (eventData: Event, user: UserData) => {
+export const createEvent = async (
+  eventData: Event,
+  user: UserData,
+  file: Express.Multer.File | undefined,
+  fileBase64: ArrayBuffer | null
+) => {
   let event;
 
-  if (eventData.image) {
+  if (file && fileBase64) {
     // Generate a unique name for the image using UUID
-    const uniqueImageName = `${uuidv4()}-${eventData.image.name}`;
+    const uniqueImageName = `${uuidv4()}-${file.originalname}`;
+
+    const filePath = `users/${user.id}/events/${uniqueImageName}`;
 
     // Upload image to Supabase Storage
     const { data, error } = await supabase.storage
       .from("images")
-      .upload(`events/${eventData.userId}/${uniqueImageName}`, eventData.image);
+      .upload(filePath, fileBase64, {
+        contentType: file.mimetype,
+      });
 
     if (error) {
+      console.log("Error uploading image", error);
       throw new InternalException(
         "Failed to upload image to Supabase Storage",
         ErrorCode.UPLOAD_FAILED
       );
     }
 
-    const imageUrl = `${
-      supabase.storage.from("images").getPublicUrl(data.path).data.publicUrl
-    }`;
+    //get public url of the uploaded file
+    const { data: image } = supabase.storage
+      .from("images")
+      .getPublicUrl(data.path);
 
     event = await prismaClient.event.create({
       data: {
         ...eventData,
-        imageUrl,
+        imageUrl: image.publicUrl,
       },
     });
   } else {

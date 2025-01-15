@@ -11,11 +11,16 @@ import { Request, Response } from "express";
 import z from "zod";
 import { Role, UserData } from "../types/userTypes";
 import { mapPrismaRoleToCustomRole } from "../utils/mapRoleToCustomRole";
+import { decode } from "base64-arraybuffer";
+import { Event } from "../types/eventTypes";
 
 export const createEventHandler = async (
   req: RequestWithUser,
   res: Response
 ) => {
+  const file = req.file;
+  let fileBase64 = null;
+
   const user = await prismaClient.user.findUnique({
     where: { id: req.userId },
   });
@@ -35,6 +40,10 @@ export const createEventHandler = async (
     userId: user.id,
   };
 
+  if (file) {
+    fileBase64 = decode(file.buffer.toString("base64"));
+  }
+
   // call service
   const roleWithCorrectType: Role = mapPrismaRoleToCustomRole(user.role);
   // Need this because Prisma client returns the role as a type of $Enum.Role but we need it of type Role
@@ -44,7 +53,7 @@ export const createEventHandler = async (
     role: roleWithCorrectType,
   };
 
-  const event = await createEvent(eventData, userData);
+  const event = await createEvent(eventData, userData, file, fileBase64);
 
   return res.status(CREATED).json(event);
 };

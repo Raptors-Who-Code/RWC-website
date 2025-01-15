@@ -20,7 +20,10 @@ const event_1 = require("../schema/event");
 const eventService_1 = require("../services/eventService");
 const zod_1 = __importDefault(require("zod"));
 const mapRoleToCustomRole_1 = require("../utils/mapRoleToCustomRole");
+const base64_arraybuffer_1 = require("base64-arraybuffer");
 const createEventHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const file = req.file;
+    let fileBase64 = null;
     const user = yield __1.prismaClient.user.findUnique({
         where: { id: req.userId },
     });
@@ -30,11 +33,14 @@ const createEventHandler = (req, res) => __awaiter(void 0, void 0, void 0, funct
     const request = event_1.eventSchema.parse(Object.assign({}, req.body)); // Perform Zod Validation First
     // Convert date string to JavaScript Date object
     const eventData = Object.assign(Object.assign({}, request), { date: new Date(request.date), userId: user.id });
+    if (file) {
+        fileBase64 = (0, base64_arraybuffer_1.decode)(file.buffer.toString("base64"));
+    }
     // call service
     const roleWithCorrectType = (0, mapRoleToCustomRole_1.mapPrismaRoleToCustomRole)(user.role);
     // Need this because Prisma client returns the role as a type of $Enum.Role but we need it of type Role
     const userData = Object.assign(Object.assign({}, user), { role: roleWithCorrectType });
-    const event = yield (0, eventService_1.createEvent)(eventData, userData);
+    const event = yield (0, eventService_1.createEvent)(eventData, userData, file, fileBase64);
     return res.status(root_1.CREATED).json(event);
 });
 exports.createEventHandler = createEventHandler;

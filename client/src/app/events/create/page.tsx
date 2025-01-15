@@ -20,7 +20,7 @@ import { logout, User } from "@/features/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import { Textarea } from "@/components/ui/textarea";
-
+import { createEvent } from "@/api/eventApi";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { isBefore, startOfToday } from "date-fns";
@@ -31,7 +31,7 @@ interface StepCounterProps {
   totalSteps: number;
 }
 
-function CreateEvent() {
+function CreateEventPage() {
   const [title, setTitle] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [description, setDescription] = useState<string>("");
@@ -40,8 +40,44 @@ function CreateEvent() {
   const [file, setFile] = useState<File | undefined>(undefined);
   const [fileError, setFileError] = useState<string | null>(null);
   const today = startOfToday();
+  const router = useRouter();
 
   const titleInputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    mutate: createTheEvent,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: createEvent,
+    onSuccess: () => {
+      router.replace("/events");
+    },
+  });
+
+  const handleNextClick = () => {
+    if (title && description) {
+      setStepOneError(null);
+      setStep((prev) => prev + 1);
+    } else {
+      setStepOneError("Please fill all required fields");
+    }
+  };
+
+  const handleSubmitClick = () => {
+    if (title && description && date) {
+      const eventData = {
+        title: title,
+        content: description,
+        date: date,
+        ...(file && { image: file }),
+      };
+
+      console.log("Client Event Data", eventData);
+      createTheEvent(eventData);
+    }
+  };
 
   useEffect(() => {
     if (titleInputRef.current) {
@@ -59,15 +95,6 @@ function CreateEvent() {
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
-  };
-
-  const handleNextClick = () => {
-    if (title && description) {
-      setStepOneError(null);
-      setStep((prev) => prev + 1);
-    } else {
-      setStepOneError("Please fill all required fields");
-    }
   };
 
   const handleBackClick = () => {
@@ -219,14 +246,24 @@ function CreateEvent() {
                 </div>
               )}
 
-              <Button
-                type="button"
-                className="flex justify-center items-center gap-[10px] rounded-lg bg-mainPurple mt-[10px] hover:bg-mainPurple transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95"
-                onClick={handleNextClick}
-              >
-                {step === 1 ? "Next" : "Submit"}
-                {step === 1 ? <MdArrowForward /> : ""}
-              </Button>
+              {step === 1 ? (
+                <Button
+                  type="button"
+                  className="flex justify-center items-center gap-[10px] rounded-lg bg-mainPurple mt-[10px] hover:bg-mainPurple transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95"
+                  onClick={handleNextClick}
+                >
+                  Next
+                  <MdArrowForward />
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  className="flex justify-center items-center gap-[10px] rounded-lg bg-mainPurple mt-[10px] hover:bg-mainPurple transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95"
+                  onClick={handleSubmitClick}
+                >
+                  Submit
+                </Button>
+              )}
             </div>
           </Card>
         </div>
@@ -253,7 +290,7 @@ function CreateEvent() {
   );
 }
 
-export default CreateEvent;
+export default CreateEventPage;
 
 function StepCounter({ currentStep, totalSteps }: StepCounterProps) {
   return (

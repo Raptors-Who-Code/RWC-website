@@ -7,12 +7,13 @@ import {
   getAllEventsHandler,
 } from "../controllers/events";
 import { verifiedMiddleware } from "../middlewares/verified";
+import upload from "../middlewares/upload";
 
 const eventRoutes: Router = Router();
 
 eventRoutes.post(
   "/",
-  [authMiddleware, verifiedMiddleware],
+  [authMiddleware, verifiedMiddleware, upload.single("image")],
   errorHandler(createEventHandler)
 );
 eventRoutes.delete(

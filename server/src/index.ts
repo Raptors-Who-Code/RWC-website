@@ -8,7 +8,7 @@ import morgan from "morgan";
 import { PrismaClient } from "@prisma/client";
 import rootRouter from "./routes";
 import { errorMiddleWare } from "./middlewares/errors";
-import { SignupSchema } from "./schema/user";
+import multer from "multer";
 import { APP_ORIGIN } from "./secrets";
 
 /* Route imports */
