@@ -141,7 +141,9 @@ function CreateEventPage() {
         <div className="flex items-start justify-center h-screen pt-16">
           <Card className="flex flex-col w-1/2 h-[65%] mr-[5rem] rounded-lg gap-7 dark p-10 border-none">
             <header>
-              <h1 className="font-extrabold text-4xl">Create Event</h1>
+              <h1 className="font-extrabold text-4xl text-center lg:text-left">
+                Create Event
+              </h1>
             </header>
             {step === 1 && (
               <>
@@ -270,7 +272,7 @@ function CreateEventPage() {
       </div>
 
       {/* Right Side */}
-      <div className="relative h-full w-1/2 hidden lg:block">
+      <div className="relative h-full w-1/2 hidden rightSectionAppears:block">
         <div className="absolute inset-0 z-[-2] w-full h-full bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
         {/* Navbar */}
         <nav className="flex flex-col h-[10%] md:flex-row items-center md:items-center justify-end py-6 px-6 md:px-24">

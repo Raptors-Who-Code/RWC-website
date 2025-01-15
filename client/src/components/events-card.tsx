@@ -10,15 +10,10 @@ import {
 import { useEffect, useState } from "react";
 
 import { Button } from "./ui/button";
-
-interface Event {
-  title: string;
-  date: string;
-  description: string;
-}
+import { EventResponse } from "@/api/eventApi";
 
 interface EventCardItemProps {
-  item: Event;
+  item: EventResponse;
 }
 
 const imagesArray = [
@@ -34,22 +29,33 @@ export const getRandomImage = (): string => {
 };
 
 export function EventCardItem({ item }: EventCardItemProps) {
-  const [randomImage, setRandomImage] = useState<string>("");
+  console.log(item);
+  console.log("itemImage", item.imageUrl);
+  const setTheImage = () => {
+    if (item.imageUrl) {
+      return item.imageUrl;
+    } else {
+      return getRandomImage();
+    }
+  };
 
-  useEffect(() => {
-    setRandomImage(getRandomImage());
-  }, []);
+  const [image] = useState<string>(setTheImage);
+
+  const formatDate = (originalDate: Date): string => {
+    const date = new Date(originalDate);
+    return date.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "2-digit",
+      day: "2-digit",
+      year: "2-digit",
+    });
+  };
 
   return (
     <Card className="flex w-[355px] h-[455px] p-3 flex-col gap-4 flex-[1_0_0] rounded-[5px] border-gray-600 bg-[#1a1d24]">
       {/* Top Image */}
       <CardHeader className=" w-full h-[225px] relative rounded-[5px] overflow-hidden">
-        <Image
-          src={randomImage}
-          alt="event-image"
-          layout="fill"
-          objectFit="cover"
-        />
+        <Image src={image} alt="event-image" layout="fill" objectFit="cover" />
       </CardHeader>
 
       {/* Card Content */}
@@ -57,8 +63,8 @@ export function EventCardItem({ item }: EventCardItemProps) {
         <CardTitle className="text-xl font-semibold text-white">
           {item.title}
         </CardTitle>
-        <p className="text-gray-400 text-lg">{item.date}</p>
-        <p className="text-gray-400 text-lg">{item.description}</p>
+        <p className="text-gray-400 text-lg">{formatDate(item.date)}</p>
+        <p className="text-gray-400 text-lg">{item.content}</p>
       </CardContent>
 
       <CardFooter className="p-1 pt-5">

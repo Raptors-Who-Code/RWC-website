@@ -11,6 +11,7 @@ const config: Config = {
     extend: {
       screens: {
         "2xl": "1536px",
+        rightSectionAppears: "1450px",
       },
       colors: {
         background: "hsl(var(--background))",

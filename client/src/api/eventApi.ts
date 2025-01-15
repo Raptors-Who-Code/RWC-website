@@ -29,3 +29,18 @@ export const createEvent = async (eventData: Event) => {
     throw error;
   }
 };
+
+export interface EventResponse {
+  id: string;
+  title: string;
+  content: string;
+  date: Date;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  imageUrl: string | null;
+}
+
+export const getAllEvents = async (): Promise<EventResponse[]> => {
+  return API.get("/api/events");
+};

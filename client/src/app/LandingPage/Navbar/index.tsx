@@ -23,14 +23,13 @@ import { useMutation } from "@tanstack/react-query";
 import queryClient from "@/config/queryClient";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { useAppSelector } from "@/app/redux";
+import useAuth from "@/hooks/useAuth";
 
 function Navbar() {
   const [isMenuOpen, setisMenuOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  const user = useAppSelector((state) => state.auth.user);
+  const { data: user, isLoading } = useAuth();
 
   const { mutate: signOut } = useMutation({
     mutationFn: logUserOut,
@@ -102,7 +101,7 @@ function Navbar() {
 
       {/* Right section: Buttons */}
 
-      {isAuthenticated ? (
+      {user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar className="bg-mainPurple md:flex space-x-4 hover:cursor-pointer absolute top-4 right-4 md:relative md:top-0 md:right-0">
