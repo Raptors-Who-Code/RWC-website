@@ -24,6 +24,8 @@ const base64_arraybuffer_1 = require("base64-arraybuffer");
 const createEventHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const file = req.file;
     let fileBase64 = null;
+    console.log("req.body", req.body);
+    console.log("req.file", req.file);
     const user = yield __1.prismaClient.user.findUnique({
         where: { id: req.userId },
     });

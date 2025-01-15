@@ -20,6 +20,8 @@ export const createEventHandler = async (
 ) => {
   const file = req.file;
   let fileBase64 = null;
+  console.log("req.body", req.body);
+  console.log("req.file", req.file);
 
   const user = await prismaClient.user.findUnique({
     where: { id: req.userId },
