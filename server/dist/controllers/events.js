@@ -51,7 +51,7 @@ const deleteEventHandler = (req, res) => __awaiter(void 0, void 0, void 0, funct
         throw new exceptions_1.NotFoundException("User not found", root_1.ErrorCode.USER_NOT_FOUND);
     }
     const deletedEvent = yield (0, eventService_1.deleteEvent)(eventId, userId);
-    return res.status(root_1.DELETED).json({ message: "Event deleted" });
+    return res.status(root_1.DELETED).json({ message: "Event deleted successfully" });
 });
 exports.deleteEventHandler = deleteEventHandler;
 const getAllEventsHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

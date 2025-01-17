@@ -71,7 +71,7 @@ export const deleteEventHandler = async (
 
   const deletedEvent = await deleteEvent(eventId, userId);
 
-  return res.status(DELETED).json({ message: "Event deleted" });
+  return res.status(DELETED).json({ message: "Event deleted successfully" });
 };
 
 export const getAllEventsHandler = async (req: Request, res: Response) => {

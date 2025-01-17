@@ -9,8 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createJob = void 0;
+exports.deleteJob = exports.createJob = void 0;
 const __1 = require("..");
+const exceptions_1 = require("../exceptions/exceptions");
+const root_1 = require("../exceptions/root");
 const createJob = (jobData, userData) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, content, jobLink, internship, jobLocation, jobHoursType, jobLevel } = jobData;
     const job = yield __1.prismaClient.job.create({
@@ -24,3 +26,30 @@ const createJob = (jobData, userData) => __awaiter(void 0, void 0, void 0, funct
     return job;
 });
 exports.createJob = createJob;
+const deleteJob = (jobId, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const job = yield __1.prismaClient.job.findUnique({ where: {
+            id: jobId
+        } });
+    if (!job) {
+        throw new exceptions_1.NotFoundException("Job not found", root_1.ErrorCode.JOB_NOT_FOUND);
+    }
+    const user = yield __1.prismaClient.user.findUnique({ where: { id: userId } });
+    if (!user) {
+        throw new exceptions_1.NotFoundException("User not found", root_1.ErrorCode.USER_NOT_FOUND);
+    }
+    const isUsersJob = job.userId == userId;
+    const isUserAdmin = user.role == "ADMIN";
+    if (!isUsersJob && !isUserAdmin) {
+        throw new exceptions_1.NotFoundException("You are not authorized to delete this job", root_1.ErrorCode.UNAUTHORIZED);
+    }
+    const deletedJob = yield __1.prismaClient.job.delete({
+        where: {
+            id: jobId
+        },
+    });
+    if (!deletedJob) {
+        throw new exceptions_1.NotFoundException("Job not found", root_1.ErrorCode.JOB_NOT_FOUND);
+    }
+    return deletedJob;
+});
+exports.deleteJob = deleteJob;

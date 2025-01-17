@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createJobHanlder = void 0;
+exports.deleteJobHandler = exports.createJobHanlder = void 0;
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
@@ -17,6 +17,7 @@ const job_1 = require("../schema/job");
 const mapRoleToCustomRole_1 = require("../utils/mapRoleToCustomRole");
 const jobService_1 = require("../services/jobService");
 const jobTypes_1 = require("../types/jobTypes");
+const zod_1 = require("zod");
 const createJobHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Perform Zod Validation First
     const request = job_1.jobSchema.parse(Object.assign({}, req.body));
@@ -36,3 +37,13 @@ const createJobHanlder = (req, res) => __awaiter(void 0, void 0, void 0, functio
     return res.status(root_1.CREATED).json(job);
 });
 exports.createJobHanlder = createJobHanlder;
+const deleteJobHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const jobId = zod_1.z.string().parse(req.params.id);
+    const userId = req.userId;
+    if (!userId) {
+        throw new exceptions_1.NotFoundException("User not found", root_1.ErrorCode.USER_NOT_FOUND);
+    }
+    const deletedJob = yield (0, jobService_1.deleteJob)(jobId, userId);
+    return res.status(root_1.DELETED).json({ message: "Job deleted successfully" });
+});
+exports.deleteJobHandler = deleteJobHandler;
