@@ -44,7 +44,7 @@ export const createEventHandler = async (
     fileBase64 = decode(file.buffer.toString("base64"));
   }
 
-  // call service
+  
   const roleWithCorrectType: Role = mapPrismaRoleToCustomRole(user.role);
   // Need this because Prisma client returns the role as a type of $Enum.Role but we need it of type Role
 
@@ -52,7 +52,7 @@ export const createEventHandler = async (
     ...user,
     role: roleWithCorrectType,
   };
-
+// call service
   const event = await createEvent(eventData, userData, file, fileBase64);
 
   return res.status(CREATED).json(event);

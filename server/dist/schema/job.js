@@ -11,6 +11,6 @@ exports.jobSchema = zod_1.z.object({
     jobLink: zod_1.z.string().url("Invalid URL format"),
     jobLevel: JobLevel.optional(),
     jobLocation: JobLocation,
-    jobHours: JobHoursType,
+    jobHoursType: JobHoursType,
     internship: zod_1.z.boolean(),
 });

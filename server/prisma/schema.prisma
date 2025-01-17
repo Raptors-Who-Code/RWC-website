@@ -18,25 +18,6 @@ enum VerificationCodeType {
   OTHER
 }
 
-enum JobLevel {
-  JUNIOR
-  MID_LEVEL
-  SENIOR
-  UNKNOWN
-}
-
-enum JobLocation {
-  ONSITE
-  REMOTE
-  HYBRID
-  OTHER
-}
-
-enum JobHourTypes {
-  FULL_TIME
-  PART_TIME
-  CONTRACT
-}
 
 model User {
   id        String   @id @default(uuid())
@@ -93,9 +74,9 @@ model Job {
   updatedAt    DateTime     @updatedAt
   userId       String
   jobLink      String
-  jobLevel     JobLevel?
-  jobLocation  JobLocation
-  jobHoursType JobHourTypes
+  jobLevel     String?
+  jobLocation  String
+  jobHoursType String
   internship   Boolean
 
   user         User         @relation(fields: [userId], references: [id])

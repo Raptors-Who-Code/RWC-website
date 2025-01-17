@@ -10,6 +10,6 @@ export const jobSchema = z.object({
   jobLink: z.string().url("Invalid URL format"),
   jobLevel: JobLevel.optional(),
   jobLocation: JobLocation,
-  jobHours: JobHoursType,
+  jobHoursType: JobHoursType,
   internship: z.boolean(),
 });

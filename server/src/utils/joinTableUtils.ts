@@ -1,5 +1,4 @@
 import { prismaClient } from "..";
-
 // Function to register a user for an event
 export const registerUserForEvent = async (eventId: string, userId: string) => {
   return await prismaClient.registeredEvent.create({

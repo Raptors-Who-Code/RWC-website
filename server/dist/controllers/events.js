@@ -36,10 +36,10 @@ const createEventHandler = (req, res) => __awaiter(void 0, void 0, void 0, funct
     if (file) {
         fileBase64 = (0, base64_arraybuffer_1.decode)(file.buffer.toString("base64"));
     }
-    // call service
     const roleWithCorrectType = (0, mapRoleToCustomRole_1.mapPrismaRoleToCustomRole)(user.role);
     // Need this because Prisma client returns the role as a type of $Enum.Role but we need it of type Role
     const userData = Object.assign(Object.assign({}, user), { role: roleWithCorrectType });
+    // call service
     const event = yield (0, eventService_1.createEvent)(eventData, userData, file, fileBase64);
     return res.status(root_1.CREATED).json(event);
 });

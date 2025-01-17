@@ -1,22 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.JobHourTypes = exports.JobLevel = exports.JobLocation = void 0;
 var JobLocation;
 (function (JobLocation) {
-    JobLocation[JobLocation["ONSITE"] = 0] = "ONSITE";
-    JobLocation[JobLocation["REMOTE"] = 1] = "REMOTE";
-    JobLocation[JobLocation["HYBRID"] = 2] = "HYBRID";
-    JobLocation[JobLocation["OTHER"] = 3] = "OTHER";
-})(JobLocation || (JobLocation = {}));
+    JobLocation["ONSITE"] = "ONSITE";
+    JobLocation["REMOTE"] = "REMOTE";
+    JobLocation["HYBRID"] = "HYBRID";
+    JobLocation["OTHER"] = "OTHER";
+})(JobLocation || (exports.JobLocation = JobLocation = {}));
 var JobLevel;
 (function (JobLevel) {
-    JobLevel[JobLevel["JUNIOR"] = 0] = "JUNIOR";
-    JobLevel[JobLevel["MID_LEVEL"] = 1] = "MID_LEVEL";
-    JobLevel[JobLevel["SENIOR"] = 2] = "SENIOR";
-    JobLevel[JobLevel["UNKNOWN"] = 3] = "UNKNOWN";
-})(JobLevel || (JobLevel = {}));
+    JobLevel["JUNIOR"] = "JUNIOR";
+    JobLevel["MID_LEVEL"] = "MID_LEVEL";
+    JobLevel["SENIOR"] = "SENIOR";
+    JobLevel["UNKNOWN"] = "UNKNOWN";
+})(JobLevel || (exports.JobLevel = JobLevel = {}));
 var JobHourTypes;
 (function (JobHourTypes) {
-    JobHourTypes[JobHourTypes["FULL_TIME"] = 0] = "FULL_TIME";
-    JobHourTypes[JobHourTypes["PART_TIME"] = 1] = "PART_TIME";
-    JobHourTypes[JobHourTypes["CONTRACT"] = 2] = "CONTRACT";
-})(JobHourTypes || (JobHourTypes = {}));
+    JobHourTypes["FULL_TIME"] = "FULL_TIME";
+    JobHourTypes["PART_TIME"] = "PART_TIME";
+    JobHourTypes["CONTRACT"] = "CONTRACT";
+})(JobHourTypes || (exports.JobHourTypes = JobHourTypes = {}));

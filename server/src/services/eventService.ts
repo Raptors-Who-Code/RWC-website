@@ -9,7 +9,6 @@ import { ErrorCode } from "../exceptions/root";
 import supabase from "../utils/supabaseStorage";
 import { Event } from "../types/eventTypes";
 import { UserData } from "../types/userTypes";
-import { registerUserForEvent } from "../utils/joinTableUtils";
 
 export const createEvent = async (
   eventData: Event,
@@ -52,7 +51,7 @@ export const createEvent = async (
       },
     });
 
-    await registerUserForEvent(event.id, user.id);
+    
   } else {
     event = await prismaClient.event.create({
       data: {
@@ -60,7 +59,6 @@ export const createEvent = async (
       },
     });
 
-    await registerUserForEvent(event.id, user.id);
   }
 
   return event;

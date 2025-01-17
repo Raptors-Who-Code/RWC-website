@@ -1,29 +1,32 @@
-enum JobLocation {
-  ONSITE,
-  REMOTE,
-  HYBRID,
-  OTHER,
+export enum JobLocation {
+  ONSITE = "ONSITE",
+  REMOTE = "REMOTE",
+  HYBRID = "HYBRID",
+  OTHER = "OTHER",
 }
 
-enum JobLevel {
-  JUNIOR,
-  MID_LEVEL,
-  SENIOR,
-  UNKNOWN,
+export enum JobLevel {
+  JUNIOR = "JUNIOR",
+  MID_LEVEL = "MID_LEVEL",
+  SENIOR = "SENIOR",
+  UNKNOWN = "UNKNOWN",
 }
 
-enum JobHourTypes {
-  FULL_TIME,
-  PART_TIME,
-  CONTRACT,
+export enum JobHourTypes {
+  FULL_TIME = "FULL_TIME",
+  PART_TIME = "PART_TIME",
+  CONTRACT = "CONTRACT",
 }
+
 
 export interface Job {
   title: string;
   content: string;
   jobLink: string;
   jobLocation: JobLocation;
-  jobHours: JobHourTypes;
+  jobHoursType: JobHourTypes;
   internship: boolean;
   jobLevel?: JobLevel;
 }
+
+

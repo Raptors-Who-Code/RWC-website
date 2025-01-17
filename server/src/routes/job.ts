@@ -11,3 +11,5 @@ jobRoutes.post(
   [authMiddleware, verifiedMiddleware],
   errorHandler(createJobHanlder)
 );
+
+export default jobRoutes; 

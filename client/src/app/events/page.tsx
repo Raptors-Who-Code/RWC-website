@@ -28,6 +28,7 @@ export default function Events({ searchParams }: Props) {
   useEffect(() => {
     const fetchEvents = async () => {
       const allEvents = await getAllEvents();
+      console.log("allEvents: ", allEvents);
       // Calculate the start and end indices for the current page
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
@@ -41,7 +42,7 @@ export default function Events({ searchParams }: Props) {
     fetchEvents();
   }, [page, pageSize]);
 
-  if (authLoading || loading) {
+  if (loading) {
     //#TODO: Add a sepearate loading page
     return <div>Loading...</div>;
   }

@@ -18,7 +18,6 @@ const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
 const supabaseStorage_1 = __importDefault(require("../utils/supabaseStorage"));
-const joinTableUtils_1 = require("../utils/joinTableUtils");
 const createEvent = (eventData, user, file, fileBase64) => __awaiter(void 0, void 0, void 0, function* () {
     let event;
     if (file && fileBase64) {
@@ -42,13 +41,11 @@ const createEvent = (eventData, user, file, fileBase64) => __awaiter(void 0, voi
         event = yield __1.prismaClient.event.create({
             data: Object.assign(Object.assign({}, eventData), { imageUrl: image.publicUrl }),
         });
-        yield (0, joinTableUtils_1.registerUserForEvent)(event.id, user.id);
     }
     else {
         event = yield __1.prismaClient.event.create({
             data: Object.assign({}, eventData),
         });
-        yield (0, joinTableUtils_1.registerUserForEvent)(event.id, user.id);
     }
     return event;
 });
