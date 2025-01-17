@@ -1,6 +1,6 @@
 import { prismaClient } from "..";
 import { NotFoundException } from "../exceptions/exceptions";
-import { CREATED, DELETED, ErrorCode } from "../exceptions/root";
+import { CREATED, DELETED, ErrorCode, OK} from "../exceptions/root";
 import { jobSchema } from "../schema/job";
 import { RequestWithUser } from "../types/requestWithUser";
 import { Response } from "express";
@@ -8,7 +8,7 @@ import { Role, UserData } from "../types/userTypes";
 import { mapPrismaRoleToCustomRole } from "../utils/mapRoleToCustomRole";
 import { createJob, deleteJob } from "../services/jobService";
 import { JobLocation, JobHourTypes, JobLevel } from "../types/jobTypes";
-import {z} from 'zod';
+import { z} from 'zod';
 
 export const createJobHanlder = async (req: RequestWithUser, res: Response) => {
   // Perform Zod Validation First
@@ -41,7 +41,7 @@ export const createJobHanlder = async (req: RequestWithUser, res: Response) => {
   };
 
 //   Call Service
-  const job = createJob(jobData, userData);
+  const job = await createJob(jobData, userData);
 
   return res.status(CREATED).json(job);
 };
@@ -59,3 +59,8 @@ export const deleteJobHandler = async (req: RequestWithUser, res: Response) => {
   return res.status(DELETED).json({message: "Job deleted successfully"});
 }
 
+export const getAllJobsHandler = async (req: Request, res: Response) => {
+  const jobs = await prismaClient.job.findMany();
+
+  return res.status(OK).json(jobs);
+}

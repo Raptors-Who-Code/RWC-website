@@ -11,4 +11,5 @@ const jobs_1 = require("../controllers/jobs");
 const jobRoutes = (0, express_1.Router)();
 jobRoutes.post("/", [auth_1.default, verified_1.verifiedMiddleware], (0, error_handler_1.errorHandler)(jobs_1.createJobHanlder));
 jobRoutes.delete("/:id", [auth_1.default, verified_1.verifiedMiddleware], (0, error_handler_1.errorHandler)(jobs_1.deleteJobHandler));
+jobRoutes.get("/", (0, error_handler_1.errorHandler)(jobs_1.getAllJobsHandler));
 exports.default = jobRoutes;

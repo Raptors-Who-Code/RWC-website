@@ -2,7 +2,7 @@ import { Router } from "express";
 import authMiddleware from "../middlewares/auth";
 import { verifiedMiddleware } from "../middlewares/verified";
 import { errorHandler } from "../error-handler";
-import { createJobHanlder, deleteJobHandler } from "../controllers/jobs";
+import { createJobHanlder, deleteJobHandler, getAllJobsHandler } from "../controllers/jobs";
 
 const jobRoutes: Router = Router();
 
@@ -16,5 +16,6 @@ jobRoutes.delete(
   [authMiddleware, verifiedMiddleware],
   errorHandler(deleteJobHandler)
 );
+jobRoutes.get("/", errorHandler(getAllJobsHandler));
 
 export default jobRoutes; 

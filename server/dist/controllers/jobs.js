@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteJobHandler = exports.createJobHanlder = void 0;
+exports.getAllJobsHandler = exports.deleteJobHandler = exports.createJobHanlder = void 0;
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
@@ -33,7 +33,7 @@ const createJobHanlder = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const userData = Object.assign(Object.assign({}, user), { role: roleWithCorrectType });
     const jobData = Object.assign(Object.assign({}, request), { userId: user.id, jobLocation: jobTypes_1.JobLocation[request.jobLocation], jobHoursType: jobTypes_1.JobHourTypes[request.jobHoursType], jobLevel: request.jobLevel ? jobTypes_1.JobLevel[request.jobLevel] : undefined });
     //   Call Service
-    const job = (0, jobService_1.createJob)(jobData, userData);
+    const job = yield (0, jobService_1.createJob)(jobData, userData);
     return res.status(root_1.CREATED).json(job);
 });
 exports.createJobHanlder = createJobHanlder;
@@ -47,3 +47,8 @@ const deleteJobHandler = (req, res) => __awaiter(void 0, void 0, void 0, functio
     return res.status(root_1.DELETED).json({ message: "Job deleted successfully" });
 });
 exports.deleteJobHandler = deleteJobHandler;
+const getAllJobsHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const jobs = yield __1.prismaClient.job.findMany();
+    return res.status(root_1.OK).json(jobs);
+});
+exports.getAllJobsHandler = getAllJobsHandler;
