@@ -12,6 +12,7 @@ const config: Config = {
       screens: {
         "2xl": "1536px",
         rightSectionAppears: "1450px",
+        "very-sm": "400px",
       },
       colors: {
         background: "hsl(var(--background))",

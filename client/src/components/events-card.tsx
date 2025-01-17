@@ -12,11 +12,11 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { EventResponse } from "@/api/eventApi";
 
-interface EventCardItemProps {
+export interface EventCardItemProps {
   item: EventResponse;
 }
 
-const imagesArray = [
+export const imagesArray = [
   "/assets/images/computers.png",
   "/assets/images/maze.png",
   "/assets/images/events-background.png",
