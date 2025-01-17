@@ -28,6 +28,7 @@ var ErrorCode;
     ErrorCode["MISSING_ENV_VARIABLE"] = "MISSING_ENV_VARIABLE";
     ErrorCode["EVENT_NOT_FOUND"] = "EVENT_NOT_FOUND";
     ErrorCode["UPLOAD_FAILED"] = "UPLOAD_FAILED";
+    ErrorCode["DELETE_FAILED"] = "DELETE_FAILED";
 })(ErrorCode || (exports.ErrorCode = ErrorCode = {}));
 exports.OK = 200;
 exports.CREATED = 201;

@@ -18,6 +18,26 @@ enum VerificationCodeType {
   OTHER
 }
 
+enum JobLevel {
+  JUNIOR
+  MID_LEVEL
+  SENIOR
+  UNKNOWN
+}
+
+enum JobLocation {
+  ONSITE
+  REMOTE
+  HYBRID
+  OTHER
+}
+
+enum JobHourTypes {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -32,8 +52,8 @@ model User {
   verificationCodes VerificationCode[] // Relation to VerificationCode model
   jobs              Job[]
   events            Event[]
-  jobVotes          JobVote[]
-  eventVotes        EventVote[]
+  registeredEvents  RegisteredEvent[]
+  appliedJobs       AppliedJob[]
 
   @@map("users")
 }
@@ -66,15 +86,20 @@ model VerificationCode {
 }
 
 model Job {
-  id        String   @id @default(uuid())
-  title     String
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
+  id           String       @id @default(uuid())
+  title        String
+  content      String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  userId       String
+  jobLink      String
+  jobLevel     JobLevel?
+  jobLocation  JobLocation
+  jobHoursType JobHourTypes
+  internship   Boolean
 
-  user  User      @relation(fields: [userId], references: [id])
-  votes JobVote[] // Relation to Vote model
+  user         User         @relation(fields: [userId], references: [id])
+  usersApplied AppliedJob[]
 
   @@index([userId]) // Index for efficient lookups by userId
   @@map("jobs") // Map to "jobs" table
@@ -90,35 +115,33 @@ model Event {
   userId    String
   imageUrl  String? // ImageUrl field to store the image url
 
-  user       User        @relation(fields: [userId], references: [id])
-  eventVotes EventVote[] // Relation to EventVote model
+  user            User              @relation(fields: [userId], references: [id])
+  usersRegistered RegisteredEvent[]
 
   @@index([userId]) // Index for efficient lookups by userId
   @@map("events") // Map to "events" table
 }
 
-model JobVote {
+model RegisteredEvent {
+  id      String @id @default(uuid())
+  userId  String
+  eventId String
+
+  user  User  @relation(fields: [userId], references: [id])
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([userId, eventId]) // Composite index for efficient lookups
+  @@map("registered_events") // Map to "registered_events" table
+}
+
+model AppliedJob {
   id     String @id @default(uuid())
   userId String
   jobId  String
-  value  Int // 1 for upvote, -1 for downvote
 
   user User @relation(fields: [userId], references: [id])
   job  Job  @relation(fields: [jobId], references: [id])
 
   @@index([userId, jobId]) // Composite index for efficient lookups
-  @@map("votes") // Map to "votes" table
-}
-
-model EventVote {
-  id      String @id @default(uuid())
-  userId  String
-  eventId String
-  value   Int // 1 for upvote, -1 for downvote
-
-  user  User  @relation(fields: [userId], references: [id])
-  event Event @relation(fields: [eventId], references: [id])
-
-  @@index([userId, eventId]) // Composite index for efficient lookups
-  @@map("event_votes") // Map to "event_votes" table
+  @@map("applied_jobs") // Map to "applied_jobs" table
 }

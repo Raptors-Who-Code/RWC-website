@@ -9,6 +9,7 @@ import { ErrorCode } from "../exceptions/root";
 import supabase from "../utils/supabaseStorage";
 import { Event } from "../types/eventTypes";
 import { UserData } from "../types/userTypes";
+import { registerUserForEvent } from "../utils/joinTableUtils";
 
 export const createEvent = async (
   eventData: Event,
@@ -50,12 +51,16 @@ export const createEvent = async (
         imageUrl: image.publicUrl,
       },
     });
+
+    await registerUserForEvent(event.id, user.id);
   } else {
     event = await prismaClient.event.create({
       data: {
         ...eventData,
       },
     });
+
+    await registerUserForEvent(event.id, user.id);
   }
 
   return event;
@@ -86,6 +91,22 @@ export const deleteEvent = async (eventId: string, userId: string) => {
     );
   }
 
+  const imageUrl = event.imageUrl;
+
+  if (imageUrl) {
+    const filePath = imageUrl.split("/storage/v1/object/public/images/")[1];
+
+    const { error } = await supabase.storage.from("images").remove([filePath]);
+
+    if (error) {
+      console.log("Error deleting image", error);
+      throw new InternalException(
+        "Failed to delete image from Supabase Storage",
+        ErrorCode.DELETE_FAILED
+      );
+    }
+  }
+
   const deletedEvent = await prismaClient.event.delete({
     where: { id: eventId },
   });
@@ -96,5 +117,3 @@ export const deleteEvent = async (eventId: string, userId: string) => {
 
   return deletedEvent;
 };
-
-export const updatedEvent = () => {};

@@ -5,11 +5,11 @@ export enum Role {
 
 export interface UserData {
   id: string;
-  createdAt: Date;
   name: string;
   email: string;
   password: string;
   verified: boolean;
   role: Role;
+  createdAt: Date;
   updatedAt: Date;
 }
