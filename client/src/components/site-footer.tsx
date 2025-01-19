@@ -44,7 +44,7 @@ export default function SiteFooter() {
     <div className="flex flex-col gap-[10rem]">
       <footer className="flex w-[full] py-[100px] pt-[100px] pb-[40px] flex-col lg:flex-row justify-evenly items-center flex-shrink-0 gap-[10rem] lg:gap-[-6rem]">
         <div className="flex flex-col gap-[30px]">
-          <div className="flex flex-col gap-[15px]">
+          <div className="flex flex-col gap-[15px] justify-center items-center sm:justify-start sm:items-start">
             <h1 className="text-white font-[Plus Jakarta Sans] text-2xl font-semibold leading-[24px]">
               Enter your Email to Get The Latest News
             </h1>
