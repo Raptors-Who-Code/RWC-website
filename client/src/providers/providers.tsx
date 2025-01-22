@@ -17,7 +17,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const hideNavBar: boolean =
     pathname.startsWith("/verify-email") ||
     pathname.startsWith("/password/reset") ||
-    pathname.startsWith("/events/create");
+    pathname.startsWith("/events/create") ||
+    pathname.startsWith("/jobs/create");
 
   return (
     <QueryClientProvider client={queryClient}>
