@@ -57,3 +57,25 @@ export const deleteJob = async (jobId: string, userId: string) => {
 
       return deletedJob;
 }
+
+export const fetchJobsFromAPI = async (numberOfJobs: number) => {
+
+    const apiUrl = "https://api.github.com/repos/cvrve/Summer2025-Internships/contents/.github/scripts/listings.json?ref=dev";
+
+    try {
+      const response = await fetch(apiUrl);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const metadata = await response.json();
+      const downloadUrl = metadata.download_url;
+      const jsonResponse = await fetch(downloadUrl);
+      const jsonData = await jsonResponse.json(); // returns json file containing over 3000 unique job objects 
+      
+      return jsonData.slice(0, numberOfJobs); 
+    } catch (err) {
+      console.error("Error fetching the JSON file:", err);
+    }
+    return;
+  }
