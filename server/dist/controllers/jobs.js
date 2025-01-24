@@ -31,7 +31,9 @@ const createJobHanlder = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const roleWithCorrectType = (0, mapRoleToCustomRole_1.mapPrismaRoleToCustomRole)(user.role);
     // Need this because Prisma client returns the role as a type of $Enum.Role but we need it of type Role
     const userData = Object.assign(Object.assign({}, user), { role: roleWithCorrectType });
-    const jobData = Object.assign(Object.assign({}, request), { userId: user.id, jobLocation: jobTypes_1.JobLocation[request.jobLocation], jobHoursType: jobTypes_1.JobHourTypes[request.jobHoursType], jobLevel: request.jobLevel ? jobTypes_1.JobLevel[request.jobLevel] : undefined });
+    const jobData = Object.assign(Object.assign({}, request), { userId: user.id, jobLocation: jobTypes_1.JobLocation[request.jobLocation], jobHoursType: jobTypes_1.JobHourTypes[request.jobHoursType], jobLevel: request.jobLevel
+            ? jobTypes_1.JobLevel[request.jobLevel]
+            : undefined });
     //   Call Service
     const job = yield (0, jobService_1.createJob)(jobData, userData);
     return res.status(root_1.CREATED).json(job);

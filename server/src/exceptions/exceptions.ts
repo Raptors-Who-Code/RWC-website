@@ -41,3 +41,4 @@ export class ForbiddenException extends HttpException {
     super(message, errorCode, 403, errors);
   }
 }
+
