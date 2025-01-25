@@ -1,18 +1,12 @@
 "use client";
 
-import CreateJobDialog from "@/components/CreateJobDialog";
+import { getAllJobs, JobResponse } from "@/api/jobApi";
+import CreateJobsLoadingPage from "@/components/CreateJobsLoadingPage";
 import JobCardList from "@/components/job-card-list";
 import JobPagination from "@/components/job-pagination";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import useAuth from "@/hooks/useAuth";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -32,23 +26,47 @@ interface Job {
   isFullTime: boolean;
 }
 
-export default function Page({ searchParams }: Props) {
-  const page = parseInt(searchParams.page || "1", 10);
-  const pageSize = parseInt(searchParams.pageSize || "20", 10);
-  const [data, setData] = useState<Job[]>([]);
-  const [count, setCount] = useState<number>(1);
-
+export default function Jobs({ searchParams }: Props) {
   const { data: user, isLoading: authLoading } = useAuth();
 
-  useEffect(() => {
-    const getTheJobsWithCount = async () => {
-      const [data, count] = await getJobsWithCount(page, pageSize);
-      setData(data);
-      setCount(count);
-    };
+  const [allJobs, setAllJobs] = useState<JobResponse[]>([]);
+  const [count, setCount] = useState<number>(0);
+  const page = parseInt(searchParams.page || "1", 10);
+  const pageSize = parseInt(searchParams.pageSize || "20", 10);
 
-    getTheJobsWithCount();
+  const {
+    mutate: getAllTheJobs,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: getAllJobs,
+    onSuccess: (data: JobResponse[]) => {
+      handleSuccessfulJobGet(data);
+    },
+  });
+
+  const handleSuccessfulJobGet = (data: JobResponse[]) => {
+    // Calculate the start and end indices for the current page
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    // Slice the events array to get the current page's events
+    setAllJobs(data.slice(start, end));
+    // Get the total count of jobs
+    setCount(data.length);
+  };
+
+  useEffect(() => {
+    getAllTheJobs();
   }, [page, pageSize]);
+
+  if (isPending) {
+    return <CreateJobsLoadingPage />;
+  }
+
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 p-20">
@@ -70,7 +88,7 @@ export default function Page({ searchParams }: Props) {
           </div>
         )}
 
-        <JobCardList data={data} />
+        <JobCardList data={allJobs} />
 
         <JobPagination
           page={page}

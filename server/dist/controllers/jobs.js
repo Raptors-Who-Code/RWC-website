@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllJobsHandler = exports.deleteJobHandler = exports.createJobHanlder = void 0;
+exports.jobAPIHandler = exports.getAllJobsHandler = exports.deleteJobHandler = exports.createJobHanlder = void 0;
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
@@ -19,7 +19,6 @@ const jobService_1 = require("../services/jobService");
 const jobTypes_1 = require("../types/jobTypes");
 const zod_1 = require("zod");
 const createJobHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("req body", Object.assign({}, req.body));
     // Perform Zod Validation First
     const request = job_1.jobSchema.parse(Object.assign({}, req.body));
     // Make sure user exists
@@ -55,3 +54,15 @@ const getAllJobsHandler = (req, res) => __awaiter(void 0, void 0, void 0, functi
     return res.status(root_1.OK).json(jobs);
 });
 exports.getAllJobsHandler = getAllJobsHandler;
+const jobAPIHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const jobs = yield (0, jobService_1.fetchJobsFromAPI)(5); // parameter determines how many jobs will be returned from the API
+        res.status(root_1.OK).json(jobs);
+        return jobs;
+    }
+    catch (err) {
+        res.status(500).json({ message: "Failed to fetch jobs" });
+    }
+    return;
+});
+exports.jobAPIHandler = jobAPIHandler;

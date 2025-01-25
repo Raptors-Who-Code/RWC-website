@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.jobSchema = void 0;
 const zod_1 = require("zod");
 const JobLevel = zod_1.z.enum(["JUNIOR", "MID_LEVEL", "SENIOR", "UNKNOWN"]);
-const JobLocation = zod_1.z.enum(["ONSITE", "REMOTE", "HYPBRID", "OTHER"]);
+const JobLocation = zod_1.z.enum(["ONSITE", "REMOTE", "HYBRID", "OTHER"]);
 const JobHoursType = zod_1.z.enum(["FULL_TIME", "PART_TIME", "CONTRACT"]);
 exports.jobSchema = zod_1.z.object({
     title: zod_1.z.string().min(1, "Title is required").max(60),

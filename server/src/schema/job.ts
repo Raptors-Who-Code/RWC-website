@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const JobLevel = z.enum(["JUNIOR", "MID_LEVEL", "SENIOR", "UNKNOWN"]);
-const JobLocation = z.enum(["ONSITE", "REMOTE", "HYPBRID", "OTHER"]);
+const JobLocation = z.enum(["ONSITE", "REMOTE", "HYBRID", "OTHER"]);
 const JobHoursType = z.enum(["FULL_TIME", "PART_TIME", "CONTRACT"]);
 
 export const jobSchema = z.object({

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteJob = exports.createJob = void 0;
+exports.fetchJobsFromAPI = exports.deleteJob = exports.createJob = void 0;
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
@@ -53,3 +53,22 @@ const deleteJob = (jobId, userId) => __awaiter(void 0, void 0, void 0, function*
     return deletedJob;
 });
 exports.deleteJob = deleteJob;
+const fetchJobsFromAPI = (numberOfJobs) => __awaiter(void 0, void 0, void 0, function* () {
+    const apiUrl = "https://api.github.com/repos/cvrve/Summer2025-Internships/contents/.github/scripts/listings.json?ref=dev";
+    try {
+        const response = yield fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const metadata = yield response.json();
+        const downloadUrl = metadata.download_url;
+        const jsonResponse = yield fetch(downloadUrl);
+        const jsonData = yield jsonResponse.json(); // returns json file containing over 3000 unique job objects 
+        return jsonData.slice(0, numberOfJobs);
+    }
+    catch (err) {
+        console.error("Error fetching the JSON file:", err);
+    }
+    return;
+});
+exports.fetchJobsFromAPI = fetchJobsFromAPI;

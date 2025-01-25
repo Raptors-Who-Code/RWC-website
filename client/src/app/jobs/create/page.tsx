@@ -219,6 +219,14 @@ function CreateJobsPage() {
                 </div>
               )}
 
+              {isError && (
+                <div className="flex flex-col w-full justify-center">
+                  <p className="text-red-500 text-xs text-left">
+                    {error?.message || "An error occured"}
+                  </p>
+                </div>
+              )}
+
               {step !== 1 && (
                 <Button
                   type="button"
@@ -248,8 +256,9 @@ function CreateJobsPage() {
                   type="button"
                   className="flex justify-center items-center gap-[10px] rounded-lg bg-mainPurple mt-[10px] hover:bg-mainPurple transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95"
                   onClick={handleSumbitClick}
+                  disabled={isPending}
                 >
-                  Submit
+                  {isPending ? "Loading..." : "Submit"}
                 </Button>
               )}
             </div>

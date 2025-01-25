@@ -11,7 +11,6 @@ import { JobLocation, JobHourTypes, JobLevel } from "../types/jobTypes";
 import { z } from "zod";
 
 export const createJobHanlder = async (req: RequestWithUser, res: Response) => {
-  console.log("req body", { ...req.body });
   // Perform Zod Validation First
   const request = jobSchema.parse({ ...req.body });
 
@@ -68,14 +67,14 @@ export const getAllJobsHandler = async (req: Request, res: Response) => {
   return res.status(OK).json(jobs);
 };
 
-export const jobAPIHandler = async(req: Request, res: Response) => {
+export const jobAPIHandler = async (req: Request, res: Response) => {
   try {
     const jobs = await fetchJobsFromAPI(5); // parameter determines how many jobs will be returned from the API
     res.status(OK).json(jobs);
 
     return jobs;
   } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch jobs' });
+    res.status(500).json({ message: "Failed to fetch jobs" });
   }
   return;
-}
+};

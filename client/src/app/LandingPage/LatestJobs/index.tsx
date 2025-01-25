@@ -1,48 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import { JobCardItem } from "@/components/job-card-item";
 import JobCardList from "@/components/job-card-list";
+import { getAllJobs } from "@/api/jobApi";
 
-{
-  /* Dummy Data */
-}
-const landingPageJobs = [
-  {
-    title: "Mernstack Developer",
-    level: "Mid",
-    description:
-      "We're looking for a mid-level product designer to join our team.",
-    isRemote: true,
-    isFullTime: true,
-  },
-  {
-    title: "Mernstack Developer",
-    level: "Mid",
-    description:
-      "We're looking for a mid-level product designer to join our team.",
-    isRemote: true,
-    isFullTime: true,
-  },
-  {
-    title: "Mernstack Developer",
-    level: "Mid",
-    description:
-      "We're looking for a mid-level product designer to join our team.",
-    isRemote: true,
-    isFullTime: true,
-  },
-  {
-    title: "Mernstack Developer",
-    level: "Mid",
-    description:
-      "We're looking for a mid-level product designer to join our team.",
-    isRemote: true,
-    isFullTime: true,
-  },
-];
-
-function LatestJobs() {
-  const previewJobs = landingPageJobs.slice(0, 3);
+async function LatestJobs() {
+  const jobData = await getAllJobs();
+  const previewJobs = jobData.slice(0, 3);
 
   return (
     <div className="max-w-6xl mx-auto space-y-12 pb-[100px] ">

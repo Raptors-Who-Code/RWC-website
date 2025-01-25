@@ -48,3 +48,14 @@ export const createJob = async (jobData: Job) => {
     throw error;
   }
 };
+
+export interface JobResponse extends Job {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+}
+
+export const getAllJobs = async (): Promise<JobResponse[]> => {
+  return API.get("/api/jobs");
+};
