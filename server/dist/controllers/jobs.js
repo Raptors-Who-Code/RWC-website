@@ -19,6 +19,7 @@ const jobService_1 = require("../services/jobService");
 const jobTypes_1 = require("../types/jobTypes");
 const zod_1 = require("zod");
 const createJobHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("req body", Object.assign({}, req.body));
     // Perform Zod Validation First
     const request = job_1.jobSchema.parse(Object.assign({}, req.body));
     // Make sure user exists

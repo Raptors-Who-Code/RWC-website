@@ -23,6 +23,7 @@ export const createEvent = async (eventData: Event) => {
         "Content-Type": "multipart/form-data",
       },
     });
+
     return response;
   } catch (error) {
     console.error("Error creating event", error);

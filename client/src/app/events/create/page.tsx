@@ -46,6 +46,8 @@ function CreateEventPage() {
 
   const titleInputRef = useRef<HTMLInputElement>(null);
 
+  // #TODO: Use isPending, isError, and error for UI, React-Toastify, Button loading state, etc.
+
   const {
     mutate: createTheEvent,
     isPending,
@@ -90,7 +92,6 @@ function CreateEventPage() {
         ...(file && { image: file }),
       };
 
-      console.log("Client Event Data", eventData);
       createTheEvent(eventData);
     }
   };

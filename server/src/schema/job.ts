@@ -8,7 +8,7 @@ export const jobSchema = z.object({
   title: z.string().min(1, "Title is required").max(60),
   content: z.string().min(1, "Content is required").max(500),
   jobLink: z.string().url("Invalid URL format"),
-  jobLevel: JobLevel.optional(),
+  jobLevel: JobLevel,
   jobLocation: JobLocation,
   jobHoursType: JobHoursType,
   internship: z.boolean(),

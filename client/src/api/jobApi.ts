@@ -1,3 +1,4 @@
+import API from "@/config/apiClient";
 import { z } from "zod";
 
 export enum JobLocation {
@@ -27,9 +28,23 @@ export interface Job {
   jobLocation: JobLocation;
   jobHoursType: JobHourTypes;
   internship: boolean;
-  jobLevel?: JobLevel;
+  jobLevel: JobLevel;
 }
 
 export const jobLinkSchema = z.string().url();
 
-export const createJob = async (jobData: Job) => {};
+export const createJob = async (jobData: Job) => {
+  console.log("jobData", jobData);
+  try {
+    const response = await API.post("/api/jobs", jobData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response;
+  } catch (error) {
+    console.error("Error creating job", error);
+    throw error;
+  }
+};

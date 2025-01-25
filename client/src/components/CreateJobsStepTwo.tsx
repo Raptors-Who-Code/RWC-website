@@ -86,9 +86,9 @@ function CreateJobsStepTwo({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="fullTime">Full-Time</SelectItem>
-              <SelectItem value="partTime">Part-Time</SelectItem>
-              <SelectItem value="contract">Contract</SelectItem>
+              <SelectItem value="FULL_TIME">Full-Time</SelectItem>
+              <SelectItem value="PART_TIME">Part-Time</SelectItem>
+              <SelectItem value="CONTRACT">Contract</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

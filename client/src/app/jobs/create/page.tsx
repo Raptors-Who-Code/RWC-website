@@ -2,9 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { useState } from "react";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
@@ -12,6 +9,7 @@ import CreateJobsStepOne from "@/components/CreateJobsStepOne";
 import CreateJobsStepTwo from "@/components/CreateJobsStepTwo";
 import CreateJobsStepThree from "@/components/CreateJobsStepThree";
 import {
+  createJob,
   JobHourTypes,
   JobLevel,
   jobLinkSchema,
@@ -19,12 +17,15 @@ import {
 } from "@/api/jobApi";
 import useAuth from "@/hooks/useAuth";
 import { toast } from "react-toastify";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export const yesNoToBoolean = (value: string) => {
   return value === "yes" ? true : false;
 };
 
 function CreateJobsPage() {
+  const router = useRouter();
   const { data: user, isLoading } = useAuth();
   // Component pagination state
   const [step, setStep] = useState<number>(1);
@@ -47,9 +48,22 @@ function CreateJobsPage() {
   );
   const [stepThreeError, setStepThreeError] = useState<boolean>(false);
 
+  const {
+    mutate: createTheJob,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: createJob,
+    onSuccess: () => {
+      router.replace("/jobs");
+    },
+  });
+
   const handleSumbitClick = () => {
-    if (!jobLevel || !isInternship) {
+    if (!jobLevel || isInternship === null || isInternship === undefined) {
       setStepThreeError(true);
+
       return;
     } else {
       setStepThreeError(false);
@@ -65,6 +79,32 @@ function CreateJobsPage() {
         draggable: true,
         progress: undefined,
       });
+    }
+
+    const jobInfo = {
+      title: jobTitle,
+      content: description,
+      jobLink,
+      jobLocation,
+      jobHoursType,
+      jobLevel,
+      internship: isInternship,
+    };
+    const noNullValues = Object.values(jobInfo).every((val) => val !== null);
+
+    if (noNullValues) {
+      const jobData = {
+        title: jobTitle,
+        content: description,
+        jobLink,
+        jobLocation: jobLocation as JobLocation,
+        jobHoursType: jobHoursType as JobHourTypes,
+        jobLevel: jobLevel as JobLevel,
+        internship: isInternship,
+      };
+      createTheJob(jobData);
+    } else {
+      setStepThreeError(true);
     }
   };
 

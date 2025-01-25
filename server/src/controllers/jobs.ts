@@ -11,6 +11,7 @@ import { JobLocation, JobHourTypes, JobLevel } from "../types/jobTypes";
 import { z } from "zod";
 
 export const createJobHanlder = async (req: RequestWithUser, res: Response) => {
+  console.log("req body", { ...req.body });
   // Perform Zod Validation First
   const request = jobSchema.parse({ ...req.body });
 
