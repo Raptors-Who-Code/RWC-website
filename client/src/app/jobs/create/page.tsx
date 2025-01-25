@@ -11,24 +11,61 @@ import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import CreateJobsStepOne from "@/components/CreateJobsStepOne";
 import CreateJobsStepTwo from "@/components/CreateJobsStepTwo";
 import CreateJobsStepThree from "@/components/CreateJobsStepThree";
+import {
+  JobHourTypes,
+  JobLevel,
+  jobLinkSchema,
+  JobLocation,
+} from "@/api/jobApi";
+import useAuth from "@/hooks/useAuth";
+import { toast } from "react-toastify";
 
 export const yesNoToBoolean = (value: string) => {
   return value === "yes" ? true : false;
 };
 
 function CreateJobsPage() {
+  const { data: user, isLoading } = useAuth();
+  // Component pagination state
   const [step, setStep] = useState<number>(1);
+  // Step 1
   const [jobTitle, setJobTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [jobLink, setJobLink] = useState<string>("");
-  const [workType, setWorkType] = useState<string>("");
-  const [employmentType, setEmploymentType] = useState<string>("");
-  const [experienceLevel, setExperienceLevel] = useState<string>("");
-  const [isInternship, setIsInternship] = useState<boolean>(true);
   const [stepOneError, setStepOneError] = useState<boolean>(false);
 
+  // Step 2
+
+  const [jobLink, setJobLink] = useState<string>("");
+  const [jobLocation, setJobLocation] = useState<JobLocation | null>(null);
+  const [jobHoursType, setJobHoursType] = useState<JobHourTypes | null>(null);
+  const [stepTwoError, setStepTwoError] = useState<boolean>(false);
+
+  // Step 3 (Final Step)
+  const [jobLevel, setJobLevel] = useState<JobLevel | null>(null);
+  const [isInternship, setIsInternship] = useState<boolean>(
+    yesNoToBoolean("yes")
+  );
+  const [stepThreeError, setStepThreeError] = useState<boolean>(false);
+
   const handleSumbitClick = () => {
-    console.log("Submit Clicked");
+    if (!jobLevel || !isInternship) {
+      setStepThreeError(true);
+      return;
+    } else {
+      setStepThreeError(false);
+    }
+
+    if (!user?.verified) {
+      toast.error("You must be verified to create a job", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   const handleStepOneNextClick = () => {
@@ -41,8 +78,14 @@ function CreateJobsPage() {
   };
 
   const handleStepTwoNextClick = () => {
-    console.log("Step Two Next Clicked");
-    setStep((prev) => prev + 1);
+    const jobLinkValidation = jobLinkSchema.safeParse(jobLink);
+
+    if (jobLinkValidation.success && jobLocation && jobHoursType) {
+      setStep((prev) => prev + 1);
+      setStepTwoError(false);
+    } else {
+      setStepTwoError(true);
+    }
   };
 
   const handleNextClick = () => {
@@ -87,9 +130,25 @@ function CreateJobsPage() {
               />
             )}
 
-            {step === 2 && <CreateJobsStepTwo />}
+            {step === 2 && (
+              <CreateJobsStepTwo
+                jobLink={jobLink}
+                setJobLink={setJobLink}
+                jobLocation={jobLocation}
+                setJobLocation={setJobLocation}
+                jobHoursType={jobHoursType}
+                setJobHoursType={setJobHoursType}
+              />
+            )}
 
-            {step === 3 && <CreateJobsStepThree />}
+            {step === 3 && (
+              <CreateJobsStepThree
+                jobLevel={jobLevel}
+                setJobLevel={setJobLevel}
+                isInternship={isInternship}
+                setIsInternship={setIsInternship}
+              />
+            )}
 
             <div
               className={`flex flex-row ${
@@ -103,10 +162,29 @@ function CreateJobsPage() {
                   </p>
                 </div>
               )}
+
+              {stepTwoError && (
+                <div className="flex flex-col w-full justify-center">
+                  <p className="text-red-500 text-xs text-left">
+                    Invalid or missing fields
+                  </p>
+                </div>
+              )}
+
+              {stepThreeError && (
+                <div className="flex flex-col w-full justify-center">
+                  <p className="text-red-500 text-xs text-left">
+                    Invalid or missing fields
+                  </p>
+                </div>
+              )}
+
               {step !== 1 && (
                 <Button
                   type="button"
-                  className="flex justify-center items-center gap-[10px] rounded-lg bg-[#1A202C] mt-[10px] hover:bg-[#1A202C] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95"
+                  className={`flex justify-center ${
+                    (stepTwoError || stepThreeError) && "mr-2 lg:mr-4"
+                  } items-center gap-[10px] rounded-lg bg-[#1A202C] mt-[10px] hover:bg-[#1A202C] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95`}
                   onClick={handleBackClick}
                 >
                   <MdArrowBack />

@@ -11,8 +11,25 @@ import {
   SelectValue,
 } from "./ui/select";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { JobLevel } from "@/api/jobApi";
+import { yesNoToBoolean } from "@/app/jobs/create/page";
 
-function CreateJobsStepThree() {
+interface JobStepThreeProps {
+  jobLevel: JobLevel | null;
+  setJobLevel: (jobLevel: JobLevel) => void;
+  isInternship: boolean;
+  setIsInternship: (isInternship: boolean) => void;
+}
+
+function CreateJobsStepThree({
+  jobLevel,
+  setJobLevel,
+  isInternship,
+  setIsInternship,
+}: JobStepThreeProps) {
+  const handleInternshipChange = (value: string) => {
+    setIsInternship(yesNoToBoolean(value));
+  };
   return (
     <>
       <header>
@@ -25,16 +42,16 @@ function CreateJobsStepThree() {
         <Label htmlFor="title" className="text-lg font-medium text-gray-300">
           Experience Level
         </Label>
-        <Select>
+        <Select value={jobLevel ?? ""} onValueChange={setJobLevel}>
           <SelectTrigger className="w-full p-6 border-mainPurple">
             <SelectValue placeholder="Select Experience" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="onsite">Junior</SelectItem>
-              <SelectItem value="remote">Mid Level</SelectItem>
-              <SelectItem value="hybrid">Senior</SelectItem>
-              <SelectItem value="other">Unknown</SelectItem>
+              <SelectItem value="JUNIOR">Junior</SelectItem>
+              <SelectItem value="MID_LEVEL">Mid Level</SelectItem>
+              <SelectItem value="SENIOR">Senior</SelectItem>
+              <SelectItem value="UNKNOWN">Unknown</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -49,18 +66,28 @@ function CreateJobsStepThree() {
         </Label>
         <RadioGroup
           id="internship"
+          value={isInternship ? "yes" : "no"}
+          onValueChange={handleInternshipChange}
           defaultValue="yes"
           className="flex flex-row gap-6 mt-4 mb-4"
         >
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="option-one" id="yes" />
+            <RadioGroupItem value="yes" id="yes" />
             <Label htmlFor="yes">Yes</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="option-two" id="no" />
+            <RadioGroupItem value="no" id="no" />
             <Label htmlFor="no">No</Label>
           </div>
         </RadioGroup>
+
+        <div className="bg-orange-500 text-white p-4 rounded-xl">
+          <p>
+            <span className="font-extrabold">Notice</span>: Sharing malicious
+            links or disseminating inaccurate information may result in account
+            suspension or the removal of job postings.
+          </p>
+        </div>
       </div>
     </>
   );

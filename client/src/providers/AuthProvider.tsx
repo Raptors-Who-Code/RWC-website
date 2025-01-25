@@ -22,7 +22,7 @@ export default function AuthProvider({
       dispatch(setCredentials({ user }));
     }
 
-    if (user && !user.verified) {
+    if (user && !user.verified && pathname === "/") {
       toast.warn("Please verify your email to access all features.", {
         position: "top-right",
         autoClose: false,
@@ -47,19 +47,6 @@ export default function AuthProvider({
         progress: undefined,
       });
       router.replace("/login");
-    }
-
-    if (pathname === "/events/create" && user && !user.verified) {
-      toast.error("You must be verified to create events", {
-        position: "top-right",
-        autoClose: false,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      router.replace("/events");
     }
 
     if (pathname === "/login" && user) {

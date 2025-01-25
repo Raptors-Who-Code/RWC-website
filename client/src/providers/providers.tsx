@@ -9,7 +9,6 @@ import Navbar from "../app/LandingPage/Navbar";
 import { usePathname } from "next/navigation";
 import AuthProvider from "./AuthProvider";
 import { ToastContainer } from "react-toastify";
-import SimplifiedNavbar from "@/components/simple-navbar";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

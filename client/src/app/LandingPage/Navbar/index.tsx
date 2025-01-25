@@ -46,6 +46,7 @@ function Navbar() {
 
   const handleLogoutClick = () => {
     signOut();
+    router.replace("/");
   };
 
   const avatarFallBack: string | undefined = (

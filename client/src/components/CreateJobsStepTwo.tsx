@@ -10,8 +10,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { JobLocation } from "@/api/jobApi";
+import { JobHourTypes } from "@/api/jobApi";
 
-function CreateJobsStepTwo() {
+interface JobsStepTwoProps {
+  jobLink: string;
+  setJobLink: (jobLink: string) => void;
+  jobLocation: JobLocation | null;
+  setJobLocation: (jobLocation: JobLocation) => void;
+  jobHoursType: JobHourTypes | null;
+  setJobHoursType: (jobHoursType: JobHourTypes) => void;
+}
+
+function CreateJobsStepTwo({
+  jobLink,
+  setJobLink,
+  setJobLocation,
+  setJobHoursType,
+  jobLocation,
+  jobHoursType,
+}: JobsStepTwoProps) {
+  const handleJobLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setJobLink(e.target.value);
+  };
+
   return (
     <>
       <header>
@@ -27,7 +49,10 @@ function CreateJobsStepTwo() {
         <Input
           type="text"
           id="link"
-          placeholder="Enter the job link here"
+          placeholder="Enter the valid link here"
+          onChange={handleJobLinkChange}
+          value={jobLink}
+          autoComplete="off"
           className="border border-gray-600 rounded-lg p-6 bg-neutral-800 text-white focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 w-full"
         ></Input>
       </div>
@@ -36,16 +61,16 @@ function CreateJobsStepTwo() {
         <Label htmlFor="title" className="text-lg font-medium text-gray-300">
           Work Type
         </Label>
-        <Select>
+        <Select value={jobLocation ?? ""} onValueChange={setJobLocation}>
           <SelectTrigger className="w-full p-6 border-mainPurple">
             <SelectValue placeholder="Select Work Type" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="onsite">Onsite</SelectItem>
-              <SelectItem value="remote">Remote</SelectItem>
-              <SelectItem value="hybrid">Hybrid</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
+              <SelectItem value="ONSITE">Onsite</SelectItem>
+              <SelectItem value="REMOTE">Remote</SelectItem>
+              <SelectItem value="HYBRID">Hybrid</SelectItem>
+              <SelectItem value="OTHER">Other</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -55,7 +80,7 @@ function CreateJobsStepTwo() {
         <Label htmlFor="title" className="text-lg font-medium text-gray-300">
           Employment Type
         </Label>
-        <Select>
+        <Select value={jobHoursType ?? ""} onValueChange={setJobHoursType}>
           <SelectTrigger className="w-full p-6 border-mainPurple">
             <SelectValue placeholder="Select Employment Type" />
           </SelectTrigger>

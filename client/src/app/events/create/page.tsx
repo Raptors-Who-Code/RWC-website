@@ -25,6 +25,7 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { isBefore, startOfToday } from "date-fns";
 import { toast } from "react-toastify";
+import useAuth from "@/hooks/useAuth";
 
 interface StepCounterProps {
   currentStep: number;
@@ -32,6 +33,7 @@ interface StepCounterProps {
 }
 
 function CreateEventPage() {
+  const { data: user, isLoading } = useAuth();
   const [title, setTitle] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [description, setDescription] = useState<string>("");
@@ -66,6 +68,20 @@ function CreateEventPage() {
   };
 
   const handleSubmitClick = () => {
+    if (!user?.verified) {
+      toast.error("You must be verified to create events", {
+        position: "top-right",
+        autoClose: false,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
+      return;
+    }
+
     if (title && description && date) {
       const eventData = {
         title: title,

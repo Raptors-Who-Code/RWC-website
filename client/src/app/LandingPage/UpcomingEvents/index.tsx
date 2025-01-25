@@ -3,7 +3,13 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { EventCardItemProps, getRandomImage } from "@/components/events-card";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { EventResponse, getAllEvents } from "@/api/eventApi";
@@ -21,15 +27,15 @@ const sampleEvent: Event = {
 };
 
 function UpcomingEvents() {
-
   const [events, setEvents] = useState<EventResponse[]>([]);
-  const [randomThreeEvents, setRandomThreeEvents] = useState<EventResponse[]>([]);
+  const [randomThreeEvents, setRandomThreeEvents] = useState<EventResponse[]>(
+    []
+  );
   const [eventsLength, setEventsLength] = useState<number>(0);
   const [eventsLoading, setEventsLoading] = useState<boolean>(true);
 
-
   useEffect(() => {
-      const fetchEvents = async () => {
+    const fetchEvents = async () => {
       const allEvents = await getAllEvents();
       console.log("allEvents: ", allEvents);
       setEvents(allEvents);
@@ -53,9 +59,16 @@ function UpcomingEvents() {
       </div>
       {/* Event Cards */}
       <div className="flex justify-center">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-    {events && eventsLength >= 3 && !eventsLoading && events.slice(0,3).map((event,index) => (<div key={index}><EventCardItemForLanding item={event}/></div>))}
-  </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+          {events &&
+            eventsLength >= 3 &&
+            !eventsLoading &&
+            events.slice(0, 3).map((event, index) => (
+              <div key={index}>
+                <EventCardItemForLanding item={event} />
+              </div>
+            ))}
+        </div>
       </div>
 
       {/* View All Events Button */}
@@ -71,8 +84,6 @@ function UpcomingEvents() {
 }
 
 function EventCardItemForLanding({ item }: EventCardItemProps) {
-  console.log(item);
-  console.log("itemImage", item.imageUrl);
   const setTheImage = () => {
     if (item.imageUrl) {
       return item.imageUrl;
@@ -92,7 +103,7 @@ function EventCardItemForLanding({ item }: EventCardItemProps) {
       year: "2-digit",
     });
   };
-  
+
   return (
     <Card className="flex w-[266px] h-[341px] very-sm:w-[355px] very-sm:h-[455px] p-3 flex-col gap-4 flex-[1_0_0] rounded-[5px] border-gray-600 bg-[#1a1d24]">
       {/* Top Image */}

@@ -44,11 +44,11 @@ export default function SiteFooter() {
     <div className="flex flex-col gap-[10rem]">
       <footer className="flex w-[full] py-[100px] pt-[100px] pb-[40px] flex-col lg:flex-row justify-evenly items-center flex-shrink-0 gap-[10rem] lg:gap-[-6rem]">
         <div className="flex flex-col gap-[30px]">
-          <div className="flex flex-col gap-[15px] justify-center items-center sm:justify-start sm:items-start">
-            <h1 className="text-white font-[Plus Jakarta Sans] text-2xl font-semibold leading-[24px]">
+          <div className="flex flex-col gap-[15px] justify-center items-center sm:justify-start sm:items">
+            <h1 className="text-white font-[Plus Jakarta Sans] lg:text-2xl font-semibold leading-[24px] text-lg lg:text-leftt text-center">
               Enter your Email to Get The Latest News
             </h1>
-            <p className="text-gray-600 font-inter text-base font-normal leading-6 max-w-sm">
+            <p className="text-gray-600 font-inter lg:text-base font-normal leading-6 lg:max-w-sm text-sm max-w-[20rem] lg:text-left text-center">
               Stay updated with the latest news, events, and exclusive offers
               from our club.
             </p>
@@ -56,11 +56,11 @@ export default function SiteFooter() {
 
           <div className="flex flex-row gap-0">
             <Input
-              className="flex w-[473px] h-[60px] pl-[30px] items-center gap-[10px] rounded-[3px] border border-[#565859]"
+              className="flex lg:w-[473px] h-[60px] pl-[30px] items-center gap-[10px] rounded-[3px] border border-[#565859]"
               placeholder="Enter email address..."
             ></Input>
             <Button
-              className="flex w-[114px] h-[60px] py-[18px] px-[30px] justify-center items-center gap-[10px] rounded-none bg-gradient-to-r from-[#9632D7] to-[#4F1A71]"
+              className="flex lg:w-[114px] h-[60px] py-[18px] px-[30px] justify-center items-center gap-[10px] rounded-none bg-gradient-to-r from-[#9632D7] to-[#4F1A71]"
               type="submit"
             >
               Submit
@@ -69,7 +69,7 @@ export default function SiteFooter() {
         </div>
 
         <div className="flex flex-col gap-[20px]">
-          <h1>Follow us on: </h1>
+          <h1 className="lg:text-left text-center">Follow us on: </h1>
           <div className="flex flex-row items-start gap-[15px]">
             {socials.map((social, index) => (
               <Link href={social.href} key={index}>

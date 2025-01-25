@@ -49,6 +49,7 @@ function CreateJobsStepOne({
             className="border border-gray-600 rounded-lg p-6 bg-neutral-800 text-white focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             value={jobTitle}
             onChange={handleTitleChange}
+            autoComplete="off"
           ></Input>
         </div>
         <div className="flex flex-col gap-4 h-[400rem]">
