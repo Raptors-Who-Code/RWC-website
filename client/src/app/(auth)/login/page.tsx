@@ -17,9 +17,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schema/auth.schema";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { login, LoginFormFields } from "@/api/authApi";
+import { login, LoginFormFields, User } from "@/api/authApi";
 import { useDispatch } from "react-redux";
-import { setCredentials, User } from "@/features/auth/authSlice";
+import { useAuthContext } from "@/providers/AuthProvider";
 
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginFormFields>({
@@ -27,7 +27,8 @@ export default function LoginPage() {
   });
 
   const router = useRouter();
-  const dispatch = useDispatch();
+
+  const { setClientUser } = useAuthContext();
 
   const {
     mutate: signIn,
@@ -37,8 +38,8 @@ export default function LoginPage() {
   } = useMutation({
     mutationFn: login,
     onSuccess: (data: User) => {
+      setClientUser(data);
       router.replace("/");
-      dispatch(setCredentials({ user: data }));
     },
   });
 

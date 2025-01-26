@@ -1,7 +1,24 @@
 import API from "@/config/apiClient";
-import { User } from "@/features/auth/authSlice";
 import { emailSchema, LoginSchema, SignupSchema } from "@/schema/auth.schema";
 import { z } from "zod";
+
+export enum Role {
+  ADMIN,
+  MODERATOR,
+  MEMBER,
+  GUEST,
+  ALUMNI,
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  verified: boolean;
+  role: Role;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export type LoginFormFields = z.infer<typeof LoginSchema>;
 

@@ -5,7 +5,6 @@ import LandingAbout from "./LandingAbout";
 import UpcomingEvents from "./UpcomingEvents";
 import LatestJobs from "./LatestJobs";
 import FAQ from "./Faq";
-import Footer from "./Footer";
 import SiteFooter from "@/components/site-footer";
 
 function LandingPage() {

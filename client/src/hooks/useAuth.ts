@@ -2,7 +2,7 @@
 
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { getUser } from "@/api/userApi";
-import { User } from "@/features/auth/authSlice";
+import { User } from "@/api/authApi";
 
 export const AUTH = "auth";
 

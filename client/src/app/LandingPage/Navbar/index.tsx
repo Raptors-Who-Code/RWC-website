@@ -17,25 +17,29 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { logout, User } from "@/features/auth/authSlice";
 import { logUserOut } from "@/api/authApi";
 import { useMutation } from "@tanstack/react-query";
 import queryClient from "@/config/queryClient";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import useAuth from "@/hooks/useAuth";
+import { User } from "@/api/authApi";
+import { useAuthContext } from "@/providers/AuthProvider";
 
 function Navbar() {
   const [isMenuOpen, setisMenuOpen] = useState(false);
   const router = useRouter();
-  const dispatch = useDispatch();
   const { data: user, isLoading } = useAuth();
+
+  const { setClientUser } = useAuthContext();
 
   const { mutate: signOut } = useMutation({
     mutationFn: logUserOut,
     onSettled: () => {
       queryClient.clear();
-      dispatch(logout());
+    },
+    onSuccess: () => {
+      setClientUser(null);
       router.replace("/");
     },
   });

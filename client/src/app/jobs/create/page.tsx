@@ -19,6 +19,7 @@ import useAuth from "@/hooks/useAuth";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import withAuth from "@/providers/withAuth";
 
 export const yesNoToBoolean = (value: string) => {
   return value === "yes" ? true : false;
@@ -269,4 +270,4 @@ function CreateJobsPage() {
   );
 }
 
-export default CreateJobsPage;
+export default withAuth(CreateJobsPage);

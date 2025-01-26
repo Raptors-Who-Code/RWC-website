@@ -4,10 +4,13 @@ import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useAppSelector } from "@/app/redux";
+import { useAuthContext } from "@/providers/AuthProvider";
 
 function Hero() {
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const { user } = useAuthContext();
+  console.log("Hero User: ", user);
+
+  const isAuthenticated = user ? true : false;
 
   const authenticatedButtonStyles =
     "flex w-[187px] h-[52px] px-[24px] py-[13px] justify-center items-center gap-[10px] rounded-[4px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] mt-[10px] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95";

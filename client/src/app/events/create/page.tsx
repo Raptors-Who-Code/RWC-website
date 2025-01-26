@@ -5,27 +5,18 @@ import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
-import { logUserOut } from "@/api/authApi";
-import queryClient from "@/config/queryClient";
-import { logout, User } from "@/features/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import { Textarea } from "@/components/ui/textarea";
 import { createEvent } from "@/api/eventApi";
 import Image from "next/image";
-import { Skeleton } from "@/components/ui/skeleton";
 import { isBefore, startOfToday } from "date-fns";
 import { toast } from "react-toastify";
 import useAuth from "@/hooks/useAuth";
+import withAuth from "@/providers/withAuth";
 
 interface StepCounterProps {
   currentStep: number;
@@ -309,7 +300,7 @@ function CreateEventPage() {
   );
 }
 
-export default CreateEventPage;
+export default withAuth(CreateEventPage);
 
 function StepCounter({ currentStep, totalSteps }: StepCounterProps) {
   return (

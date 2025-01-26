@@ -16,19 +16,19 @@ import { useState } from "react";
 import { SignupSchema } from "@/schema/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { signup, SignUpFormFields } from "@/api/authApi";
+import { signup, SignUpFormFields, User } from "@/api/authApi";
 import { useMutation } from "@tanstack/react-query";
-import { useDispatch } from "react-redux";
-import { setCredentials, User } from "@/features/auth/authSlice";
+import { useAuthContext } from "@/providers/AuthProvider";
 
 export default function SignUpPage() {
   const [confirmPasswordOpen, setConfirmPasswordOpen] =
     useState<boolean>(false);
-  const dispatch = useDispatch();
 
   const { register, handleSubmit, watch } = useForm<SignUpFormFields>({
     resolver: zodResolver(SignupSchema),
   });
+
+  const { setClientUser } = useAuthContext();
 
   const {
     mutate: createAccount,
@@ -38,8 +38,8 @@ export default function SignUpPage() {
   } = useMutation({
     mutationFn: signup,
     onSuccess: (data: User) => {
+      setClientUser(data);
       router.replace("/");
-      dispatch(setCredentials({ user: data }));
     },
   });
 
