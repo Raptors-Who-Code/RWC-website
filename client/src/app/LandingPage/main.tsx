@@ -17,7 +17,6 @@ function LandingPage() {
       <UpcomingEvents />
       <LatestJobs />
       <FAQ />
-      <Footer />
       <SiteFooter />
     </div>
   );

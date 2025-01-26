@@ -1,3 +1,5 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +10,7 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const socialIconSize = "text-[24px]";
 
@@ -40,8 +43,13 @@ const socials = [
 ];
 
 export default function SiteFooter() {
+  const pathname = usePathname();
+
+  const notLandingPage = pathname !== "/";
   return (
-    <div className="flex flex-col gap-[10rem]">
+    <div
+      className={`flex flex-col gap-[10rem] ${notLandingPage && "bg-gray-950"}`}
+    >
       <footer className="flex w-[full] py-[100px] pt-[100px] pb-[40px] flex-col lg:flex-row justify-evenly items-center flex-shrink-0 gap-[10rem] lg:gap-[-6rem]">
         <div className="flex flex-col gap-[30px]">
           <div className="flex flex-col gap-[15px] justify-center items-center sm:justify-start sm:items">

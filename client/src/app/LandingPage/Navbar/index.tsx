@@ -113,14 +113,12 @@ function Navbar() {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 text-white bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] border border-neutral-800 shadow-lg">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuItem>Support</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="" onClick={handleLogoutClick}>
+            <DropdownMenuLabel>Account</DropdownMenuLabel>
+
+            <DropdownMenuItem
+              className="hover:bg-transparent"
+              onClick={handleLogoutClick}
+            >
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
