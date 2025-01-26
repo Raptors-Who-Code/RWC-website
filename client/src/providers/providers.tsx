@@ -30,8 +30,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           options={{ showSpinner: false }}
           shallowRouting
         />
-        <ToastContainer />
       </AuthProvider>
+      <ToastContainer />
       <ReactQueryDevtools initialIsOpen={false} position="bottom" />
     </QueryClientProvider>
   );

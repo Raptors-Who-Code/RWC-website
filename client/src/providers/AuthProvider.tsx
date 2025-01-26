@@ -66,8 +66,6 @@ export default function AuthProvider({
     }
   }, [clientUser, isPending, pathname, router]);
 
-  console.log("Client user: ", clientUser);
-
   return (
     <AuthContext.Provider
       value={{ user: clientUser, isPending, setClientUser }}

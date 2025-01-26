@@ -8,7 +8,6 @@ import { useAuthContext } from "@/providers/AuthProvider";
 
 function Hero() {
   const { user } = useAuthContext();
-  console.log("Hero User: ", user);
 
   const isAuthenticated = user ? true : false;
 

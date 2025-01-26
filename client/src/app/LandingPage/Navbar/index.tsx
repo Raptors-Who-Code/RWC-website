@@ -53,6 +53,10 @@ function Navbar() {
     router.replace("/");
   };
 
+  const handleSettingsClick = () => {
+    router.push("/user/settings");
+  };
+
   const avatarFallBack: string | undefined = (
     user as User
   )?.name[0].toUpperCase();
@@ -77,7 +81,7 @@ function Navbar() {
 
         <Link href="/">
           <div className="flex flex-col justify-center items-center font-semibold text-4xl mx-auto md:mx-0 md:text-xl">
-            <h1 className="transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale-95">
+            <h1 className="transform transition-all duration-200 hover:scale-110 hover:text-mainPurple hover:z-10 hover:shadow-lg active:scale-95">
               Raptors
             </h1>
           </div>
@@ -107,26 +111,35 @@ function Navbar() {
       {/* Right section: Buttons */}
 
       {user ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Avatar className="bg-mainPurple md:flex space-x-4 hover:cursor-pointer absolute top-4 right-4 md:relative md:top-0 md:right-0">
-              <AvatarImage></AvatarImage>
-              <AvatarFallback className="bg-black-500 text-white">
-                {avatarFallBack || "AV"}
-              </AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 text-white bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] border border-neutral-800 shadow-lg">
-            <DropdownMenuLabel>Account</DropdownMenuLabel>
-
-            <DropdownMenuItem
-              className="hover:bg-transparent"
-              onClick={handleLogoutClick}
-            >
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center space-x-2 absolute top-4 right-4 md:relative md:top-0 md:right-0">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="flex items-center space-x-2 hover:cursor-pointer transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100">
+                <Avatar className="bg-mainPurple md:flex space-x-4 hover:cursor-pointer absolute top-2 right-4 md:relative md:top-0 md:right-0">
+                  <AvatarImage></AvatarImage>
+                  <AvatarFallback className="bg-black-500 text-white">
+                    {avatarFallBack || "AV"}
+                  </AvatarFallback>
+                </Avatar>
+                <p className="hidden md:inline">{user.name}</p>
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 text-white bg-transparent border border-neutral-800 shadow-lg">
+              <DropdownMenuItem
+                className="p-2 hover:bg-neutral-800 transform transition-all duration-200 hover:scale-105 hover:cursor-pointer"
+                onClick={handleSettingsClick}
+              >
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="p-2 hover:bg-neutral-800 transform transition-all duration-200 hover:scale-105 hover:cursor-pointer"
+                onClick={handleLogoutClick}
+              >
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       ) : (
         <div className="flex absolute top-4 right-4 md:relative md:top-0 md:right-0 md:flex space-x-4">
           <Link
