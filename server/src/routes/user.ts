@@ -8,6 +8,10 @@ const userRoutes: Router = Router();
 
 userRoutes.get("/", errorHandler(getUserHanlder));
 
-userRoutes.patch("/", [authMiddleware], errorHandler(updateUserHandler));
+userRoutes.patch(
+  "/",
+  [authMiddleware, upload.single("image")],
+  errorHandler(updateUserHandler)
+);
 
 export default userRoutes;

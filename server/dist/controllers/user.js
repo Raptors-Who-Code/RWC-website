@@ -24,6 +24,10 @@ exports.updateUserHandler = exports.getUserHanlder = void 0;
 const root_1 = require("../exceptions/root");
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
+const user_1 = require("../schema/user");
+const base64_arraybuffer_1 = require("base64-arraybuffer");
+const userService_1 = require("../services/userService");
+const mapRoleToCustomRole_1 = require("../utils/mapRoleToCustomRole");
 const getUserHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield __1.prismaClient.user.findUnique({
         where: { id: req.userId },
@@ -36,5 +40,22 @@ const getUserHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function*
     return res.status(root_1.OK).json(userWithoutPassword);
 });
 exports.getUserHanlder = getUserHanlder;
-const updateUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+const updateUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const profilePicFile = req.file;
+    let profilePicBase64 = null;
+    const user = yield __1.prismaClient.user.findUnique({
+        where: { id: req.userId },
+    });
+    if (!user) {
+        throw new exceptions_1.NotFoundException("User not found", root_1.ErrorCode.USER_NOT_FOUND);
+    }
+    const request = user_1.updatedUserSchema.parse(Object.assign({}, req.body));
+    if (profilePicFile) {
+        profilePicBase64 = (0, base64_arraybuffer_1.decode)(profilePicFile.buffer.toString("base64"));
+    }
+    const roleWithCorrectType = (0, mapRoleToCustomRole_1.mapPrismaRoleToCustomRole)(user.role);
+    // Need this because Prisma client returns the role as a type of $Enum.Role but we need it of type Role
+    const userData = Object.assign(Object.assign({}, user), { role: roleWithCorrectType });
+    const updatedUser = (0, userService_1.updateUser)(userData, request);
+});
 exports.updateUserHandler = updateUserHandler;

@@ -13,4 +13,5 @@ export interface UserData {
   role: Role;
   createdAt: Date;
   updatedAt: Date;
+  profilePicUrl: string | null;
 }

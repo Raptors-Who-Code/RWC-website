@@ -24,3 +24,12 @@ export const resetPasswordSchema = z.object({
   verificationCode: verificationCodeSchema,
   password: passwordSchema,
 });
+
+export const updatedUserSchema = z.object({
+  emailSchema: emailSchema.optional(),
+  firstName: z.string().min(3).max(255).optional(),
+  lastName: z.string().min(3).max(255).optional(),
+  oldPassword: passwordSchema.optional(),
+  password: passwordSchema.optional(),
+  confirmPassword: passwordSchema.optional(),
+});
