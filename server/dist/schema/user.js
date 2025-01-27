@@ -10,7 +10,8 @@ exports.LoginSchema = zod_1.z.object({
     userAgent: zod_1.z.string().optional(),
 });
 exports.SignupSchema = exports.LoginSchema.extend({
-    name: zod_1.z.string().min(3).max(255),
+    firstName: zod_1.z.string().min(3).max(255),
+    lastName: zod_1.z.string().min(3).max(255),
     confirmPassword: zod_1.z.string().min(6).max(255),
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",

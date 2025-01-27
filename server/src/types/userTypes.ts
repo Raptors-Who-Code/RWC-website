@@ -5,7 +5,8 @@ export enum Role {
 
 export interface UserData {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   verified: boolean;

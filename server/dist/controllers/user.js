@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserHanlder = void 0;
+exports.updateUserHandler = exports.getUserHanlder = void 0;
 const root_1 = require("../exceptions/root");
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
@@ -36,3 +36,5 @@ const getUserHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function*
     return res.status(root_1.OK).json(userWithoutPassword);
 });
 exports.getUserHanlder = getUserHanlder;
+const updateUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.updateUserHandler = updateUserHandler;

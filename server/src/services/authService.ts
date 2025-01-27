@@ -29,19 +29,22 @@ import {
   getVerifyEmailTemplate,
 } from "../utils/emailTemplates";
 import { sendMail } from "../utils/sendMail";
-import { resetPasswordSchema } from "../schema/user";
+import { v4 as uuidv4 } from "uuid";
+import { generateDefaultProfilePicture } from "../utils/generateDefaultProfilePic";
+import supabase from "../utils/supabaseStorage";
 
 export type CreateAccountParams = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
   userAgent?: string;
 };
 
-export const createAccount = async (data: CreateAccountParams) => {
+export const createAccount = async (userData: CreateAccountParams) => {
   const existingUser = await prismaClient.user.findFirst({
-    where: { email: data.email },
+    where: { email: userData.email },
   });
 
   if (existingUser) {
@@ -51,13 +54,14 @@ export const createAccount = async (data: CreateAccountParams) => {
     );
   }
 
-  const { name, email, password, userAgent } = data;
+  const { firstName, lastName, email, password, userAgent } = userData;
 
   // Create User
 
   const user = await prismaClient.user.create({
     data: {
-      name: name,
+      firstName: firstName,
+      lastName: lastName,
       email: email,
       password: hashSync(password, 10),
       verified: false,
@@ -111,11 +115,52 @@ export const createAccount = async (data: CreateAccountParams) => {
     }
   );
 
-  // return user and tokens
+  // Create Image file path
+
+  const uniqueImageName = `${uuidv4()}-${user.id}.png`;
+
+  const filePath = `users/${user.id}/profile/${uniqueImageName}`;
+
+  // Generate default profile picture
+
+  const defaultProfilePic = await generateDefaultProfilePicture(
+    user.firstName,
+    user.lastName
+  );
+
+  // Upload image to Supabase Storage
+
+  const { data, error } = await supabase.storage
+    .from("images")
+    .upload(filePath, defaultProfilePic, {
+      contentType: "image/png",
+    });
+
+  if (error) {
+    console.log("Error uploading image", error);
+    throw new InternalException(
+      "Failed to upload image to Supabase Storage",
+      ErrorCode.UPLOAD_FAILED
+    );
+  }
+
+  // get public url of the uploaded file
+
+  const { data: image } = supabase.storage
+    .from("images")
+    .getPublicUrl(data.path);
+
+  // update user with profile picture
+  const updatedUser = await prismaClient.user.update({
+    where: { id: user.id },
+    data: {
+      profilePicUrl: image.publicUrl,
+    },
+  });
 
   // Do not return password with user object
-  const { password: userPassword, ...userWithoutPassword } = user;
-
+  const { password: userPassword, ...userWithoutPassword } = updatedUser;
+  // return user and tokens
   return {
     user: userWithoutPassword,
     accessToken,

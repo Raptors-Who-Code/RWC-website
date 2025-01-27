@@ -19,3 +19,8 @@ export const getUserHanlder = async (req: RequestWithUser, res: Response) => {
 
   return res.status(OK).json(userWithoutPassword);
 };
+
+export const updateUserHandler = async (
+  req: RequestWithUser,
+  res: Response
+) => {};

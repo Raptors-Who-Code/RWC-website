@@ -18,16 +18,18 @@ enum VerificationCodeType {
   OTHER
 }
 
-
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  verified  Boolean  @default(false)
-  role      Role     @default(MEMBER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(uuid())
+  firstName     String
+  lastName      String
+  biography     String?
+  email         String   @unique
+  password      String
+  verified      Boolean  @default(false)
+  role          Role     @default(MEMBER)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  profilePicUrl String?
 
   sessions          Session[] // Relation to Session model
   verificationCodes VerificationCode[] // Relation to VerificationCode model
@@ -67,11 +69,11 @@ model VerificationCode {
 }
 
 model Job {
-  id           String       @id @default(uuid())
+  id           String   @id @default(uuid())
   title        String
   content      String
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   userId       String
   jobLink      String
   jobLevel     String?

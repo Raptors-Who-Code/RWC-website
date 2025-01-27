@@ -62,6 +62,16 @@ export default function AuthProvider({
         router.replace("/login");
       } else if (clientUser && pathname === "/login") {
         router.replace("/");
+      } else if (clientUser && !clientUser.verified && pathname === "/") {
+        toast.warn("Please verifiy to access all features", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     }
   }, [clientUser, isPending, pathname, router]);
