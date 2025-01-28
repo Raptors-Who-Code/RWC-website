@@ -65,6 +65,7 @@ export const createAccount = async (userData: CreateAccountParams) => {
       email: email,
       password: hashSync(password, 10),
       verified: false,
+      profilePicUrl: "",
     },
   });
 

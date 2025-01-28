@@ -54,6 +54,7 @@ const createAccount = (userData) => __awaiter(void 0, void 0, void 0, function* 
             email: email,
             password: (0, bcrypt_1.hashSync)(password, 10),
             verified: false,
+            profilePicUrl: "",
         },
     });
     // Create Verification Code

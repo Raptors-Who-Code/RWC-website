@@ -18,6 +18,13 @@ enum VerificationCodeType {
   OTHER
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  NON_BINARY
+  UNSPECIFIED
+}
+
 model User {
   id            String   @id @default(uuid())
   firstName     String
@@ -29,7 +36,8 @@ model User {
   role          Role     @default(MEMBER)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  profilePicUrl String?
+  profilePicUrl String
+  gender        Gender   @default(UNSPECIFIED)
 
   sessions          Session[] // Relation to Session model
   verificationCodes VerificationCode[] // Relation to VerificationCode model

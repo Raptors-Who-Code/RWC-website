@@ -56,6 +56,7 @@ const updateUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, functi
     const roleWithCorrectType = (0, mapRoleToCustomRole_1.mapPrismaRoleToCustomRole)(user.role);
     // Need this because Prisma client returns the role as a type of $Enum.Role but we need it of type Role
     const userData = Object.assign(Object.assign({}, user), { role: roleWithCorrectType });
-    const updatedUser = (0, userService_1.updateUser)(userData, request);
+    const updatedUser = yield (0, userService_1.updateUser)(userData, request, profilePicFile, profilePicBase64);
+    return res.status(root_1.OK).json(updatedUser);
 });
 exports.updateUserHandler = updateUserHandler;

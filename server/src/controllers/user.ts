@@ -54,5 +54,12 @@ export const updateUserHandler = async (
     role: roleWithCorrectType,
   };
 
-  const updatedUser = updateUser(userData, request);
+  const updatedUser = await updateUser(
+    userData,
+    request,
+    profilePicFile,
+    profilePicBase64
+  );
+
+  return res.status(OK).json(updatedUser);
 };
