@@ -10,14 +10,25 @@ export enum Role {
   ALUMNI,
 }
 
+export enum Gender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  NON_BINARY = "NON_BINARY",
+  UNSPECIFIED = "UNSPECIFIED",
+}
+
 export interface User {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  biography: string | null;
   email: string;
   verified: boolean;
   role: Role;
   createdAt: Date;
   updatedAt: Date;
+  gender: Gender;
+  profilePic: string;
 }
 
 export type LoginFormFields = z.infer<typeof LoginSchema>;

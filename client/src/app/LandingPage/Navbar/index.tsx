@@ -57,10 +57,6 @@ function Navbar() {
     router.push("/user/settings");
   };
 
-  const avatarFallBack: string | undefined = (
-    user as User
-  )?.name[0].toUpperCase();
-
   return (
     <nav className="flex flex-col md:flex-row items-center md:items-center justify-between py-6 px-6 md:px-24 border-b border-[rgba(77,72,72,0.16)] ">
       {/* Left section: Logo */}
@@ -116,12 +112,13 @@ function Navbar() {
             <DropdownMenuTrigger asChild>
               <div className="flex items-center space-x-2 hover:cursor-pointer transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100">
                 <Avatar className="bg-mainPurple md:flex space-x-4 hover:cursor-pointer absolute top-2 right-4 md:relative md:top-0 md:right-0">
-                  <AvatarImage></AvatarImage>
-                  <AvatarFallback className="bg-black-500 text-white">
-                    {avatarFallBack || "AV"}
-                  </AvatarFallback>
+                  <AvatarImage
+                    src={user.profilePicUrl}
+                    alt={`${user.firstName}-${user.lastName}-profile-pic`}
+                  ></AvatarImage>
+                  <AvatarFallback className="bg-black-500 text-white"></AvatarFallback>
                 </Avatar>
-                <p className="hidden md:inline">{user.name}</p>
+                <p className="hidden md:inline">{user.firstName}</p>
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 text-white bg-transparent border border-neutral-800 shadow-lg">
