@@ -22,6 +22,7 @@ exports.resetPasswordSchema = zod_1.z.object({
     verificationCode: exports.verificationCodeSchema,
     password: exports.passwordSchema,
 });
+const Gender = zod_1.z.enum(["MALE", "FEMALE", "NON_BINARY", "UNSPECIFIED"]);
 exports.updatedUserSchema = zod_1.z.object({
     emailSchema: exports.emailSchema.optional(),
     firstName: zod_1.z.string().min(3).max(255).optional(),
@@ -29,4 +30,5 @@ exports.updatedUserSchema = zod_1.z.object({
     oldPassword: exports.passwordSchema.optional(),
     password: exports.passwordSchema.optional(),
     confirmPassword: exports.passwordSchema.optional(),
+    gender: Gender.optional(),
 });

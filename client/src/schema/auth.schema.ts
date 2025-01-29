@@ -10,7 +10,8 @@ export const LoginSchema = z.object({
 });
 
 export const SignupSchema = LoginSchema.extend({
-  name: z.string().min(3).max(255),
+  firstName: z.string().min(3).max(255),
+  lastName: z.string().min(3).max(255),
   confirmPassword: z.string().min(6).max(255),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",

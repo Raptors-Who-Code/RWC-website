@@ -28,7 +28,7 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   gender: Gender;
-  profilePic: string;
+  profilePicUrl: string;
 }
 
 export type LoginFormFields = z.infer<typeof LoginSchema>;

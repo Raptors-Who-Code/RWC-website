@@ -26,7 +26,7 @@ async function LatestJobs() {
       {/* View All Jobs Button */}
       <div className="text-center">
         <Link href="\jobs">
-          <button className="bg-purple-600 hover:bg-purple-700 text-white border text-white font-medium py-3 px-6 rounded border border-[#9030CF] transition-colors">
+          <button className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded border border-[#9030CF] transition-colors">
             View All Jobs
           </button>
         </Link>

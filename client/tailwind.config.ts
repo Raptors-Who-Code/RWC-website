@@ -13,6 +13,7 @@ const config: Config = {
         "2xl": "1536px",
         rightSectionAppears: "1450px",
         "very-sm": "400px",
+        "settings-col": "1200px",
       },
       colors: {
         background: "hsl(var(--background))",

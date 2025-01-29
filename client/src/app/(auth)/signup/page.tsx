@@ -46,10 +46,25 @@ export default function SignUpPage() {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<SignUpFormFields> = (data) => {
-    createAccount(data);
+    const { firstName, lastName, ...rest } = data;
+
+    const capitalizedFirstName =
+      firstName.toLowerCase().charAt(0).toUpperCase() + firstName.slice(1);
+
+    const capitalizedLastName =
+      lastName.toLowerCase().charAt(0).toUpperCase() + lastName.slice(1);
+
+    const dataWithCapitalizedNames = {
+      firstName: capitalizedFirstName,
+      lastName: capitalizedLastName,
+      ...rest,
+    };
+
+    createAccount(dataWithCapitalizedNames);
   };
 
-  const name = watch("name");
+  const firstName = watch("firstName");
+  const lastName = watch("lastName");
   const email = watch("email");
   const password = watch("password");
   const confirmPassword = watch("confirmPassword");
@@ -77,14 +92,25 @@ export default function SignUpPage() {
           <CardContent>
             <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="email">Name</Label>
+                <Label htmlFor="email">First Name</Label>
                 <Input
                   id="name"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="John"
                   required
                   className="p-6"
-                  {...register("name")}
+                  {...register("firstName")}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="email">Last Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Doe"
+                  required
+                  className="p-6"
+                  {...register("lastName")}
                 />
               </div>
               <div className="grid gap-2">
@@ -139,7 +165,8 @@ export default function SignUpPage() {
                   disabled={
                     isPending ||
                     password !== confirmPassword ||
-                    !name ||
+                    !firstName ||
+                    !lastName ||
                     !email ||
                     !password ||
                     !confirmPassword

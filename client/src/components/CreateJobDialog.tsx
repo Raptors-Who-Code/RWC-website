@@ -11,10 +11,6 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
 function CreateJobDialog() {
-  //   const { register, handleSubmit } = useForm<LoginFormFields>({
-  //     resolver: zodResolver(LoginSchema),
-  //   });
-
   return (
     <DialogContent className="sm:max-w-[425px] dark border-none">
       <DialogHeader>
