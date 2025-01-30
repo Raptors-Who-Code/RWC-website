@@ -26,7 +26,7 @@ function ProfileSettings() {
   }
 
   return (
-    <CardContent className="flex flex-col gap-14">
+    <CardContent className="flex flex-col gap-8">
       {/*User Avatar */}
       <div className="flex justify-center items-center">
         <div className="flex flex-row justify-center items-center gap-4 relative hover:cursor-pointer">
@@ -46,7 +46,7 @@ function ProfileSettings() {
       <Textarea
         disabled={!isEditing}
         placeholder={`${user?.biography ?? "Tell us about yourself"}`}
-        className="border border-mainPurple rounded-lg p-4 text-white h-64 resize-none focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 overflow-hidden"
+        className="border-2 border-mainPurple rounded-lg p-4 text-white h-64 resize-none focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 overflow-hidden"
       />
 
       <div className="flex flex-col gap-6">
@@ -57,8 +57,9 @@ function ProfileSettings() {
           Gender:{" "}
         </Label>
         <RadioGroup
-          id="internship"
-          defaultValue="yes"
+          disabled={!isEditing}
+          id="gender"
+          defaultValue={user?.gender}
           className="grid grid-cols-2 gap-4"
         >
           <div className="flex items-center space-x-2">
@@ -80,7 +81,7 @@ function ProfileSettings() {
         </RadioGroup>
       </div>
 
-      <div className="flex flex-row justify-end mt-[5rem]">
+      <div className="flex flex-row justify-end">
         {isEditing ? (
           <Button
             className="p-6 transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100"

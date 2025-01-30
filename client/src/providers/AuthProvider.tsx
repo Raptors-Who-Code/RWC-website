@@ -71,6 +71,10 @@ export default function AuthProvider({
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
+          style: {
+            backgroundColor: "black",
+            color: "purple",
+          },
         });
       }
     }
