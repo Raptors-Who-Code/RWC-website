@@ -36,6 +36,7 @@ export enum ErrorCode {
   UPLOAD_FAILED = "UPLOAD_FAILED",
   DELETE_FAILED = "DELETE_FAILED",
   JOB_NOT_FOUND = "JOB_NOT_FOUND",
+  BAD_REQUEST = "BAD_REQUEST",
 }
 
 export const OK = 200;

@@ -47,10 +47,12 @@ const createAccount = (userData) => __awaiter(void 0, void 0, void 0, function* 
     }
     const { firstName, lastName, email, password, userAgent } = userData;
     // Create User
+    const capitializedFirstName = firstName.toLowerCase().charAt(0).toUpperCase() + firstName.slice(1);
+    const capitializedLastName = lastName.toLowerCase().charAt(0).toUpperCase() + lastName.slice(1);
     const user = yield __1.prismaClient.user.create({
         data: {
-            firstName: firstName,
-            lastName: lastName,
+            firstName: capitializedFirstName,
+            lastName: capitializedLastName,
             email: email,
             password: (0, bcrypt_1.hashSync)(password, 10),
             verified: false,

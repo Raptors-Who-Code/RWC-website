@@ -30,6 +30,7 @@ var ErrorCode;
     ErrorCode["UPLOAD_FAILED"] = "UPLOAD_FAILED";
     ErrorCode["DELETE_FAILED"] = "DELETE_FAILED";
     ErrorCode["JOB_NOT_FOUND"] = "JOB_NOT_FOUND";
+    ErrorCode["BAD_REQUEST"] = "BAD_REQUEST";
 })(ErrorCode || (exports.ErrorCode = ErrorCode = {}));
 exports.OK = 200;
 exports.CREATED = 201;

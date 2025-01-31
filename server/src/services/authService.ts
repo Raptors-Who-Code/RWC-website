@@ -58,10 +58,15 @@ export const createAccount = async (userData: CreateAccountParams) => {
 
   // Create User
 
+  const capitializedFirstName: string =
+    firstName.toLowerCase().charAt(0).toUpperCase() + firstName.slice(1);
+  const capitializedLastName: string =
+    lastName.toLowerCase().charAt(0).toUpperCase() + lastName.slice(1);
+
   const user = await prismaClient.user.create({
     data: {
-      firstName: firstName,
-      lastName: lastName,
+      firstName: capitializedFirstName,
+      lastName: capitializedLastName,
       email: email,
       password: hashSync(password, 10),
       verified: false,
