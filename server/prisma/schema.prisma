@@ -26,18 +26,19 @@ enum Gender {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  firstName     String
-  lastName      String
-  biography     String?
-  email         String   @unique
-  password      String
-  verified      Boolean  @default(false)
-  role          Role     @default(MEMBER)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  profilePicUrl String
-  gender        Gender   @default(UNSPECIFIED)
+  id              String   @id @default(uuid())
+  firstName       String
+  lastName        String
+  biography       String?
+  email           String   @unique
+  password        String
+  verified        Boolean  @default(false)
+  role            Role     @default(MEMBER)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  profilePicUrl   String
+  gender          Gender   @default(UNSPECIFIED)
+  conversationIds String[]
 
   sessions          Session[] // Relation to Session model
   verificationCodes VerificationCode[] // Relation to VerificationCode model
@@ -46,7 +47,36 @@ model User {
   registeredEvents  RegisteredEvent[]
   appliedJobs       AppliedJob[]
 
+  messages      Message[]
+  conversations Conversation[]
+
   @@map("users")
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participantIds String[]
+  participants   User[]
+
+  messageIds String[]
+  messages   Message[]
+}
+
+model Message {
+  id String @id @default(cuid())
+
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id])
+
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Session {

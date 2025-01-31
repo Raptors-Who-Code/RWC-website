@@ -18,7 +18,6 @@ import { LoginSchema } from "@/schema/auth.schema";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { login, LoginFormFields, User } from "@/api/authApi";
-import { useDispatch } from "react-redux";
 import { useAuthContext } from "@/providers/AuthProvider";
 
 export default function LoginPage() {

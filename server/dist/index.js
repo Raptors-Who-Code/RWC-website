@@ -15,6 +15,8 @@ const client_1 = require("@prisma/client");
 const routes_1 = __importDefault(require("./routes"));
 const errors_1 = require("./middlewares/errors");
 const secrets_1 = require("./secrets");
+const WebSocketServer_1 = require("./socket/WebSocketServer");
+const http_1 = __importDefault(require("http"));
 /* Route imports */
 /* Configurations */
 dotenv_1.default.config();
@@ -38,7 +40,18 @@ app.use(errors_1.errorMiddleWare);
 exports.prismaClient = new client_1.PrismaClient({
     log: ["query"],
 });
+// Create HTTP Server
+const server = http_1.default.createServer(app);
+/**Create Web Socket Server */
+const corsOptions = {
+    cors: {
+        origin: secrets_1.APP_ORIGIN,
+        credentials: true,
+        methods: ["GET", "POST"],
+    },
+};
+const webSocketServer = new WebSocketServer_1.WebSocketServer(server, corsOptions);
 const port = process.env.PORT || 8001;
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

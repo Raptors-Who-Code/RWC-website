@@ -50,15 +50,12 @@ export const createEvent = async (
         imageUrl: image.publicUrl,
       },
     });
-
-    
   } else {
     event = await prismaClient.event.create({
       data: {
         ...eventData,
       },
     });
-
   }
 
   return event;
