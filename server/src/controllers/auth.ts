@@ -138,6 +138,7 @@ export const refreshHanlder = async (req: Request, res: Response) => {
 
 export const verifyEmailHandler = async (req: Request, res: Response) => {
   const verificationCode = verificationCodeSchema.parse(req.params.code);
+  console.log("verificationCode", verificationCode);
 
   await verifyEmail(verificationCode);
 

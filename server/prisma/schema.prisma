@@ -38,6 +38,8 @@ model User {
   updatedAt       DateTime @updatedAt
   profilePicUrl   String
   gender          Gender   @default(UNSPECIFIED)
+  latitude        Float?
+  longitude       Float?
   conversationIds String[]
 
   sessions          Session[] // Relation to Session model
