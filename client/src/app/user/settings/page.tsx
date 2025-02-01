@@ -4,36 +4,69 @@ import { Progress } from "@/components/ui/progress";
 import useAuth from "@/hooks/useAuth";
 import { IoIosCheckmark } from "react-icons/io";
 import { IoIosClose } from "react-icons/io";
-import React from "react";
+import React, { useState } from "react";
 import "@/styles/glow.css";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { AvatarFallback } from "@radix-ui/react-avatar";
-import { Button } from "@/components/ui/button";
-import PersonalInfo from "@/components/UserSettingsPage/UserPersonalInfo";
-import UserBiography from "@/components/UserSettingsPage/UserBiography";
-import UserLocation from "@/components/UserSettingsPage/UserLocation";
 import UserProfileSettings from "@/components/UserSettingsPage/UserProfileSettings";
+import UserAccountSettings from "@/components/UserSettingsPage/UserAccountSettings";
 
 const buttonTransformation =
   "transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100";
 
+enum SettingTabs {
+  ACCOUNT,
+  PROFILE,
+}
+
 function UserSettings() {
+  const [settingsTab, setSettingsTab] = useState<SettingTabs>(
+    SettingTabs.PROFILE
+  );
   const percentage = 50;
 
   const { data: user, isLoading } = useAuth();
 
   if (isLoading) return <div>Loading...</div>;
 
+  const handleAccountClick = () => {
+    setSettingsTab(SettingTabs.ACCOUNT);
+  };
+
+  const handleProfileClick = () => {
+    setSettingsTab(SettingTabs.PROFILE);
+  };
+
+  const profileCompleteness = {
+    setUpAccount: user?.firstName && user?.lastName && user?.verified,
+    uploadProfilePhoto: user?.customProfilePic,
+    personalInfo:
+      user?.firstName &&
+      user?.lastName &&
+      (user?.gender as string) !== "UNSPECIFIED",
+    location: user?.latitude && user?.longitude,
+    biography: user?.biography,
+  };
+
+  const profileCompletenessValues = Object.values(profileCompleteness);
+  const nonNullValues = Object.values(profileCompleteness).filter(
+    (value) => value
+  );
+
+  const profileCompletenessPercentage = Math.round(
+    (nonNullValues.length / profileCompletenessValues.length) * 100
+  );
+
   return (
     <div className="flex flex-col gap-4 items-center justify-start pt-4 min-h-screen">
       <nav className="w-full md:w-[85%] flex flex-row items-center justify-center md:justify-start pt-4">
         <header className="flex flex-row gap-8 items-center">
           <h1
+            onClick={handleProfileClick}
             className={`text-xl text-white font-bold hover:${buttonTransformation} hover:cursor-pointer hover:text-mainPurple hover:underline`}
           >
             Profile
           </h1>
           <h1
+            onClick={handleAccountClick}
             className={`text-xl text-white font-bold hover:${buttonTransformation} hover:cursor-pointer hover:text-mainPurple hover:underline`}
           >
             Account
@@ -50,9 +83,12 @@ function UserSettings() {
                 Complete your profile
               </CardTitle>
               <h1 className="text-4xl text-center text-white font-bold glow-text">
-                {percentage}%
+                {profileCompletenessPercentage}%
               </h1>
-              <Progress value={percentage} className="w-[80%] h-[1rem]" />
+              <Progress
+                value={profileCompletenessPercentage}
+                className="w-[80%] h-[1rem]"
+              />
             </CardHeader>
             <CardContent className="flex flex-col gap-4 items-center justify-center">
               <ul>
@@ -86,10 +122,19 @@ function UserSettings() {
           </Card>
         </div>
         {/**User profile settings */}
-        <UserProfileSettings
-          user={user}
-          buttonTransformation={buttonTransformation}
-        />
+        {settingsTab === SettingTabs.PROFILE && (
+          <UserProfileSettings
+            user={user}
+            buttonTransformation={buttonTransformation}
+          />
+        )}
+
+        {settingsTab === SettingTabs.ACCOUNT && (
+          <UserAccountSettings
+            user={user}
+            buttonTransformation={buttonTransformation}
+          />
+        )}
       </div>
     </div>
   );

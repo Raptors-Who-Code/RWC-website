@@ -32,6 +32,7 @@ export interface User {
   conversationIds: string[];
   latitude: number | null;
   longitude: number | null;
+  customProfilePic: boolean;
 }
 
 export type LoginFormFields = z.infer<typeof LoginSchema>;
