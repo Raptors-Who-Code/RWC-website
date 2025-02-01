@@ -121,13 +121,14 @@ function Navbar() {
                 <p className="hidden md:inline">{user.firstName}</p>
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 text-white bg-transparent border border-neutral-800 shadow-lg">
+            <DropdownMenuContent className="w-56 text-white bg-transparent border border-neutral-800 shadow-lg p-4 space-y-2 mt-12 md:mt-0 md:ml-0 md:relative md:top-0 md:left-0">
               <DropdownMenuItem
                 className="p-2 hover:bg-neutral-800 transform transition-all duration-200 hover:scale-105 hover:cursor-pointer"
                 onClick={handleSettingsClick}
               >
                 Settings
               </DropdownMenuItem>
+              <DropdownMenuSeparator className="my-2 border-t border-neutral-700" />
               <DropdownMenuItem
                 className="p-2 hover:bg-neutral-800 transform transition-all duration-200 hover:scale-105 hover:cursor-pointer"
                 onClick={handleLogoutClick}
@@ -163,4 +164,3 @@ function Navbar() {
 }
 
 export default Navbar;
-// w-[100px] h-[41.6px]

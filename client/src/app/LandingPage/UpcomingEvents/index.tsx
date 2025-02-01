@@ -20,12 +20,6 @@ interface Event {
   description: string;
 }
 
-const sampleEvent: Event = {
-  title: "Hackathon",
-  date: "Sun 09/22",
-  description: "MASQUERAID 9:05AM - 12:35PM PDT ALLEGIANT STADIUM LOT B",
-};
-
 function UpcomingEvents() {
   const [events, setEvents] = useState<EventResponse[]>([]);
   const [randomThreeEvents, setRandomThreeEvents] = useState<EventResponse[]>(

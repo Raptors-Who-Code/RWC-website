@@ -60,7 +60,7 @@ const updateUser = (oldUserData, updateUserData, file, fileBase64) => __awaiter(
         imageUrl = image.publicUrl;
     }
     // Create an update object with only the defined properties
-    const updateUser = Object.assign(Object.assign({}, updateUserData), (imageUrl && { profilePicUrl: imageUrl }));
+    const updateUser = Object.assign(Object.assign({}, updateUserData), (imageUrl && { profilePicUrl: imageUrl, customProfilePic: true }));
     //exclude the role property from updateData object. Users will not be able to update their own role
     const { role } = updateUser, dataToUpdate = __rest(updateUser, ["role"]);
     // Update the user in the database

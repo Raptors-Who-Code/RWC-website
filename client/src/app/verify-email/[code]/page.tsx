@@ -19,8 +19,6 @@ function VerifyEmail() {
     queryFn: () => verifiyEmail(code as string),
   });
 
-  console.log(isPending, isSuccess, isError);
-
   return (
     <div className="dark flex items-center justify-center h-screen overflow-hidden">
       <Card className="mx-auto w-full max-w-lg min-h-[20rem] border-none flex flex-col p-6 overflow-hidden justify-center items-center">

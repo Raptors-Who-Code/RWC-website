@@ -26,21 +26,23 @@ enum Gender {
 }
 
 model User {
-  id              String   @id @default(uuid())
-  firstName       String
-  lastName        String
-  biography       String?
-  email           String   @unique
-  password        String
-  verified        Boolean  @default(false)
-  role            Role     @default(MEMBER)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  profilePicUrl   String
-  gender          Gender   @default(UNSPECIFIED)
-  latitude        Float?
-  longitude       Float?
-  conversationIds String[]
+  id               String   @id @default(uuid())
+  firstName        String
+  lastName         String
+  biography        String?
+  email            String   @unique
+  password         String
+  verified         Boolean  @default(false)
+  role             Role     @default(MEMBER)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  profilePicUrl    String
+  gender           Gender   @default(UNSPECIFIED)
+  latitude         Float?
+  longitude        Float?
+  conversationIds  String[]
+  customProfilePic Boolean  @default(false)
+  userAddress      String?
 
   sessions          Session[] // Relation to Session model
   verificationCodes VerificationCode[] // Relation to VerificationCode model

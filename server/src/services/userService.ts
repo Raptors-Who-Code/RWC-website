@@ -73,7 +73,7 @@ export const updateUser = async (
   // Create an update object with only the defined properties
   const updateUser: Partial<UserData> = {
     ...updateUserData,
-    ...(imageUrl && { profilePicUrl: imageUrl }),
+    ...(imageUrl && { profilePicUrl: imageUrl, customProfilePic: true }),
   };
 
   //exclude the role property from updateData object. Users will not be able to update their own role

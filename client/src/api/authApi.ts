@@ -29,6 +29,9 @@ export interface User {
   updatedAt: Date;
   gender: Gender;
   profilePicUrl: string;
+  conversationIds: string[];
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export type LoginFormFields = z.infer<typeof LoginSchema>;

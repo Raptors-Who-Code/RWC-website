@@ -60,6 +60,7 @@ const config: Config = {
         mainPurple: "#9632D7",
         darkCard: "hsl(224, 2%, 4.2%)",
         darkerCardForProfile: "hsl(224, 2%, 0%)",
+        lighterDarkCard: "hsl(224, 2%, 6%)",
       },
       borderRadius: {
         lg: "var(--radius)",
