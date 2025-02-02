@@ -26,7 +26,7 @@ function UserProfileSettings({
   return (
     <div className="h-auto w-full md:w-[80%] lg:w-[80%] mx-auto">
       <Card className="flex flex-col gap-4 bg-darkerCardForProfile border-none h-[80%] w-[80%] mx-auto lg:p-10 lg:mb-[10rem]">
-        <CardHeader className="flex flex-row gap-6 md:gap-8 text-gray-500 px-8 py-12 md:px-12">
+        <CardHeader className="flex flex-row gap-4 md:gap-8 text-gray-500 px-8 py-12 md:px-12">
           <Avatar className="w-24 h-24 lg:w-32 lg:h-32">
             <AvatarImage src={user?.profilePicUrl}></AvatarImage>
             <AvatarFallback className="bg-black-500 text-white">
@@ -35,7 +35,7 @@ function UserProfileSettings({
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col gap-2 lg:justify-center">
-            <Button className="py-6 px-3 w-[10rem] h-[10px] bg-gray-800 text-white font-bold border-b-2 border-mainPurple hover:bg-gray-700 rounded transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100">
+            <Button className="py-6 px-3 w-[9rem] md:w-[10rem] md:h-[10px] bg-gray-800 text-white font-bold border-b-2 border-mainPurple hover:bg-gray-700 rounded transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100">
               Upload New Photo
             </Button>
             <p className="text-gray-500 text-sm max-w-[24rem] lg:max-w-[10rem]">
