@@ -6,8 +6,8 @@ import { User } from "@/api/authApi";
 
 export const AUTH = "auth";
 
-const useAuth = (options = {}): UseQueryResult<User> => {
-  const queryResult = useQuery({
+const useAuth = (options = {}): UseQueryResult<User | null> => {
+  const queryResult = useQuery<User | null, Error>({
     queryKey: [AUTH],
     queryFn: getUser,
     staleTime: Infinity,

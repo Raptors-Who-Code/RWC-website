@@ -25,9 +25,9 @@ const getFromEmail = () => {
     return secrets_1.EMAIL_SENDER; //TODO: Setup custom domain with valid email
 };
 const getToEmail = (to) => {
-    if (secrets_1.NODE_ENV === "development") {
-        return "delivered@resend.dev";
-    }
+    // if (NODE_ENV === "development") {
+    //   return "delivered@resend.dev";
+    // }
     return to;
 };
 const sendMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ to, subject, text, html, }) {

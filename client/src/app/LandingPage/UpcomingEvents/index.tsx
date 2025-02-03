@@ -14,12 +14,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { EventResponse, getAllEvents } from "@/api/eventApi";
 
-interface Event {
-  title: string;
-  date: string;
-  description: string;
-}
-
 function UpcomingEvents() {
   const [events, setEvents] = useState<EventResponse[]>([]);
   const [randomThreeEvents, setRandomThreeEvents] = useState<EventResponse[]>(
@@ -68,7 +62,7 @@ function UpcomingEvents() {
       {/* View All Events Button */}
       <div className="text-center">
         <Link href="\events">
-          <button className="bg-purple-600 hover:bg-purple-700 text-white border text-white font-medium py-3 px-6 rounded border border-[#9030CF] transition-colors">
+          <button className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded border border-[#9030CF] transition-colors">
             View All Events
           </button>
         </Link>

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { navLinks } from "@/lib/links";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { logUserOut } from "@/api/authApi";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import queryClient from "@/config/queryClient";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -26,13 +26,14 @@ import useAuth from "@/hooks/useAuth";
 import { User } from "@/api/authApi";
 import { useAuthContext } from "@/providers/AuthProvider";
 import { TailSpin } from "react-loader-spinner";
+import { getUser } from "@/api/userApi";
 
 function Navbar() {
   const [isMenuOpen, setisMenuOpen] = useState(false);
   const router = useRouter();
-  const { data: user, isLoading } = useAuth();
+  const { isPending } = useAuth();
 
-  const { setClientUser } = useAuthContext();
+  const { user, setClientUser } = useAuthContext();
 
   const { mutate: signOut } = useMutation({
     mutationFn: logUserOut,
@@ -58,8 +59,12 @@ function Navbar() {
     router.push("/user/settings");
   };
 
-  const userIsThereAndLoaded = user && !isLoading;
-  const userIsNotThere = !user && !isLoading;
+  const userIsThereAndLoaded = user && !isPending;
+  const userIsNotThere = !user && !isPending;
+
+  if (isPending) {
+    console.log("Loading...");
+  }
 
   return (
     <nav className="flex flex-col md:flex-row items-center md:items-center justify-between py-6 px-6 md:px-24 border-b border-[rgba(77,72,72,0.16)] ">
@@ -166,7 +171,7 @@ function Navbar() {
         </div>
       )}
 
-      {isLoading && (
+      {isPending && (
         <div className="flex items-center justify-center space-x-2 absolute top-4 right-4 md:relative md:top-0 md:right-0">
           <TailSpin
             visible={true}

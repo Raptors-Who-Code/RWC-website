@@ -35,7 +35,7 @@ export default function AuthProvider({
     error,
   } = useMutation({
     mutationFn: getUser,
-    onSuccess: (data: User) => {
+    onSuccess: (data: User | null) => {
       setClientUser(data);
     },
   });

@@ -1,7 +1,7 @@
 import axios from "axios";
 import queryClient from "./queryClient";
 
-const options = {
+export const options = {
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   withCredentials: true,
 };

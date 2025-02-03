@@ -24,9 +24,9 @@ const getFromEmail = (): string => {
 };
 
 const getToEmail = (to: string) => {
-  if (NODE_ENV === "development") {
-    return "delivered@resend.dev";
-  }
+  // if (NODE_ENV === "development") {
+  //   return "delivered@resend.dev";
+  // }
 
   return to;
 };
