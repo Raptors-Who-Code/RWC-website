@@ -19,7 +19,7 @@ authRoutes.post("/login", errorHandler(login));
 authRoutes.get("/refresh", errorHandler(refreshHanlder));
 authRoutes.get("/logout", [authMiddleware], errorHandler(logout));
 authRoutes.get("/email/verify/:code", errorHandler(verifyEmailHandler));
-authRoutes.post("/password/forgot", errorHandler(sendPasswordResetHandler));
+authRoutes.post("/password/forgot", errorHandler(sendPasswordResetHandler)); //first
 authRoutes.post("/password/reset", errorHandler(resetPasswordHandler));
 
 export default authRoutes;

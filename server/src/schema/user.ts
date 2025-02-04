@@ -25,6 +25,10 @@ export const resetPasswordSchema = z.object({
   password: passwordSchema,
 });
 
+export const resetEmailChangeSchema = z.object({
+  verificationCode: verificationCodeSchema,
+});
+
 const Gender = z.enum(["MALE", "FEMALE", "NON_BINARY", "UNSPECIFIED"]);
 
 export const updatedUserSchema = z.object({

@@ -3,11 +3,20 @@ import { prismaClient } from "..";
 import { RequestWithUser } from "../types/requestWithUser";
 import { Response } from "express";
 import { NotFoundException } from "../exceptions/exceptions";
-import { updatedUserSchema } from "../schema/user";
+import {
+  emailSchema,
+  resetEmailChangeSchema,
+  updatedUserSchema,
+} from "../schema/user";
 import { decode } from "base64-arraybuffer";
-import { updateUser } from "../services/userService";
+import {
+  resetEmail,
+  sendEmailResetEmail,
+  updateUser,
+} from "../services/userService";
 import { Role, UserData } from "../types/userTypes";
 import { mapPrismaRoleToCustomRole } from "../utils/mapRoleToCustomRole";
+import { clearAuthCookies } from "../utils/cookies";
 
 export const getUserHanlder = async (req: RequestWithUser, res: Response) => {
   const user = await prismaClient.user.findUnique({
@@ -62,4 +71,32 @@ export const updateUserHandler = async (
   );
 
   return res.status(OK).json(updatedUser);
+};
+
+// Sends confirmation email to the new email that the user has set as their new email
+export const sendConfirmationEmailHandler = async (
+  req: RequestWithUser,
+  res: Response
+) => {
+  const newEmail = emailSchema.parse(req.body.email);
+  const password = req.body.password;
+
+  await sendEmailResetEmail({ newEmail, password, userId: req.userId });
+
+  return res
+    .status(OK)
+    .json({ message: "Confirmation Email has been sent to new email" });
+};
+
+export const resetEmailHandler = async (
+  req: RequestWithUser,
+  res: Response
+) => {
+  const request = resetEmailChangeSchema.parse(req.body);
+
+  await resetEmail(request);
+
+  return clearAuthCookies(res)
+    .status(OK)
+    .json({ message: "Email reset successful" });
 };

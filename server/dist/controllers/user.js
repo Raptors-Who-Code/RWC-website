@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUserHandler = exports.getUserHanlder = void 0;
+exports.resetEmailHandler = exports.sendConfirmationEmailHandler = exports.updateUserHandler = exports.getUserHanlder = void 0;
 const root_1 = require("../exceptions/root");
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
@@ -28,6 +28,7 @@ const user_1 = require("../schema/user");
 const base64_arraybuffer_1 = require("base64-arraybuffer");
 const userService_1 = require("../services/userService");
 const mapRoleToCustomRole_1 = require("../utils/mapRoleToCustomRole");
+const cookies_1 = require("../utils/cookies");
 const getUserHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield __1.prismaClient.user.findUnique({
         where: { id: req.userId },
@@ -60,3 +61,21 @@ const updateUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, functi
     return res.status(root_1.OK).json(updatedUser);
 });
 exports.updateUserHandler = updateUserHandler;
+// Sends confirmation email to the new email that the user has set as their new email
+const sendConfirmationEmailHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const newEmail = user_1.emailSchema.parse(req.body.email);
+    const password = req.body.password;
+    yield (0, userService_1.sendEmailResetEmail)({ newEmail, password, userId: req.userId });
+    return res
+        .status(root_1.OK)
+        .json({ message: "Confirmation Email has been sent to new email" });
+});
+exports.sendConfirmationEmailHandler = sendConfirmationEmailHandler;
+const resetEmailHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const request = user_1.resetEmailChangeSchema.parse(req.body);
+    yield (0, userService_1.resetEmail)(request);
+    return (0, cookies_1.clearAuthCookies)(res)
+        .status(root_1.OK)
+        .json({ message: "Email reset successful" });
+});
+exports.resetEmailHandler = resetEmailHandler;

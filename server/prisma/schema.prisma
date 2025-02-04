@@ -15,6 +15,7 @@ enum Role {
 enum VerificationCodeType {
   EMAIL_VERIFICATION
   PASSWORD_RESET
+  EMAIL_UPDATE
   OTHER
 }
 
@@ -103,6 +104,7 @@ model VerificationCode {
   type      VerificationCodeType
   createdAt DateTime             @default(now())
   expiresAt DateTime
+  newEmail  String?
 
   user User @relation(fields: [userId], references: [id])
 

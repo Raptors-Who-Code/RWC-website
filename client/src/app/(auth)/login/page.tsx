@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { login, LoginFormFields, User } from "@/api/authApi";
 import { useAuthContext } from "@/providers/AuthProvider";
+import { AxiosError } from "axios";
 
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginFormFields>({
@@ -100,7 +101,7 @@ export default function LoginPage() {
               </div>
 
               <p className="text-red-500">
-                {isError ? error.message || "An error occured" : ""}
+                {isError ? error.message || "An error occurred" : ""}
               </p>
 
               <div className="mt-4">
