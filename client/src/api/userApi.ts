@@ -16,3 +16,10 @@ export const getUser = async (): Promise<User | null> => {
 export const updateUser = async (data: Partial<User>): Promise<User> => {
   return API.put("/api/user", data);
 };
+
+// export const resetEmail = async ({ verificationCode }: ResetPasswordFields) => {
+//   API.post("/api/auth/password/reset", {
+//     verificationCode,
+//     password: newPassword,
+//   });
+// };

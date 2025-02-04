@@ -34,6 +34,7 @@ var ErrorCode;
     ErrorCode["EMAIL_ALREADY_IN_USE"] = "EMAIL_ALREADY_IN_USE";
     ErrorCode["EMAIL_SAME_AS_CURRENT"] = "EMAIL_SAME_AS_CURRENT";
     ErrorCode["EMAIL_NOT_FOUND"] = "EMAIL_NOT_FOUND";
+    ErrorCode["PASSWORD_REQUIRED"] = "PASSWORD_REQUIRED";
 })(ErrorCode || (exports.ErrorCode = ErrorCode = {}));
 exports.OK = 200;
 exports.CREATED = 201;

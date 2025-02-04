@@ -63,7 +63,7 @@ const updateUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.updateUserHandler = updateUserHandler;
 // Sends confirmation email to the new email that the user has set as their new email
 const sendConfirmationEmailHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const newEmail = user_1.emailSchema.parse(req.body.email);
+    const newEmail = user_1.emailSchema.parse(req.body.newEmail);
     const password = req.body.password;
     yield (0, userService_1.sendEmailResetEmail)({ newEmail, password, userId: req.userId });
     return res
@@ -72,8 +72,8 @@ const sendConfirmationEmailHandler = (req, res) => __awaiter(void 0, void 0, voi
 });
 exports.sendConfirmationEmailHandler = sendConfirmationEmailHandler;
 const resetEmailHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const request = user_1.resetEmailChangeSchema.parse(req.body);
-    yield (0, userService_1.resetEmail)(request);
+    const verificationCode = user_1.verificationCodeSchema.parse(req.params.code);
+    yield (0, userService_1.resetEmail)(verificationCode);
     return (0, cookies_1.clearAuthCookies)(res)
         .status(root_1.OK)
         .json({ message: "Email reset successful" });

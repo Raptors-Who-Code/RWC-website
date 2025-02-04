@@ -12,5 +12,5 @@ const userRoutes = (0, express_1.Router)();
 userRoutes.get("/", (0, error_handler_1.errorHandler)(user_1.getUserHanlder));
 userRoutes.patch("/", [auth_1.default, upload_1.default.single("image")], (0, error_handler_1.errorHandler)(user_1.updateUserHandler));
 userRoutes.post("/email/change", [auth_1.default], (0, error_handler_1.errorHandler)(user_1.sendConfirmationEmailHandler)); //Gets triggered once the user has request an email change
-userRoutes.post("/email/reset", [auth_1.default], (0, error_handler_1.errorHandler)(user_1.resetEmailHandler)); // Gets triggered once the user has confirmed the email change
+userRoutes.get("/email/reset/:code", [auth_1.default], (0, error_handler_1.errorHandler)(user_1.resetEmailHandler)); // Gets triggered once the user has confirmed the email change
 exports.default = userRoutes;

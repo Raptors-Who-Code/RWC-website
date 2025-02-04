@@ -86,6 +86,9 @@ const sendEmailResetEmail = (_a) => __awaiter(void 0, [_a], void 0, function* ({
             throw new exceptions_1.UnauthorizedException("User not found", root_1.ErrorCode.USER_NOT_FOUND);
         }
         // validate password from the request
+        if (!password) {
+            throw new exceptions_1.UnauthorizedException("Password is required", root_1.ErrorCode.PASSWORD_REQUIRED);
+        }
         if (!(0, bcrypt_1.compareSync)(password, user.password)) {
             throw new exceptions_1.UnauthorizedException("Invalid password", root_1.ErrorCode.INCORRECT_PASSWORD);
         }
@@ -137,7 +140,7 @@ const sendEmailResetEmail = (_a) => __awaiter(void 0, [_a], void 0, function* ({
     }
 });
 exports.sendEmailResetEmail = sendEmailResetEmail;
-const resetEmail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ verificationCode }) {
+const resetEmail = (verificationCode) => __awaiter(void 0, void 0, void 0, function* () {
     const validCode = yield __1.prismaClient.verificationCode.findFirst({
         where: {
             id: verificationCode,

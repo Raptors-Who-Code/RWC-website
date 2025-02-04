@@ -7,6 +7,7 @@ import {
   emailSchema,
   resetEmailChangeSchema,
   updatedUserSchema,
+  verificationCodeSchema,
 } from "../schema/user";
 import { decode } from "base64-arraybuffer";
 import {
@@ -78,7 +79,7 @@ export const sendConfirmationEmailHandler = async (
   req: RequestWithUser,
   res: Response
 ) => {
-  const newEmail = emailSchema.parse(req.body.email);
+  const newEmail = emailSchema.parse(req.body.newEmail);
   const password = req.body.password;
 
   await sendEmailResetEmail({ newEmail, password, userId: req.userId });
@@ -92,9 +93,9 @@ export const resetEmailHandler = async (
   req: RequestWithUser,
   res: Response
 ) => {
-  const request = resetEmailChangeSchema.parse(req.body);
+  const verificationCode = verificationCodeSchema.parse(req.params.code);
 
-  await resetEmail(request);
+  await resetEmail(verificationCode);
 
   return clearAuthCookies(res)
     .status(OK)

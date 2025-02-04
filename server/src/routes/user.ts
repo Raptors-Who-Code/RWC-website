@@ -23,8 +23,8 @@ userRoutes.post(
   [authMiddleware],
   errorHandler(sendConfirmationEmailHandler)
 ); //Gets triggered once the user has request an email change
-userRoutes.post(
-  "/email/reset",
+userRoutes.get(
+  "/email/reset/:code",
   [authMiddleware],
   errorHandler(resetEmailHandler)
 ); // Gets triggered once the user has confirmed the email change

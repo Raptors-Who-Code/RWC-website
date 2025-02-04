@@ -124,6 +124,13 @@ export const sendEmailResetEmail = async ({
 
     // validate password from the request
 
+    if (!password) {
+      throw new UnauthorizedException(
+        "Password is required",
+        ErrorCode.PASSWORD_REQUIRED
+      );
+    }
+
     if (!compareSync(password, user.password)) {
       throw new UnauthorizedException(
         "Invalid password",
@@ -210,11 +217,7 @@ export const sendEmailResetEmail = async ({
   }
 };
 
-interface ResetEmailParams {
-  verificationCode: string;
-}
-
-export const resetEmail = async ({ verificationCode }: ResetEmailParams) => {
+export const resetEmail = async (verificationCode: string) => {
   const validCode = await prismaClient.verificationCode.findFirst({
     where: {
       id: verificationCode,

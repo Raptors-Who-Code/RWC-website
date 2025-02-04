@@ -90,7 +90,6 @@ const refreshHanlder = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.refreshHanlder = refreshHanlder;
 const verifyEmailHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const verificationCode = user_1.verificationCodeSchema.parse(req.params.code);
-    console.log("verificationCode", verificationCode);
     yield (0, authService_1.verifyEmail)(verificationCode);
     return res.status(root_1.OK).json({ message: "Email was successfully verified" });
 });
