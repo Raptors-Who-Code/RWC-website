@@ -10,14 +10,7 @@ function ResetEmailPage() {
   const now = Date.now();
   const linkIsValid = code && exp && now < exp;
 
-  //   const {
-  //     mutate: resetUserPassword,
-  //     isSuccess,
-  //     isError,
-  //     error,
-  //   } = useMutation({
-  //     mutationFn: resetEmail,
-  //   });
+  //#TODO: Implement the reset email page, similar to the verifiy email page on initial page load we will send backend request to verify the code and will return corresponding error or success message
 
   return <div>ResetEmailPage</div>;
 }
