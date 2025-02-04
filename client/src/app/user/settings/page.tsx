@@ -1,14 +1,12 @@
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import useAuth from "@/hooks/useAuth";
-import { IoIosCheckmark } from "react-icons/io";
-import { IoIosClose } from "react-icons/io";
+
 import React, { useState } from "react";
 import "@/styles/glow.css";
 import UserProfileSettings from "@/components/UserSettingsPage/UserProfileSettings";
 import UserAccountSettings from "@/components/UserSettingsPage/UserAccountSettings";
 import UserCompleteYourProfile from "@/components/UserSettingsPage/UserCompleteYourProfile";
+import { useAuthContext } from "@/providers/AuthProvider";
+import withAuth from "@/providers/withAuth";
 
 const buttonTransformation =
   "transform transition-all duration-200 hover:scale-105 hover:z-10 hover:shadow-lg active:scale-100";
@@ -23,7 +21,7 @@ function UserSettings() {
     SettingTabs.PROFILE
   );
 
-  const { data: user, isLoading } = useAuth();
+  const { user, isLoading } = useAuthContext();
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -74,4 +72,4 @@ function UserSettings() {
   );
 }
 
-export default UserSettings;
+export default withAuth(UserSettings);

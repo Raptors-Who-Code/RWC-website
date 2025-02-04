@@ -18,5 +18,10 @@ export const updateUser = async (data: Partial<User>): Promise<User> => {
 };
 
 export const resetEmail = async (verificationCode: string) => {
-  return API.get(`/api/user/email/reset/${verificationCode}`);
+  try {
+    const response = await API.get(`/api/user/email/reset/${verificationCode}`);
+    return response.data;
+  } catch (error) {
+    return null;
+  }
 };

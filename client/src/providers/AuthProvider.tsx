@@ -5,12 +5,10 @@ import useAuth from "@/hooks/useAuth";
 import { toast } from "react-toastify";
 import { usePathname, useRouter } from "next/navigation";
 import { User } from "@/api/authApi";
-import { useMutation } from "@tanstack/react-query";
-import { getUser } from "@/api/userApi";
 
 const AuthContext = createContext<{
   user: any;
-  isPending: boolean;
+  isLoading: boolean;
   setClientUser: React.Dispatch<React.SetStateAction<any>>;
 } | null>(null);
 
@@ -28,27 +26,18 @@ export default function AuthProvider({
   const router = useRouter();
   const pathname = usePathname();
 
-  const {
-    mutate: getTheUser,
-    isPending,
-    isError,
-    error,
-  } = useMutation({
-    mutationFn: getUser,
-    onSuccess: (data: User | null) => {
-      setClientUser(data);
-    },
-  });
+  const { data: user, isLoading } = useAuth();
 
   useEffect(() => {
-    getTheUser();
-    if (!clientUser && !isPending) {
+    if (user) {
+      setClientUser(user);
+    } else {
       setClientUser(null);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    if (!isPending) {
+    if (!isLoading) {
       if (!clientUser && protectedRoutesUserMustLoginIn.includes(pathname)) {
         toast.error("You must be logged in to create an event or job", {
           position: "top-right",
@@ -78,13 +67,13 @@ export default function AuthProvider({
         });
       }
     }
-  }, [clientUser, isPending, pathname, router]);
+  }, [clientUser, isLoading, pathname, router]);
 
   return (
     <AuthContext.Provider
-      value={{ user: clientUser, isPending, setClientUser }}
+      value={{ user: clientUser, isLoading, setClientUser }}
     >
-      {isPending ? <div>Loading ...</div> : children}
+      {isLoading ? <div>Loading ...</div> : children}
     </AuthContext.Provider>
   );
 }

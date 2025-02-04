@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { login, LoginFormFields, User } from "@/api/authApi";
 import { useAuthContext } from "@/providers/AuthProvider";
-import { AxiosError } from "axios";
 
 export default function LoginPage() {
   const { register, handleSubmit } = useForm<LoginFormFields>({
