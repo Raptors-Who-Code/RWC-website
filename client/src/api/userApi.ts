@@ -17,9 +17,6 @@ export const updateUser = async (data: Partial<User>): Promise<User> => {
   return API.put("/api/user", data);
 };
 
-// export const resetEmail = async ({ verificationCode }: ResetPasswordFields) => {
-//   API.post("/api/auth/password/reset", {
-//     verificationCode,
-//     password: newPassword,
-//   });
-// };
+export const resetEmail = async (verificationCode: string) => {
+  return API.get(`/api/user/email/reset/${verificationCode}`);
+};

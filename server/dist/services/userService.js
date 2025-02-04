@@ -141,37 +141,62 @@ const sendEmailResetEmail = (_a) => __awaiter(void 0, [_a], void 0, function* ({
 });
 exports.sendEmailResetEmail = sendEmailResetEmail;
 const resetEmail = (verificationCode) => __awaiter(void 0, void 0, void 0, function* () {
-    const validCode = yield __1.prismaClient.verificationCode.findFirst({
+    const validEmailUpdateCode = yield __1.prismaClient.verificationCode.findFirst({
         where: {
             id: verificationCode,
             type: client_1.VerificationCodeType.EMAIL_UPDATE,
             expiresAt: { gt: new Date() },
         },
     });
-    if (!validCode) {
+    if (!validEmailUpdateCode) {
         throw new exceptions_1.UnauthorizedException("Invalid verification code", root_1.ErrorCode.INVALID_VERIFICATION_CODE);
     }
     // update the user's email
-    const newEmail = validCode.newEmail;
+    const newEmail = validEmailUpdateCode.newEmail;
     if (!newEmail) {
         throw new exceptions_1.InternalException("New email not found", root_1.ErrorCode.EMAIL_NOT_FOUND);
     }
     const updatedUser = yield __1.prismaClient.user.update({
-        where: { id: validCode.userId },
+        where: { id: validEmailUpdateCode.userId },
         data: { email: newEmail },
     });
     if (!updatedUser) {
         throw new exceptions_1.InternalException("Failed to reset email", root_1.ErrorCode.INTERNALEXCEPTION);
     }
-    // delete the verification code
+    // delete the update email verification code
     yield __1.prismaClient.verificationCode.delete({
         where: { id: verificationCode },
+    });
+    // Verify the user
+    const emailVerificationCode = yield __1.prismaClient.verificationCode.findFirst({
+        where: {
+            userId: updatedUser.id,
+            type: client_1.VerificationCodeType.EMAIL_VERIFICATION,
+            expiresAt: { gt: new Date() },
+        },
+    });
+    if (!emailVerificationCode) {
+        throw new exceptions_1.InternalException("Email verification code not found", root_1.ErrorCode.INTERNALEXCEPTION);
+    }
+    const updatedVerifiedUser = yield __1.prismaClient.user.update({
+        where: {
+            id: updatedUser.id,
+        },
+        data: {
+            verified: true,
+        },
+    });
+    if (!updatedVerifiedUser) {
+        throw new exceptions_1.InternalException("Failed to verify email", root_1.ErrorCode.INTERNALEXCEPTION);
+    }
+    yield __1.prismaClient.verificationCode.delete({
+        where: { id: emailVerificationCode.id },
     });
     // delete all the sessions
     yield __1.prismaClient.session.deleteMany({
         where: { userId: updatedUser.id },
     });
     // Do not return user's password
-    return (0, omitPassword_1.omitPassword)(updatedUser);
+    return (0, omitPassword_1.omitPassword)(updatedVerifiedUser);
 });
 exports.resetEmail = resetEmail;

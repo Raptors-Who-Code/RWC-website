@@ -218,7 +218,7 @@ export const sendEmailResetEmail = async ({
 };
 
 export const resetEmail = async (verificationCode: string) => {
-  const validCode = await prismaClient.verificationCode.findFirst({
+  const validEmailUpdateCode = await prismaClient.verificationCode.findFirst({
     where: {
       id: verificationCode,
       type: VerificationCodeType.EMAIL_UPDATE,
@@ -226,7 +226,7 @@ export const resetEmail = async (verificationCode: string) => {
     },
   });
 
-  if (!validCode) {
+  if (!validEmailUpdateCode) {
     throw new UnauthorizedException(
       "Invalid verification code",
       ErrorCode.INVALID_VERIFICATION_CODE
@@ -235,7 +235,7 @@ export const resetEmail = async (verificationCode: string) => {
 
   // update the user's email
 
-  const newEmail = validCode.newEmail;
+  const newEmail = validEmailUpdateCode.newEmail;
 
   if (!newEmail) {
     throw new InternalException(
@@ -245,7 +245,7 @@ export const resetEmail = async (verificationCode: string) => {
   }
 
   const updatedUser = await prismaClient.user.update({
-    where: { id: validCode.userId },
+    where: { id: validEmailUpdateCode.userId },
     data: { email: newEmail },
   });
 
@@ -256,10 +256,47 @@ export const resetEmail = async (verificationCode: string) => {
     );
   }
 
-  // delete the verification code
+  // delete the update email verification code
 
   await prismaClient.verificationCode.delete({
     where: { id: verificationCode },
+  });
+
+  // Verify the user
+
+  const emailVerificationCode = await prismaClient.verificationCode.findFirst({
+    where: {
+      userId: updatedUser.id,
+      type: VerificationCodeType.EMAIL_VERIFICATION,
+      expiresAt: { gt: new Date() },
+    },
+  });
+
+  if (!emailVerificationCode) {
+    throw new InternalException(
+      "Email verification code not found",
+      ErrorCode.INTERNALEXCEPTION
+    );
+  }
+
+  const updatedVerifiedUser = await prismaClient.user.update({
+    where: {
+      id: updatedUser.id,
+    },
+    data: {
+      verified: true,
+    },
+  });
+
+  if (!updatedVerifiedUser) {
+    throw new InternalException(
+      "Failed to verify email",
+      ErrorCode.INTERNALEXCEPTION
+    );
+  }
+
+  await prismaClient.verificationCode.delete({
+    where: { id: emailVerificationCode.id },
   });
 
   // delete all the sessions
@@ -270,5 +307,5 @@ export const resetEmail = async (verificationCode: string) => {
 
   // Do not return user's password
 
-  return omitPassword(updatedUser);
+  return omitPassword(updatedVerifiedUser);
 };
