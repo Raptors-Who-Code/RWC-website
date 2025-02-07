@@ -12,10 +12,7 @@ const AuthContext = createContext<{
   setClientUser: React.Dispatch<React.SetStateAction<any>>;
 } | null>(null);
 
-export const protectedRoutesUserMustLoginIn = [
-  "/events/create",
-  "/jobs/create",
-];
+export const jobsAndEventsRoute = ["/events/create", "/jobs/create"];
 
 export default function AuthProvider({
   children,
@@ -26,7 +23,7 @@ export default function AuthProvider({
   const router = useRouter();
   const pathname = usePathname();
 
-  const { data: user, isLoading } = useAuth();
+  const { data: user, isLoading, refetch } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -37,8 +34,12 @@ export default function AuthProvider({
   }, [user]);
 
   useEffect(() => {
+    refetch();
+  }, [pathname, refetch]);
+
+  useEffect(() => {
     if (!isLoading) {
-      if (!clientUser && protectedRoutesUserMustLoginIn.includes(pathname)) {
+      if (!clientUser && jobsAndEventsRoute.includes(pathname)) {
         toast.error("You must be logged in to create an event or job", {
           position: "top-right",
           autoClose: 5000,
@@ -67,7 +68,7 @@ export default function AuthProvider({
         });
       }
     }
-  }, [clientUser, isLoading, pathname, router]);
+  }, [clientUser, isLoading, pathname]);
 
   return (
     <AuthContext.Provider
@@ -86,51 +87,3 @@ export const useAuthContext = () => {
 
   return context;
 };
-
-// const dispatch = useDispatch();
-//   const { data: user, isLoading } = useAuth();
-//   const pathname = usePathname();
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     if (user) {
-//       dispatch(setCredentials({ user }));
-//     }
-//   }, [user, dispatch, pathname, router]);
-
-//   return <>{children}</>;
-
-// if (user && !user.verified && pathname === "/") {
-//   toast.warn("Please verify your email to access all features.", {
-//     position: "top-right",
-//     autoClose: false,
-//     hideProgressBar: true,
-//     closeOnClick: true,
-//     pauseOnHover: true,
-//     draggable: true,
-//     progress: undefined,
-//   });
-// }
-
-// // temporary fix
-// //TODO: Replace with useAuth() hook in components themselves
-// if (pathname === "/events/create" && !user) {
-//   toast.error("You must be logged in to create an event.", {
-//     position: "top-right",
-//     autoClose: 5000,
-//     hideProgressBar: false,
-//     closeOnClick: true,
-//     pauseOnHover: true,
-//     draggable: true,
-//     progress: undefined,
-//   });
-//   router.replace("/login");
-// }
-
-// if (pathname === "/login" && user) {
-//   router.replace("/");
-// }
-
-// if (pathname === "/signup" && user) {
-//   router.replace("/");
-// }
