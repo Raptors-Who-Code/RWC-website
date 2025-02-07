@@ -46,7 +46,7 @@
   <li>Start the development server:</li>
   <ul>
     <li>Client: <code>npm run dev</code></li>
-    <li>Server: <code>npm run dev<code></li>
+    <li>Server: <code>npm run dev</code></li>
   </ul>
 </ol>
 
