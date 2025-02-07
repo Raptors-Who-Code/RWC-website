@@ -33,7 +33,7 @@ function Hero() {
             </Link>
           )}
 
-          <Link href="/events">
+          <Link href="/about">
             <Button
               className={`${
                 isAuthenticated
@@ -42,7 +42,7 @@ function Hero() {
               }`}
             >
               <span className="text-white text-center font-semibold text-[16px] leading-[24px] tracking-[-0.32px]">
-                View Events
+                About Us
               </span>
             </Button>
           </Link>

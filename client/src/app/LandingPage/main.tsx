@@ -13,8 +13,8 @@ function LandingPage() {
       <Hero />
       <JoinSection />
       <LandingAbout />
-      <UpcomingEvents />
-      <LatestJobs />
+      {/* <UpcomingEvents />
+      <LatestJobs /> */}
       <FAQ />
       <SiteFooter />
     </div>

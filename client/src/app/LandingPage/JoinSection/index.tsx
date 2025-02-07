@@ -18,11 +18,11 @@ function JoinSection() {
           </p>
         </div>
 
-        <Button className="flex w-[187px] h-[52px] px-[24px] py-[13px] justify-center items-center gap-[10px] rounded-[4px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] mt-[10px] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale- mx-auto lg:mx-0">
+        {/* <Button className="flex w-[187px] h-[52px] px-[24px] py-[13px] justify-center items-center gap-[10px] rounded-[4px] bg-gradient-to-r from-[#9632D7] to-[#4F1A71] mt-[10px] transform transition-all duration-200 hover:scale-110 hover:z-10 hover:shadow-lg active:scale- mx-auto lg:mx-0">
           <span className="text-white text-center font-semibold text-[16px] leading-[24px] tracking-[-0.32px]">
             View Hackathons
           </span>
-        </Button>
+        </Button> */}
       </div>
 
       <div className="relative w-[559px] h-[352px] flex-shrink-0">

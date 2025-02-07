@@ -18,27 +18,7 @@ const socials = [
   {
     name: "Discord",
     icon: <FaDiscord className={socialIconSize} />,
-    href: "#",
-  },
-  {
-    name: "Twitter",
-    icon: <FaTwitter className={socialIconSize} />,
-    href: "#",
-  },
-  {
-    name: "Youtube",
-    icon: <FaYoutube className={socialIconSize} />,
-    href: "#",
-  },
-  {
-    name: "Facebook",
-    icon: <FaFacebook className={socialIconSize} />,
-    href: "#",
-  },
-  {
-    name: "Instagram",
-    icon: <FaInstagram className={socialIconSize} />,
-    href: "#",
+    href: "https://discord.gg/gQ7tqpb5",
   },
 ];
 
@@ -51,7 +31,7 @@ export default function SiteFooter() {
       className={`flex flex-col gap-[10rem] ${notLandingPage && "bg-gray-950"}`}
     >
       <footer className="flex w-[full] py-[100px] pt-[100px] pb-[40px] flex-col lg:flex-row justify-evenly items-center flex-shrink-0 gap-[10rem] lg:gap-[-6rem]">
-        <div className="flex flex-col gap-[30px]">
+        {/* <div className="flex flex-col gap-[30px]">
           <div className="flex flex-col gap-[15px] justify-center items-center sm:justify-start sm:items">
             <h1 className="text-white font-[Plus Jakarta Sans] lg:text-2xl font-semibold leading-[24px] text-lg lg:text-leftt text-center">
               Enter your Email to Get The Latest News
@@ -74,13 +54,13 @@ export default function SiteFooter() {
               Submit
             </Button>
           </div>
-        </div>
+        </div> */}
 
         <div className="flex flex-col gap-[20px]">
-          <h1 className="lg:text-left text-center">Follow us on: </h1>
-          <div className="flex flex-row items-start gap-[15px]">
+          <h1 className="text-center">Follow us on: </h1>
+          <div className="flex flex-row items-center justify-center gap-[15px]">
             {socials.map((social, index) => (
-              <Link href={social.href} key={index}>
+              <Link href={social.href} key={index} target="_blank">
                 <p className="text-[40px] hover:cursor-pointer">
                   {social.icon}
                 </p>

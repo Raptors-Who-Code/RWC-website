@@ -93,14 +93,14 @@ function Navbar() {
         </Link>
       </div>
 
-      {/* Center section: Links */}
+      {/* Center section: Links
       <div className="hidden md:flex space-x-6 text-white text-justify font-medium text-[18px] leading-[27px] tracking-[-0.36px]">
         {navLinks.map((link) => (
           <Link key={link.name} href={link.href}>
             {link.name}
           </Link>
         ))}
-      </div>
+      </div> */}
 
       {/*Mobile Menu */}
       {isMenuOpen ? (
@@ -131,13 +131,13 @@ function Navbar() {
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 text-white bg-transparent border border-neutral-800 shadow-lg p-4 space-y-2 mt-12 md:mt-0 md:ml-0 md:relative md:top-0 md:left-0">
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 className="p-2 hover:bg-neutral-800 transform transition-all duration-200 hover:scale-105 hover:cursor-pointer"
                 onClick={handleSettingsClick}
               >
                 Settings
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="my-2 border-t border-neutral-700" />
+              </DropdownMenuItem> */}
+              {/* <DropdownMenuSeparator className="my-2 border-t border-neutral-700" /> */}
               <DropdownMenuItem
                 className="p-2 hover:bg-neutral-800 transform transition-all duration-200 hover:scale-105 hover:cursor-pointer"
                 onClick={handleLogoutClick}
