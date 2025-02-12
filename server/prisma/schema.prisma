@@ -118,14 +118,14 @@ model Job {
   content      String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  userId       String
-  jobLink      String
+  userId       String?
+  jobLink      String @unique
   jobLevel     String?
   jobLocation  String
   jobHoursType String
   internship   Boolean
 
-  user         User         @relation(fields: [userId], references: [id])
+  user         User?         @relation(fields: [userId], references: [id])
   usersApplied AppliedJob[]
 
   @@index([userId]) // Index for efficient lookups by userId
