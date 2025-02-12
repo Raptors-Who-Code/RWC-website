@@ -40,7 +40,7 @@ function LandingAbout() {
       {/* Left Section End */}
 
       {/* Right Section Start */}
-      <div className="flex-row gap-12 w-[600px] p-[180px_80px] pt-[345px] self-stretch hidden 2xl:flex">
+      <div className="flex-row gap-12 w-[600px] p-[180px_80px] pt-[180px] self-stretch hidden 2xl:flex">
         {/* Image 2 */}
         <div className="relative w-[690px] h-[685px] flex-shrink-0 hidden 2xl:block">
           <Image

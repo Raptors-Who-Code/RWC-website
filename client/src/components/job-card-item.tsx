@@ -56,7 +56,7 @@ export function JobCardItem({ item }: JobCardItemProps) {
   const isFullTime = jobHoursType === "FULL_TIME";
 
   return (
-    <Card className="bg-[#1a1d24] border border-gray-600 rounded-[5px]">
+    <Card className="flex flex-col h-full bg-[#1a1d24] border border-gray-600 rounded-[5px]">
       <CardHeader className="space-y-2 px-5 py-4">
         <CardTitle className="text-xl font-semibold text-white">
           {title}
@@ -67,7 +67,7 @@ export function JobCardItem({ item }: JobCardItemProps) {
           </span>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4 px-4 pb-5">
+      <CardContent className="flex-1 space-y-4 px-4 pb-5">
         <p className="text-gray-400 text-lg">{content}</p>
         <div className="flex items-center space-x-6">
           {isRemote && (

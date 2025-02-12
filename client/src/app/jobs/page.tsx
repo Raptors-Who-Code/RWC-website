@@ -33,7 +33,7 @@ export default function Jobs({ searchParams }: Props) {
   const [allJobs, setAllJobs] = useState<JobResponse[]>([]);
   const [count, setCount] = useState<number>(0);
   const page = parseInt(searchParams.page || "1", 10);
-  const pageSize = parseInt(searchParams.pageSize || "20", 10);
+  const pageSize = parseInt(searchParams.pageSize || "9", 10);
 
   const {
     mutate: getAllTheJobs,
@@ -65,21 +65,28 @@ export default function Jobs({ searchParams }: Props) {
     return <JobsEventsLoadingPage />;
   }
 
-  //#TODO: Create a new error component
+  
   if (isError) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <div className="min-h-screen bg-gray-950 text-gray-100 p-20">
+      <div className="flex flex-col items-center justify-center h-screen text-center">
+          <h2 className="text-3xl font-bold text-white-500">Something went wrong!</h2>
+          <p className="text-gray-400 mt-2">We couldn't fetch jobs at the moment. Please try again later.</p>
+          <Button onClick={() => getAllTheJobs()} className="mt-4">Retry</Button>
+          </div>
+      </div>
+  );
   }
 
   return (
     <>
-      <div className="min-h-screen bg-gray-950 text-gray-100 p-20">
+      <div className="min-h-screen bg-gray-950 text-gray-100 p-20"> 
         <div className="max-w-6xl mx-auto space-y-12">
           {/*  Page Title*/}
           <div className="text-center space-y-8">
             <h1 className="text-4xl font-bold">Latest Job Openings</h1>
             <p className="text-lg text-gray-400">
-              Join our Waitlist and get access to Rumor for discounted
-              early-bird prices.
+            Browse the latest internship/job opportunities from top firms and take the next step in your career.
             </p>
           </div>
 
@@ -97,7 +104,7 @@ export default function Jobs({ searchParams }: Props) {
             page={page}
             pageSize={pageSize}
             totalCount={count}
-            pageSizeSelectOptions={{ pageSizeOptions: [10, 20, 50, 100] }}
+            pageSizeSelectOptions={{ pageSizeOptions: [9, 18, 36, 72] }}
           />
         </div>
       </div>

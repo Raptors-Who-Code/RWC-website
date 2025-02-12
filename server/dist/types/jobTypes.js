@@ -10,6 +10,7 @@ var JobLocation;
 })(JobLocation || (exports.JobLocation = JobLocation = {}));
 var JobLevel;
 (function (JobLevel) {
+    JobLevel["INTERNSHIP"] = "INTERNSHIP";
     JobLevel["JUNIOR"] = "JUNIOR";
     JobLevel["MID_LEVEL"] = "MID_LEVEL";
     JobLevel["SENIOR"] = "SENIOR";
@@ -20,4 +21,5 @@ var JobHourTypes;
     JobHourTypes["FULL_TIME"] = "FULL_TIME";
     JobHourTypes["PART_TIME"] = "PART_TIME";
     JobHourTypes["CONTRACT"] = "CONTRACT";
+    JobHourTypes["UNKNOWN"] = "UNKNOWN";
 })(JobHourTypes || (exports.JobHourTypes = JobHourTypes = {}));
