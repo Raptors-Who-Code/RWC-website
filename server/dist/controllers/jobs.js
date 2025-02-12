@@ -56,13 +56,11 @@ const getAllJobsHandler = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.getAllJobsHandler = getAllJobsHandler;
 const jobAPIHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const jobs = yield (0, jobService_1.fetchJobsFromAPI)(5); // parameter determines how many jobs will be returned from the API
-        res.status(root_1.OK).json(jobs);
-        return jobs;
+        yield (0, jobService_1.fetchAndStoreJobs)();
+        res.status(200).json({ message: "Jobs added successfully" });
     }
     catch (err) {
         res.status(500).json({ message: "Failed to fetch jobs" });
     }
-    return;
 });
 exports.jobAPIHandler = jobAPIHandler;

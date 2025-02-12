@@ -22,6 +22,7 @@ export enum JobHourTypes {
 export interface Job {
   title: string;
   content: string;
+  userId?: string; 
   jobLink: string;
   jobLocation: JobLocation;
   jobHoursType: JobHourTypes;
@@ -29,4 +30,18 @@ export interface Job {
   jobLevel?: JobLevel;
 }
 
-
+export type APIJob = {
+  date_updated: number;
+  url: string;
+  locations: string[];
+  season: string;
+  sponsorship: string;
+  active: boolean;
+  company_name: string;
+  title: string;
+  source: string;
+  id: string;
+  date_posted: number;
+  company_url: string;
+  is_visible: boolean;
+};

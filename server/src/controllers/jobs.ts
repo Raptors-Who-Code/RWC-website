@@ -6,8 +6,8 @@ import { RequestWithUser } from "../types/requestWithUser";
 import { Response } from "express";
 import { Role, UserData } from "../types/userTypes";
 import { mapPrismaRoleToCustomRole } from "../utils/mapRoleToCustomRole";
-import { createJob, deleteJob, fetchJobsFromAPI } from "../services/jobService";
-import { JobLocation, JobHourTypes, JobLevel } from "../types/jobTypes";
+import { createJob, deleteJob, fetchAndStoreJobs } from "../services/jobService";
+import { JobLocation, JobHourTypes, JobLevel, Job, APIJob } from "../types/jobTypes";
 import { z } from "zod";
 
 export const createJobHanlder = async (req: RequestWithUser, res: Response) => {
@@ -69,12 +69,9 @@ export const getAllJobsHandler = async (req: Request, res: Response) => {
 
 export const jobAPIHandler = async (req: Request, res: Response) => {
   try {
-    const jobs = await fetchJobsFromAPI(5); // parameter determines how many jobs will be returned from the API
-    res.status(OK).json(jobs);
-
-    return jobs;
+    await fetchAndStoreJobs();
+    res.status(200).json({ message: "Jobs added successfully" });
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch jobs" });
   }
-  return;
-};
+}; 

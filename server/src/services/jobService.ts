@@ -1,7 +1,8 @@
 import { prismaClient } from "..";
+import { Response } from "express";
 import { NotFoundException } from "../exceptions/exceptions";
 import { ErrorCode } from "../exceptions/root";
-import { Job } from "../types/jobTypes";
+import { Job, APIJob } from "../types/jobTypes";
 import { UserData } from "../types/userTypes";
 
 export const createJob = async (jobData: Job, userData: UserData) => {
@@ -79,3 +80,36 @@ export const fetchJobsFromAPI = async (numberOfJobs: number) => {
     }
     return;
   }
+
+  export const fetchAndStoreJobs = async () => {
+  
+      const jobs = await fetchJobsFromAPI(20); // parameter determines how many jobs will be returned from the API
+      // reformat job objects to match job schema
+      const reformattedJobs = jobs.map((job: APIJob, index: number) => {
+        try {
+            if (!job.company_name || !job.season || !job.title) {
+                throw new Error(`Missing fields in job at index ${index}`);
+            }
+            return { //some fields hardcoded as "Unknown" for now
+                title: job.title,
+                content: `Company: ${job.company_name} - Season: ${job.season}`,
+                //userId: "api-generated",
+                jobLink: job.url,
+                jobLevel: "Unknown", 
+                jobLocation: job.locations?.length ? job.locations[0] : "Unknown",
+                jobHoursType: "Unkown",
+                internship: true
+            };
+        } catch (err) {
+            console.error("Error reformatting job:", err);
+            return null;
+        }
+    });
+      // add jobs to db
+      const createdJobs = await prismaClient.job.createMany({
+          data: reformattedJobs.filter((job: Job) => job !== null),
+          skipDuplicates: true,
+      });
+
+      return;
+  };

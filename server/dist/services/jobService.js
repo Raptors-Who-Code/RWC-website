@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchJobsFromAPI = exports.deleteJob = exports.createJob = void 0;
+exports.fetchAndStoreJobs = exports.fetchJobsFromAPI = exports.deleteJob = exports.createJob = void 0;
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
@@ -72,3 +72,36 @@ const fetchJobsFromAPI = (numberOfJobs) => __awaiter(void 0, void 0, void 0, fun
     return;
 });
 exports.fetchJobsFromAPI = fetchJobsFromAPI;
+const fetchAndStoreJobs = () => __awaiter(void 0, void 0, void 0, function* () {
+    const jobs = yield (0, exports.fetchJobsFromAPI)(20); // parameter determines how many jobs will be returned from the API
+    // reformat job objects to match job schema
+    const reformattedJobs = jobs.map((job, index) => {
+        var _a;
+        try {
+            if (!job.company_name || !job.season || !job.title) {
+                throw new Error(`Missing fields in job at index ${index}`);
+            }
+            return {
+                title: job.title,
+                content: `Company: ${job.company_name} - Season: ${job.season}`,
+                //userId: "api-generated",
+                jobLink: job.url,
+                jobLevel: "Unknown",
+                jobLocation: ((_a = job.locations) === null || _a === void 0 ? void 0 : _a.length) ? job.locations[0] : "Unknown",
+                jobHoursType: "Unkown",
+                internship: true
+            };
+        }
+        catch (err) {
+            console.error("Error reformatting job:", err);
+            return null;
+        }
+    });
+    // add jobs to db
+    const createdJobs = yield __1.prismaClient.job.createMany({
+        data: reformattedJobs.filter((job) => job !== null),
+        skipDuplicates: true,
+    });
+    return;
+});
+exports.fetchAndStoreJobs = fetchAndStoreJobs;

@@ -14,6 +14,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const client_1 = require("@prisma/client");
 const routes_1 = __importDefault(require("./routes"));
 const errors_1 = require("./middlewares/errors");
+require("./services/jobScheduler");
 const secrets_1 = require("./secrets");
 const WebSocketServer_1 = require("./socket/WebSocketServer");
 const http_1 = __importDefault(require("http"));
