@@ -16,11 +16,11 @@ const node_cron_1 = __importDefault(require("node-cron"));
 const jobService_1 = require("./jobService");
 // called upon server startup
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Fetching jobs on server startup...");
+    //console.log("Fetching jobs on server startup...");
     yield (0, jobService_1.fetchAndStoreJobs)();
 }))();
 // runs every 24 hours at midnight
 node_cron_1.default.schedule("0 0 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Running scheduled job fetch...");
+    //console.log("Running scheduled job fetch...");
     yield (0, jobService_1.fetchAndStoreJobs)();
 }));

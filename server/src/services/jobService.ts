@@ -2,7 +2,7 @@ import { prismaClient } from "..";
 import { Response } from "express";
 import { NotFoundException } from "../exceptions/exceptions";
 import { ErrorCode } from "../exceptions/root";
-import { Job, APIJob } from "../types/jobTypes";
+import { Job, JobLocation, JobLevel, JobHourTypes, APIJob } from "../types/jobTypes";
 import { UserData } from "../types/userTypes";
 
 export const createJob = async (jobData: Job, userData: UserData) => {
@@ -82,34 +82,64 @@ export const fetchJobsFromAPI = async (numberOfJobs: number) => {
   }
 
   export const fetchAndStoreJobs = async () => {
-  
-      const jobs = await fetchJobsFromAPI(20); // parameter determines how many jobs will be returned from the API
-      // reformat job objects to match job schema
-      const reformattedJobs = jobs.map((job: APIJob, index: number) => {
-        try {
-            if (!job.company_name || !job.season || !job.title) {
-                throw new Error(`Missing fields in job at index ${index}`);
-            }
-            return { //some fields hardcoded as "Unknown" for now
-                title: job.title,
-                content: `Company: ${job.company_name} - Season: ${job.season}`,
-                //userId: "api-generated",
-                jobLink: job.url,
-                jobLevel: "Unknown", 
-                jobLocation: job.locations?.length ? job.locations[0] : "Unknown",
-                jobHoursType: "Unkown",
-                internship: true
-            };
-        } catch (err) {
-            console.error("Error reformatting job:", err);
-            return null;
-        }
-    });
-      // add jobs to db
-      const createdJobs = await prismaClient.job.createMany({
-          data: reformattedJobs.filter((job: Job) => job !== null),
-          skipDuplicates: true,
-      });
+    const totalNeeded = 50;
+    const batchSize = 100;
+    const maxAttempts = 2;
 
-      return;
+    // fetch active jobs from API
+    const activeJobs = await fetchActiveJobs(totalNeeded, batchSize, maxAttempts);
+
+    if (activeJobs.length === 0) {
+        console.log("No active jobs found.");
+        return;
+    }
+
+    // upsert jobs into db
+    await Promise.all(activeJobs.map(upsertJob));
+};
+
+// fetch jobs from API with retry logic
+const fetchActiveJobs = async (totalNeeded: number, batchSize: number, maxAttempts: number): Promise<APIJob[]> => {
+  let activeJobs: APIJob[] = [];
+  let attemptCount = 0;
+
+  while (activeJobs.length < totalNeeded && attemptCount < maxAttempts) {
+      attemptCount++;
+      const jobs: APIJob[] = await fetchJobsFromAPI(batchSize);
+      const filteredJobs = jobs.filter(job => job.active === true);
+      activeJobs = [...activeJobs, ...filteredJobs];
+
+      if (jobs.length < batchSize) break;
+  }
+
+  return activeJobs.slice(0, totalNeeded);
+};
+const formatJobForDB = (job: APIJob) => {
+  if (!job.company_name || !job.season || !job.title) {
+      throw new Error(`Missing fields in job data`);
+  }
+
+  return {
+      jobLink: job.url,
+      title: job.title,
+      content: `Company: ${job.company_name} - Season: ${job.season}`,
+      jobLevel: JobLevel.INTERNSHIP, // all jobs from the api are internships
+      jobLocation: job.locations?.includes("Remote") ? JobLocation.REMOTE : JobLocation.ONSITE,
+      jobHoursType: JobHourTypes.UNKNOWN,
+      internship: true,
   };
+};
+// upsert job into database
+const upsertJob = async (job: APIJob) => {
+  try {
+      const formattedJob = formatJobForDB(job);
+
+      await prismaClient.job.upsert({
+          where: { jobLink: formattedJob.jobLink },
+          update: formattedJob, 
+          create: formattedJob, 
+      });
+  } catch (err) {
+      console.error("Error upserting job:", err);
+  }
+};

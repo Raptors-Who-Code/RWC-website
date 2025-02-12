@@ -13,6 +13,7 @@ exports.fetchAndStoreJobs = exports.fetchJobsFromAPI = exports.deleteJob = expor
 const __1 = require("..");
 const exceptions_1 = require("../exceptions/exceptions");
 const root_1 = require("../exceptions/root");
+const jobTypes_1 = require("../types/jobTypes");
 const createJob = (jobData, userData) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, content, jobLink, internship, jobLocation, jobHoursType, jobLevel } = jobData;
     const job = yield __1.prismaClient.job.create({
@@ -73,35 +74,59 @@ const fetchJobsFromAPI = (numberOfJobs) => __awaiter(void 0, void 0, void 0, fun
 });
 exports.fetchJobsFromAPI = fetchJobsFromAPI;
 const fetchAndStoreJobs = () => __awaiter(void 0, void 0, void 0, function* () {
-    const jobs = yield (0, exports.fetchJobsFromAPI)(20); // parameter determines how many jobs will be returned from the API
-    // reformat job objects to match job schema
-    const reformattedJobs = jobs.map((job, index) => {
-        var _a;
-        try {
-            if (!job.company_name || !job.season || !job.title) {
-                throw new Error(`Missing fields in job at index ${index}`);
-            }
-            return {
-                title: job.title,
-                content: `Company: ${job.company_name} - Season: ${job.season}`,
-                //userId: "api-generated",
-                jobLink: job.url,
-                jobLevel: "Unknown",
-                jobLocation: ((_a = job.locations) === null || _a === void 0 ? void 0 : _a.length) ? job.locations[0] : "Unknown",
-                jobHoursType: "Unkown",
-                internship: true
-            };
-        }
-        catch (err) {
-            console.error("Error reformatting job:", err);
-            return null;
-        }
-    });
-    // add jobs to db
-    const createdJobs = yield __1.prismaClient.job.createMany({
-        data: reformattedJobs.filter((job) => job !== null),
-        skipDuplicates: true,
-    });
-    return;
+    const totalNeeded = 50;
+    const batchSize = 100;
+    const maxAttempts = 2;
+    // fetch active jobs from API
+    const activeJobs = yield fetchActiveJobs(totalNeeded, batchSize, maxAttempts);
+    if (activeJobs.length === 0) {
+        console.log("No active jobs found.");
+        return;
+    }
+    // upsert jobs into db
+    yield Promise.all(activeJobs.map(upsertJob));
 });
 exports.fetchAndStoreJobs = fetchAndStoreJobs;
+// fetch jobs from API with retry logic
+const fetchActiveJobs = (totalNeeded, batchSize, maxAttempts) => __awaiter(void 0, void 0, void 0, function* () {
+    let activeJobs = [];
+    let attemptCount = 0;
+    while (activeJobs.length < totalNeeded && attemptCount < maxAttempts) {
+        attemptCount++;
+        const jobs = yield (0, exports.fetchJobsFromAPI)(batchSize);
+        const filteredJobs = jobs.filter(job => job.active === true);
+        activeJobs = [...activeJobs, ...filteredJobs];
+        if (jobs.length < batchSize)
+            break;
+    }
+    return activeJobs.slice(0, totalNeeded);
+});
+const formatJobForDB = (job) => {
+    var _a;
+    if (!job.company_name || !job.season || !job.title) {
+        throw new Error(`Missing fields in job data`);
+    }
+    return {
+        jobLink: job.url,
+        title: job.title,
+        content: `Company: ${job.company_name} - Season: ${job.season}`,
+        jobLevel: jobTypes_1.JobLevel.INTERNSHIP, // all jobs from the api are internships
+        jobLocation: ((_a = job.locations) === null || _a === void 0 ? void 0 : _a.includes("Remote")) ? jobTypes_1.JobLocation.REMOTE : jobTypes_1.JobLocation.ONSITE,
+        jobHoursType: jobTypes_1.JobHourTypes.UNKNOWN,
+        internship: true,
+    };
+};
+// upsert job into database
+const upsertJob = (job) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const formattedJob = formatJobForDB(job);
+        yield __1.prismaClient.job.upsert({
+            where: { jobLink: formattedJob.jobLink },
+            update: formattedJob,
+            create: formattedJob,
+        });
+    }
+    catch (err) {
+        console.error("Error upserting job:", err);
+    }
+});

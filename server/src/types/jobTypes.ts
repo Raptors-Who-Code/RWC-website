@@ -6,6 +6,7 @@ export enum JobLocation {
 }
 
 export enum JobLevel {
+  INTERNSHIP = "INTERNSHIP",
   JUNIOR = "JUNIOR",
   MID_LEVEL = "MID_LEVEL",
   SENIOR = "SENIOR",
@@ -16,6 +17,7 @@ export enum JobHourTypes {
   FULL_TIME = "FULL_TIME",
   PART_TIME = "PART_TIME",
   CONTRACT = "CONTRACT",
+  UNKNOWN = "UNKNOWN",
 }
 
 

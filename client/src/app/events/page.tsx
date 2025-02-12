@@ -58,9 +58,17 @@ export default function Events({ searchParams }: Props) {
     return <JobsEventsLoadingPage />;
   }
 
-  //#TODO: Create a new error component
+  
   if (isError) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <div className="min-h-screen bg-gray-950 text-gray-100 p-20">
+      <div className="flex flex-col items-center justify-center h-screen text-center">
+          <h2 className="text-3xl font-bold text-white-500">Something went wrong!</h2>
+          <p className="text-gray-400 mt-2">We couldn't fetch events at the moment. Please try again later.</p>
+          <Button onClick={() => getAllTheEvents()} className="mt-4">Retry</Button>
+          </div>
+      </div>
+  );
   }
 
   return (
